@@ -52,6 +52,16 @@ namespace TrueBalances.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public class InputModel
         {
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Prénom")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Nom")]
+            public string LastName { get; set; }
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -70,6 +80,8 @@ namespace TrueBalances.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
                 PhoneNumber = phoneNumber
             };
         }
@@ -111,6 +123,17 @@ namespace TrueBalances.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            if (Input.FirstName != user.FirstName)
+            {
+                user.FirstName = Input.FirstName;
+            }
+
+            if (Input.LastName != user.LastName)
+            {
+                user.LastName = Input.LastName;
+            }
+
+            await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
