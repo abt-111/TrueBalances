@@ -5,9 +5,9 @@ namespace TrueBalances.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly TrueBalancesDbContext _context;
+        private readonly CategoryDbContext _context;
 
-        public CategoriesController(TrueBalancesDbContext context)
+        public CategoriesController(CategoryDbContext context)
         {
             _context = context;
         }

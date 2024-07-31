@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 
 
-public class TrueBalancesDbContext : DbContext
+public class CategoryDbContext : DbContext
 {
-    public TrueBalancesDbContext(DbContextOptions<TrueBalancesDbContext> options)
+    public CategoryDbContext(DbContextOptions<CategoryDbContext> options)
             : base(options)
     {
     }
