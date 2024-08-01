@@ -23,6 +23,5 @@ public class Expense
     // Propriétés de navigation
     public Category? Category { get; set; }
     public CustomUser? CustomUser { get; set; }
-    
-    
+   
 }
