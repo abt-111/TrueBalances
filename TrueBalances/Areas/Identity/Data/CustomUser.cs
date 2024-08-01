@@ -14,6 +14,6 @@ public class CustomUser : IdentityUser
     public string? FirstName { get; set; }
     [PersonalData]
     public string? LastName { get; set; }
-    
-    public ICollection<Expense>Expenses { get; set; }
+
+    public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 }
