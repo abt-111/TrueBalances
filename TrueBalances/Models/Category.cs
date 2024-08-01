@@ -8,4 +8,8 @@ public class Category
 	public string? Name { get; set; }
 
 	//Ajouter un constructeur pour lier la catégorie avec dépense
+	
+	public ICollection<Expense>Expenses { get; set; }
 }
+
+

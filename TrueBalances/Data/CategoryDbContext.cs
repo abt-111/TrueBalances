@@ -12,5 +12,6 @@ public class CategoryDbContext : DbContext
     }
 
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Expense> Expenses { get; set; }
 }
 

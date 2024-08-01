@@ -1,23 +1,46 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TrueBalances.Data;
+using TrueBalances.Migrations;
+using TrueBalances.Models;
 
 namespace TrueBalances.Controllers
 {
     public class ExpenseController : Controller
     {
-        // GET: ExpenseController
-        public ActionResult Index()
+        private readonly CategoryDbContext _context;
+
+        public ExpenseController(CategoryDbContext context)
         {
-            return View();
+            _context = context;
+        }
+
+        // GET: ExpenseController
+        public async Task<ActionResult> Index()
+        {
+            return View(await _context.Expenses.ToListAsync());
         }
 
         // GET: ExpenseController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var expense = await _context.Expenses
+                .FirstOrDefaultAsync(e => e.Id == id);
+            if (expense == null)
+            {
+                return NotFound();
+            }
+
+            return View(expense);
         }
 
         // GET: ExpenseController/Create
-        public ActionResult Create()
+        public IActionResult Create()
         {
             return View();
         }
@@ -25,37 +48,74 @@ namespace TrueBalances.Controllers
         // POST: ExpenseController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult>
+            Create(
+                [Bind("Id,Title,Date,Username,Amount,Category")]
+                Expense
+                    expense) // // Reçoit les données du formulaire, crée une nouvelle dépense et la sauvegarde dans la base de données.// 
         {
             try
             {
+                if (ModelState.IsValid)
+                {
+                    _context.Expenses.Add(expense);
+                    await _context.SaveChangesAsync();
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(expense);
             }
         }
 
         // GET: ExpenseController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var expense = await _context.Expenses.FindAsync(id);
+            if (expense == null)
+            {
+                return NotFound();
+            }
+
+            return View(expense);
         }
 
         // POST: ExpenseController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, [Bind("Id,Title,Date,Author,Amount,Category")] Expense expense)
         {
-            try
+            if (id != expense.Id)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
+
+            if (ModelState.IsValid)
             {
-                return View();
+                try
+                {
+                    _context.Expenses.Update(expense);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    // if ()
+                    {
+                        
+                    }
+                    return View();
+                }
+                
             }
+            return RedirectToAction(nameof(Index));
+            
         }
 
         // GET: ExpenseController/Delete/5
