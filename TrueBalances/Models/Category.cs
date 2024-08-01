@@ -11,4 +11,8 @@ public class Category
     public string Name { get; set; } = string.Empty;
 
 	//Ajouter un constructeur pour lier la catégorie avec dépense
+	
+	public ICollection<Expense>Expenses { get; set; }
 }
+
+

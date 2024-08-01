@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TrueBalances.Areas.Identity.Data;
+using TrueBalances.Models;
 
 namespace TrueBalances.Data;
 
@@ -11,6 +12,8 @@ public class UserContext : IdentityDbContext<CustomUser>
         : base(options)
     {
     }
+    
+    public DbSet<Expense> Expenses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

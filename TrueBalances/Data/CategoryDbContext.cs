@@ -33,6 +33,8 @@ public class CategoryDbContext : DbContext
             }
         );
     }
+
+    public DbSet<Expense> Expenses { get; set; }
 }
 
 

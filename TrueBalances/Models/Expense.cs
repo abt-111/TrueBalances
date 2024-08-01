@@ -1,17 +1,27 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
+using TrueBalances.Areas.Identity.Data;
 
 namespace TrueBalances.Models;
 
 public class Expense
 {
     public int Id { get; set; }
+    
     [Required]
     public string Title { get; set; }
+    
     [Required]
     public decimal Amount { get; set; }
+    
     public DateTime Date { get; set; }
-    //public string Category { get; set; }
-    public string UserId { get; set; }
 
-    public Category Category { get; set; } 
+    // Clés étrangères
+    public int CategoryId { get; set; }
+    public string CustomUserId { get; set; }
+
+    // Propriétés de navigation
+    public Category? Category { get; set; }
+    public CustomUser? CustomUser { get; set; }
+   
 }
