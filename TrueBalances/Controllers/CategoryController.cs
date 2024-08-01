@@ -31,9 +31,14 @@ namespace TrueBalances.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Category category)
         {
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index"); //a verifier 
+            if (ModelState.IsValid)
+            {
+                _context.Add(category);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(actionName: "Index", controllerName: "Category");
+            }
+            return View(category);
+
         }
 
         //Edit(GET)
@@ -45,9 +50,9 @@ namespace TrueBalances.Controllers
                 return View();
             }
             var category = await _context.Categories.FindAsync(categorieId);
-            if (category == null)
+            if (category is null)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction(actionName: "Index", controllerName: "Category");
             }
             return View(category);
         }
@@ -57,21 +62,39 @@ namespace TrueBalances.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Category category)
         {
-            if (id == category.Id)
+            if (!ModelState.IsValid)
+            {
+                return View(category);
+            }
+
+            try
+            {
                 _context.Update(category);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Categories.Any(e => e.Id == category.Id))
+                {
+                    return NotFound();
+                }
+                throw;
+            }
+            //if (id == category.Id)
+            //    _context.Update(category);
+            //await _context.SaveChangesAsync();
+            return RedirectToAction(actionName: "Index", controllerName: "Category");
 
         }
 
 
 
         //Delete (GET)
-        [HttpDelete]
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             var category = await _context.Categories.FindAsync(id);
-            if (category == null)
+            if (category is null)
             {
                 return NotFound(); //changement de return
             }
@@ -79,28 +102,28 @@ namespace TrueBalances.Controllers
             return View(category);
         }
 
-        ////Delete (POST)
-        //[HttpPost]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var category = await _context.Categories.FindAsync(id);
-        //    if (category == null)
-        //    {
-        //        return NotFound();
-        //    }
+        //Delete (POST)
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var category = await _context.Categories.FindAsync(id);
+            if (category != null)
+            {
+                _context.Categories.Remove(category);
+                await _context.SaveChangesAsync();
+            }
 
-        //    var expenses = _context.Expenses.Where(e => e.CategoryId == id).ToList(); //Associer avec le context de depenses
-        //    foreach (var expense in expenses)
-        //    {
-        //        expense.CategoryId = null; 
-        //    }
+            //var expenses = _context.Expenses.Where(e => e.CategoryId == id).ToList(); //Associer avec le context de depenses
+            //foreach (var expense in expenses)
+            //{
+            //    expense.CategoryId = null;
+            //}
 
-        //    _context.Categories.Remove(category);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction("Index");
-        //}
+            
+           return RedirectToAction(actionName: "Index", controllerName: "Category");
+        }
 
-        //Vérifier si une catégorie existe
+        //Methode pour Vérifier si une catégorie existe
         private bool CategoryExists(int id)
         {
             return _context.Categories.Any(e => e.Id == id);
