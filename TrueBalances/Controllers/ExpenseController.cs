@@ -1,16 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TrueBalances.Data;
-using TrueBalances.Migrations;
 using TrueBalances.Models;
 
 namespace TrueBalances.Controllers
 {
     public class ExpenseController : Controller
     {
-        private readonly CategoryDbContext _context;
-
-        public ExpenseController(CategoryDbContext context) 
+        private readonly UserContext _context;
+        
+        public ExpenseController(UserContext context)
         {
             _context = context;
         }

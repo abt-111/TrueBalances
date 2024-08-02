@@ -18,11 +18,6 @@ builder.Services.AddDbContext<UserContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ContextConnection"));
 });
 
-builder.Services.AddDbContext<CategoryDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ContextConnection"));
-});
-
 
 var app = builder.Build();
 
