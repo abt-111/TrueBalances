@@ -11,10 +11,12 @@ public class Expense
 
     [Required(ErrorMessage = "La description est requise.")]  
     
+    [Display(Name = "Titre")]
     public string Title { get; set; }
     
     [Required(ErrorMessage = "Le montant est requis.")]
-    [Range(0.01, double.MaxValue, ErrorMessage = "Le montant doit être positif.")]    
+    [Range(0.01, double.MaxValue, ErrorMessage = "Le montant doit être positif.")] 
+    [Display(Name = "Montant")]
     public decimal Amount { get; set; }
     
     public DateTime Date { get; set; }
@@ -24,6 +26,8 @@ public class Expense
     public string CustomUserId { get; set; }
 
     // Propriétés de navigation
+    [Display(Name = "Catégorie")]
+
     public Category? Category { get; set; }
     public CustomUser? CustomUser { get; set; }
    
