@@ -72,11 +72,13 @@ namespace TrueBalances.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Le nom doit contenir des lettres uniquement.")]
             [DataType(DataType.Text)]
             [Display(Name = "Prénom")]
             public string FirstName { get; set; }
 
             [Required]
+            [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Le nom doit contenir des lettres uniquement.")]
             [DataType(DataType.Text)]
             [Display(Name = "Nom")]
             public string LastName { get; set; }
