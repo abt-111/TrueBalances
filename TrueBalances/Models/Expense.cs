@@ -8,10 +8,13 @@ public class Expense
 {
     public int Id { get; set; }
     
-    [Required]
+
+    [Required(ErrorMessage = "La description est requise.")]  
+    
     public string Title { get; set; }
     
-    [Required]
+    [Required(ErrorMessage = "Le montant est requis.")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Le montant doit être positif.")]    
     public decimal Amount { get; set; }
     
     public DateTime Date { get; set; }

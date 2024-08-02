@@ -10,7 +10,7 @@ namespace TrueBalances.Controllers
     {
         private readonly CategoryDbContext _context;
 
-        public ExpenseController(CategoryDbContext context)
+        public ExpenseController(CategoryDbContext context) 
         {
             _context = context;
         }
@@ -101,42 +101,66 @@ namespace TrueBalances.Controllers
             {
                 try
                 {
-                    _context.Expenses.Update(expense);
+                    _context.Update(expense);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    // if ()
+                    if (!ExpenseExists(expense.Id))
                     {
-                        
+                        return NotFound();
                     }
-                    return View();
+                    else
+                    {
+                        throw;
+                    }
                 }
-                
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
-            
+            return View(expense);
         }
 
+        
+
         // GET: ExpenseController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int? id)
+        
         {
-            return View();
+            if (id == null )
+            {
+                return NotFound();
+            }
+
+            var expense = await _context.Expenses
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            return View(expense);
         }
 
         // POST: ExpenseController/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            try
-            {
+            // Attendre la tâche asynchrone pour obtenir l'objet Expense
+            var expense = await _context.Expenses.FindAsync(id);
+            
+            // Supprimer l'objet Expense de la base de données
+            _context.Expenses.Remove(expense);
+            
+            // Enregistrer les modifications dans la base de données
+            await _context.SaveChangesAsync();
+            
                 return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            
+            
+        }
+        private bool ExpenseExists(int id) // Vérifie si une dépense avec l'ID spécifié existe dans la base de données.// 
+        {
+            return _context.Expenses.Any(e => e.Id == id);
         }
     }
 }
