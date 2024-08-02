@@ -2,14 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using TrueBalances.Repositories;
 using TrueBalances.Models;
+using TrueBalances.Data;
 
 namespace TrueBalances.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly CategoryDbContext _context; //ajouter l'interface
+        private readonly UserContext _context; //ajouter l'interface
 
-        public CategoryController(CategoryDbContext context)
+        public CategoryController(UserContext context)
         {
             _context = context;
         }

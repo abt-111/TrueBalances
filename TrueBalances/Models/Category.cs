@@ -10,9 +10,9 @@ public class Category
     [Required(ErrorMessage = "Le nom de la catégorie est obligatoire.")]
     public string Name { get; set; } = string.Empty;
 
-	//Ajouter un constructeur pour lier la catégorie avec dépense
-	
-	public ICollection<Expense>Expenses { get; set; }
+    //Ajouter un constructeur pour lier la catégorie avec dépense
+
+    public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 }
 
 
