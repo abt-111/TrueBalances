@@ -17,7 +17,7 @@ public class Expense
     public DateTime Date { get; set; }
 
     // Clés étrangères
-    public int CategoryId { get; set; }
+    public int? CategoryId { get; set; }
     public string CustomUserId { get; set; }
 
     // Propriétés de navigation

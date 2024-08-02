@@ -2,22 +2,23 @@
 using Microsoft.EntityFrameworkCore;
 using TrueBalances.Repositories;
 using TrueBalances.Models;
+using TrueBalances.Repositories.Interfaces;
 
 namespace TrueBalances.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly CategoryDbContext _context; //ajouter l'interface
+        private readonly ICategoryRepository _categoryRepository;
 
-        public CategoryController(CategoryDbContext context)
+        public CategoryController(ICategoryRepository categoryRepository)
         {
-            _context = context;
+            _categoryRepository = categoryRepository;
         }
 
         // Read
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            return View(await _categoryRepository.GetAllCategoriesAsync());
         }
 
         // Create (GET)
@@ -31,10 +32,10 @@ namespace TrueBalances.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Category category)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
+                await _categoryRepository.AddCategoryAsync(category);
+                //await _categoryRepository.SaveChangesAsync(); verifier le sauvegard
                 return RedirectToAction(actionName: "Index", controllerName: "Category");
             }
             return View(category);
@@ -45,11 +46,11 @@ namespace TrueBalances.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int? categorieId)
         {
-            if (categorieId == null)
+            if (categorieId is null)
             {
                 return View();
             }
-            var category = await _context.Categories.FindAsync(categorieId);
+            var category = await _categoryRepository.GetCategoryByIdAsync(categorieId.Value);
             if (category is null)
             {
                 return RedirectToAction(actionName: "Index", controllerName: "Category");
@@ -60,31 +61,20 @@ namespace TrueBalances.Controllers
         // Edit (POST)
 
         [HttpPost]
+
         public async Task<IActionResult> Edit(int id, Category category)
         {
+            if (id != category.Id)
+            {
+                return NotFound();
+            }
+
             if (!ModelState.IsValid)
             {
-                return View(category);
+                await _categoryRepository.UpdateCategoryAsync(category);
+                return RedirectToAction(actionName: "Index", controllerName: "Category");
             }
-
-            try
-            {
-                _context.Update(category);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.Categories.Any(e => e.Id == category.Id))
-                {
-                    return NotFound();
-                }
-                throw;
-            }
-            //if (id == category.Id)
-            //    _context.Update(category);
-            //await _context.SaveChangesAsync();
-            return RedirectToAction(actionName: "Index", controllerName: "Category");
-
+            return View(category);
         }
 
 
@@ -93,10 +83,10 @@ namespace TrueBalances.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _categoryRepository.GetCategoryByIdAsync(id);
             if (category is null)
             {
-                return NotFound(); //changement de return
+                return NotFound();
             }
 
             return View(category);
@@ -106,34 +96,34 @@ namespace TrueBalances.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            var category = await _categoryRepository.GetCategoryByIdAsync(id);
+            if (category is null)
             {
-                _context.Categories.Remove(category);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
 
-            //var expenses = _context.Expenses.Where(e => e.CategoryId == id).ToList(); //Associer avec le context de depenses
+            // Réinitialiser les identifiants de catégorie des dépenses associées
+            //var expenses = _context.Expenses.Where(e => e.CategoryId == id).ToList(); 
             //foreach (var expense in expenses)
             //{
             //    expense.CategoryId = null;
             //}
 
-            
-           return RedirectToAction(actionName: "Index", controllerName: "Category");
+            await _categoryRepository.DeleteCategoryAsync(id);
+            return RedirectToAction(actionName: "Index", controllerName: "Category");
         }
 
         //Methode pour Vérifier si une catégorie existe
-        private bool CategoryExists(int id)
+        private async Task<bool> CategoryExists(int id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            return await _categoryRepository.CategoryExistsAsync(id);
         }
 
 
         //Détails 
         public async Task<IActionResult> Details(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _categoryRepository.GetCategoryByIdAsync(id);
             return View(category);
         }
 
