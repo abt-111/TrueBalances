@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
+using TrueBalances.Repositories.DbRepositories;
+using TrueBalances.Repositories.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ContextConnection") ?? throw new InvalidOperationException("Connection string 'UserContextConnection' not found.");
 
@@ -9,6 +11,7 @@ builder.Services.AddDbContext<UserContext>(options => options.UseSqlServer(conne
 
 builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<UserContext>();
 
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

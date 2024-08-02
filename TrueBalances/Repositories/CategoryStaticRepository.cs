@@ -30,7 +30,7 @@ namespace TrueBalances.Repositories
         private static List<Category> GetCategories() => _categories;
 
         /// Get one specific category with his id
-        public static Category? GetStudentById(int idCategory) => _categories.Find(x => x.Id == idCategory);
+        public static Category? GetCategoryById(int idCategory) => _categories.Find(x => x.Id == idCategory);
 
         public static void Addcategory(string name)
         {
