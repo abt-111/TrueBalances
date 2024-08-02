@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
 
@@ -8,17 +11,23 @@ namespace TrueBalances.Controllers
     public class ExpenseController : Controller
     {
         private readonly UserContext _context;
+        private readonly UserManager<CustomUser> _userManager;
+
         
-        public ExpenseController(UserContext context)
+        public ExpenseController(UserContext context,UserManager<CustomUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
+
         }
 
         // GET: ExpenseController
         public async Task<ActionResult> Index()
         {
-            return View(await _context.Expenses.ToListAsync());
+            var expenses = await _context.Expenses.Include(e => e.Category).ToListAsync();
+            return View(expenses);
         }
+
 
         // GET: ExpenseController/Details/5
         public async Task<ActionResult> Details(int id)
@@ -41,32 +50,43 @@ namespace TrueBalances.Controllers
         // GET: ExpenseController/Create
         public IActionResult Create()
         {
+            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
+
         // POST: ExpenseController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult>
-            Create(
-                [Bind("Id,Title,Date,Username,Amount,Category")]
-                Expense
-                    expense) // // Reçoit les données du formulaire, crée une nouvelle dépense et la sauvegarde dans la base de données.// 
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Title,Amount,Date,CategoryId")] Expense expense)
         {
-            try
+        
+            
+            if (User.Identity.IsAuthenticated)
             {
-                if (ModelState.IsValid)
-                {
-                    _context.Expenses.Add(expense);
-                    await _context.SaveChangesAsync();
-                }
-
+                var user = await _userManager.GetUserAsync(User);
+                expense = new Expense() {Title = expense.Title, Amount = expense.Amount, Date = expense.Date, CategoryId = expense.CategoryId, CustomUserId = user.Id};
+                _context.Expenses.Add(expense);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            if (ModelState.IsValid)
             {
-                return View(expense);
+                
+
             }
+            else
+            {
+                foreach (var modelError in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine(modelError.ErrorMessage);
+                }
+            }
+            
+            
+            
+            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
+            return View(expense);
         }
 
         // GET: ExpenseController/Edit/5
@@ -77,31 +97,36 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
 
-            var expense = await _context.Expenses.FindAsync(id);
+            var expense = await _context.Expenses.Include(e => e.Category).FirstOrDefaultAsync(e => e.Id == id);
             if (expense == null)
             {
                 return NotFound();
             }
 
+            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
             return View(expense);
         }
+
 
         // POST: ExpenseController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, [Bind("Id,Title,Date,Author,Amount,Category")] Expense expense)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Amount,Date,CategoryId")] Expense expense)
         {
             if (id != expense.Id)
             {
                 return NotFound();
             }
+            
+            expense = new Expense() {Title = expense.Title, Amount = expense.Amount, Date = expense.Date, CategoryId = expense.CategoryId, CustomUserId = "bea02416-0619-4beb-a944-a881c4e6a227"};
+                                _context.Update(expense);
+                                await _context.SaveChangesAsync();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(expense);
-                    await _context.SaveChangesAsync();
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -114,12 +139,15 @@ namespace TrueBalances.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
+            // Recharger les catégories en cas d'échec de validation
+            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
             return View(expense);
         }
 
-        
 
         // GET: ExpenseController/Delete/5
         public async Task<ActionResult> Delete(int? id)
