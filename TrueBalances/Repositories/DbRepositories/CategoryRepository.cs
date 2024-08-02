@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
 
@@ -6,9 +7,9 @@ namespace TrueBalances.Repositories.DbRepositories
 {
     public class CategoryRepository : ICategoryRepository
     {
-        private readonly CategoryDbContext _context;
+        private readonly UserContext _context;
 
-        public CategoryRepository(CategoryDbContext context)
+        public CategoryRepository(UserContext context)
         {
             _context = context;
         }
