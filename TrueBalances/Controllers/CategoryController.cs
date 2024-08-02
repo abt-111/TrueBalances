@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using TrueBalances.Repositories;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
+using TrueBalances.Data;
+
 
 namespace TrueBalances.Controllers
 {
@@ -11,6 +13,7 @@ namespace TrueBalances.Controllers
         private readonly ICategoryRepository _categoryRepository;
 
         public CategoryController(ICategoryRepository categoryRepository)
+
         {
             _categoryRepository = categoryRepository;
         }
