@@ -35,13 +35,13 @@ namespace TrueBalances.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Category category)
         {
-            if (!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid) return View(category);
+            
                 await _categoryRepository.AddCategoryAsync(category);
-                //await _categoryRepository.SaveChangesAsync(); verifier le sauvegard
+                //await _categoryRepository.
                 return RedirectToAction(actionName: "Index", controllerName: "Category");
-            }
-            return View(category);
+            
+            
 
         }
 
@@ -67,17 +67,10 @@ namespace TrueBalances.Controllers
 
         public async Task<IActionResult> Edit(int id, Category category)
         {
-            if (id != category.Id)
-            {
-                return NotFound();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                await _categoryRepository.UpdateCategoryAsync(category);
-                return RedirectToAction(actionName: "Index", controllerName: "Category");
-            }
-            return View(category);
+            if (id == category.Id) await _categoryRepository.UpdateCategoryAsync(category);
+            return RedirectToAction(actionName: "Index", controllerName: "Category");
+            
+            //return View(category);
         }
 
 
