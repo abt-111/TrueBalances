@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +9,7 @@ using TrueBalances.Models;
 
 namespace TrueBalances.Controllers
 {
+    [Authorize]
     public class ExpenseController : Controller
     {
         private readonly Data.DbContext _context;
