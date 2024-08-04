@@ -17,8 +17,11 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TrueBalances.Areas.Identity.Data;
+using TrueBalances.Data;
+using TrueBalances.Models;
 
 namespace TrueBalances.Areas.Identity.Pages.Account
 {
@@ -30,13 +33,15 @@ namespace TrueBalances.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<CustomUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IServiceProvider _serviceProvider;
 
         public RegisterModel(
             UserManager<CustomUser> userManager,
             IUserStore<CustomUser> userStore,
             SignInManager<CustomUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IServiceProvider serviceProvider)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +49,7 @@ namespace TrueBalances.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -110,6 +116,10 @@ namespace TrueBalances.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Url]
+            [Display(Name = "Profile Photo URL")]
+            public string ProfilePhotoUrl { get; set; }
         }
 
 
@@ -137,6 +147,24 @@ namespace TrueBalances.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    // Enregistrer l'URL de la photo de profil
+                    if (!string.IsNullOrEmpty(Input.ProfilePhotoUrl))
+                    {
+                        var profilePhoto = new ProfilePhoto
+                        {
+                            Url = Input.ProfilePhotoUrl,
+                            CustomUserId = user.Id
+                        };
+
+                        // Utiliser IServiceProvider pour obtenir UserContext
+                        using (var scope = _serviceProvider.CreateScope())
+                        {
+                            var dbContext = scope.ServiceProvider.GetRequiredService<UserContext>();
+                            dbContext.ProfilePhotos.Add(profilePhoto);
+                            await dbContext.SaveChangesAsync();
+                        }
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

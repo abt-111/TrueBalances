@@ -5,16 +5,16 @@ using TrueBalances.Models;
 
 namespace TrueBalances.Data;
 
-public class DbContext : IdentityDbContext<CustomUser>
+public class UserContext : IdentityDbContext<CustomUser>
 {
-    public DbContext(DbContextOptions<DbContext> options)
+    public UserContext(DbContextOptions<UserContext> options)
         : base(options)
     {
     }
     
     public DbSet<Category> Categories { get; set; }
     public DbSet<Expense> Expenses { get; set; }
-    public DbSet<ProfilePhoto> ProfilPhotos { get; set; }
+    public DbSet<ProfilePhoto> ProfilePhotos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
