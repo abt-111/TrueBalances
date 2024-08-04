@@ -14,6 +14,7 @@ public class DbContext : IdentityDbContext<CustomUser>
     
     public DbSet<Category> Categories { get; set; }
     public DbSet<Expense> Expenses { get; set; }
+    public DbSet<ProfilePhoto> ProfilPhotos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

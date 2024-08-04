@@ -16,4 +16,5 @@ public class CustomUser : IdentityUser
     public string? LastName { get; set; }
 
     public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
+    public ProfilePhoto? ProfilPhoto { get; set; } = new ProfilePhoto();
 }
