@@ -5,9 +5,9 @@ using TrueBalances.Models;
 
 namespace TrueBalances.Data;
 
-public class UserContext : IdentityDbContext<CustomUser>
+public class DbContext : IdentityDbContext<CustomUser>
 {
-    public UserContext(DbContextOptions<UserContext> options)
+    public DbContext(DbContextOptions<DbContext> options)
         : base(options)
     {
     }

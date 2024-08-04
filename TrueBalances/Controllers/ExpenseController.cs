@@ -10,11 +10,11 @@ namespace TrueBalances.Controllers
 {
     public class ExpenseController : Controller
     {
-        private readonly UserContext _context;
+        private readonly Data.DbContext _context;
         private readonly UserManager<CustomUser> _userManager;
 
         
-        public ExpenseController(UserContext context,UserManager<CustomUser> userManager)
+        public ExpenseController(Data.DbContext context,UserManager<CustomUser> userManager)
         {
             _context = context;
             _userManager = userManager;

@@ -7,20 +7,20 @@ using TrueBalances.Data;
 using TrueBalances.Repositories.DbRepositories;
 using TrueBalances.Repositories.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("ContextConnection") ?? throw new InvalidOperationException("Connection string 'UserContextConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DbContextConnection") ?? throw new InvalidOperationException("Connection string 'DbContextConnection' not found.");
 
-builder.Services.AddDbContext<UserContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ContextConnection")));
+builder.Services.AddDbContext<TrueBalances.Data.DbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DbContextConnection")));
 
-builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<UserContext>();
+builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TrueBalances.Data.DbContext>();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-builder.Services.AddDbContext<UserContext>(options =>
+builder.Services.AddDbContext<TrueBalances.Data.DbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ContextConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DbContextConnection"));
 });
 
 
