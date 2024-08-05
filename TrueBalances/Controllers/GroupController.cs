@@ -5,22 +5,26 @@ using System.Security.Claims;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
+using TrueBalances.Repositories.Services;
 
 namespace TrueBalances.Controllers
 {
     public class GroupController : Controller
     {
         private readonly IGroupService _groupService;
+        private readonly IUserService _userService;
 
-        public GroupController(IGroupService groupService)
+        public GroupController(IGroupService groupService, IUserService userService)
         {
             _groupService = groupService;
+            _userService = userService;
         }
 
         public IActionResult Index()
         {
 
-            return View();
+            List<Group> groups = _groupService.GetAllGroups();
+            return View(groups);
         }
 
         // Create Group (GET)
@@ -103,11 +107,23 @@ namespace TrueBalances.Controllers
         // Add Member (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddMember(int groupId, string userId)
+        public async Task<IActionResult> AddMembers(int groupId, List<string> selectedUserIds)
         {
-            await _groupService.AddMemberAsync(groupId, userId);
+            var errors = await _groupService.AddMembersAsync(groupId, selectedUserIds);
+            if (errors.Any())
+            {
+                TempData["Errors"] = errors;
+            }
+
             return RedirectToAction(nameof(Details), new { id = groupId });
+            //foreach (var userId in selectedUserIds)
+            //{
+            //    await _groupService.AddMemberAsync(groupId, userId);
+            //}
+
+            //return RedirectToAction(nameof(Details), new { id = groupId });
         }
+
 
         // Remove Member (POST)
         [HttpPost]
@@ -126,12 +142,19 @@ namespace TrueBalances.Controllers
             {
                 return NotFound();
             }
+            var availableUsers = await _userService.GetAllUsersAsync();
 
+            var viewModel = new GroupDetailsViewModel
+            {
+                Group = group,
+                AvailableUsers = availableUsers
+            };
             //var summary = _groupService.CalculateSummary(group);
             //ViewBag.Summary = summary;
 
-            return View(group);
+            return View(viewModel);
         }
+
 
         private bool GroupExists(int id)
         {

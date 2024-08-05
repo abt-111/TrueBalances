@@ -17,6 +17,10 @@ namespace TrueBalances.Repositories.Services
             _context = context;
         }
 
+        public List<Group> GetAllGroups()
+        {
+            return _context.Groups.ToList();
+        }
 
         //Methode pour creer un group
         public async Task CreateGroupAsync(Group group, string userId)
@@ -73,19 +77,57 @@ namespace TrueBalances.Repositories.Services
                 await _context.SaveChangesAsync();
             }
         }
-
-        ////Methode pour ajouter un user dans le group
-        public async Task AddMemberAsync(int groupId, string userId)
+        //Methode pour vérifier si l'utilisateur est ajouté dans le group
+        public async Task<bool> IsMemberInGroupAsync(int groupId, string userId)
         {
-            var userGroup = new UserGroup
-            {
-                GroupId = groupId,
-                CustomUserId = userId
-            };
-
-            _context.UsersGroup.Add(userGroup);
-            await _context.SaveChangesAsync();
+            return await _context.UsersGroup
+                .AnyAsync(ug => ug.GroupId == groupId && ug.CustomUserId == userId);
         }
+
+        //Methode pour ajouter un user dans le group
+        public async Task<List<string>> AddMembersAsync(int groupId, List<string> userIds)
+        {
+            var errors = new List<string>();
+            var existingUserIds = await _context.UsersGroup
+                .Where(ug => ug.GroupId == groupId)
+                .Select(ug => ug.CustomUserId)
+                .ToListAsync();
+
+            foreach (var userId in userIds)
+            {
+                if (existingUserIds.Contains(userId))
+                {
+                    errors.Add($"User with ID {userId} is already a member of the group.");
+                }
+                else
+                {
+                    var userGroup = new UserGroup
+                    {
+                        GroupId = groupId,
+                        CustomUserId = userId
+                    };
+
+                    _context.UsersGroup.Add(userGroup);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return errors;
+        
+        //var isMemberInGroup = await IsMemberInGroupAsync(groupId, userId);
+        //if (isMemberInGroup)
+        //{
+        //    throw new InvalidOperationException($"l'utilisateur {userId} est déjà membre du groupe {groupId}.");
+        //}
+        //var userGroup = new UserGroup
+        //{
+        //    GroupId = groupId,
+        //    CustomUserId = userId
+        //};
+
+        //_context.UsersGroup.Add(userGroup);
+        //await _context.SaveChangesAsync();
+    }
 
         ////Methode pour supprimer un user dans le Group
         public async Task RemoveMemberAsync(int groupId, string userId)
