@@ -6,6 +6,7 @@ using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Repositories.DbRepositories;
 using TrueBalances.Repositories.Interfaces;
+using TrueBalances.Repositories.Services;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DbContextConnection") ?? throw new InvalidOperationException("Connection string 'DbContextConnection' not found.");
 
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<TrueBalances.Data.UserContext>(options => options.
 builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TrueBalances.Data.UserContext>();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IGroupService, GroupService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
