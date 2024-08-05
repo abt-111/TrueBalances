@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = "Index";
+
+    // Valeur de ViewBag.customUsers est affecter dans l'action Index de ExpenseController
     var users = ViewBag.customUsers as List<CustomUser>;
 }
 
@@ -14,59 +16,60 @@
 
 <table class="table">
     <thead>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Amount)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Date)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Category.Name)
-        </th>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.CustomUser)
             </th>
             <th></th>
-    </tr>
+        </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category!.Name)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category!.Name)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CustomUser.FirstName)
                 </td>
+
                 <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Détails</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
-            </td>
-        </tr>
-    }
+                    <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Détails</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
 @foreach (var item in users)
 {
     <p>@item.FirstName</p>
-    var debt = Model.Where(e => e.CustomUserId != item.Id).Sum(e => e.Amount / users.Count);
-    var credit = Model.Where(e => e.CustomUserId == item.Id).Sum(e => (e.Amount / users.Count) * (users.Count - 1));
+    var debt = Math.Round(Model.Where(e => e.CustomUserId != item.Id).Sum(e => e.Amount / users.Count), 2);
+    var credit = Math.Round(Model.Where(e => e.CustomUserId == item.Id).Sum(e => (e.Amount / users.Count) * (users.Count - 1)), 2);
     <p>debt : @debt</p>
-    <p>debt : @credit</p>
+    <p>credit : @credit</p>
 }
