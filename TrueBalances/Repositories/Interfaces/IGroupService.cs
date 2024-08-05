@@ -5,6 +5,7 @@ namespace TrueBalances.Repositories.Interfaces
 {
     public interface IGroupService
     {
+        List<Group> GetAllGroups();
         Task<Group?> GetGroupAsync(int groupId);
         Task CreateGroupAsync(Models.Group group, string userId);
         Task UpdateGroupAsync(Models.Group group);
@@ -14,14 +15,3 @@ namespace TrueBalances.Repositories.Interfaces
         //Ajouter le code pour la partie Solde
     }
 }
-
-
-
-
-//Task<Group> GetGroupByIdAsync(int id);
-//Task<IEnumerable<Group>> GetAllGroupsAsync();
-//Task<int> AddGroupAsync(Group group);
-//Task<int> UpdateGroupAsync(Group group);
-//Task<int> DeleteGroupAsync(int id);
-//Task<int> AddMemberToGroupAsync(int groupId, UserGroup member);
-//Task<int> RemoveMemberFromGroupAsync(int groupId, int memberId);

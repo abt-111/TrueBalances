@@ -17,6 +17,10 @@ namespace TrueBalances.Repositories.Services
             _context = context;
         }
 
+        public List<Group> GetAllGroups()
+        {
+            return _context.Groups.ToList();
+        }
 
         //Methode pour creer un group
         public async Task CreateGroupAsync(Group group, string userId)

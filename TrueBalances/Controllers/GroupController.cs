@@ -20,7 +20,8 @@ namespace TrueBalances.Controllers
         public IActionResult Index()
         {
 
-            return View();
+            List<Group> groups = _groupService.GetAllGroups();
+            return View(groups);
         }
 
         // Create Group (GET)
