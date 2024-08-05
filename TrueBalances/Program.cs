@@ -8,11 +8,11 @@ using TrueBalances.Repositories.DbRepositories;
 using TrueBalances.Repositories.Interfaces;
 using TrueBalances.Repositories.Services;
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("ContextConnection") ?? throw new InvalidOperationException("Connection string 'UserContextConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DbContextConnection") ?? throw new InvalidOperationException("Connection string 'DbContextConnection' not found.");
 
-builder.Services.AddDbContext<UserContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ContextConnection")));
+builder.Services.AddDbContext<TrueBalances.Data.UserContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DbContextConnection")));
 
-builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<UserContext>();
+builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TrueBalances.Data.UserContext>();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IGroupService, GroupService>();
@@ -20,9 +20,9 @@ builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-builder.Services.AddDbContext<UserContext>(options =>
+builder.Services.AddDbContext<TrueBalances.Data.UserContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ContextConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DbContextConnection"));
 });
 
 

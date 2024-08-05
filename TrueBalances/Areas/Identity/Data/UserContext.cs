@@ -15,6 +15,7 @@ public class UserContext : IdentityDbContext<CustomUser>
     
     public DbSet<Category> Categories { get; set; }
     public DbSet<Expense> Expenses { get; set; }
+    public DbSet<ProfilePhoto> ProfilePhotos { get; set; }
 
     public DbSet<Group> Groups { get; set; }
     public DbSet<UserGroup> UsersGroup { get; set; }
