@@ -20,14 +20,14 @@
         <div class="d-grid gap-2 col-6 mx-auto">
             @if (User.Identity.IsAuthenticated)
             {
-                <a class="btn btn-outline-primary" asp-controller="Expense" asp-action="Index">Gérer les dépenses</a>
-                <a class="btn btn-outline-primary" asp-controller="Category" asp-action="Index">Gérer les catégories</a>
-                <a class="btn btn-outline-primary">Gérer les groupes</a>
+                <a class="btn custom-button" asp-controller="Expense" asp-action="Index">Gérer les dépenses</a>
+                <a class="btn custom-button" asp-controller="Category" asp-action="Index">Gérer les catégories</a>
+                <a class="btn custom-button">Gérer les groupes</a>
             }
             else
             {
-                <a class="btn btn-outline-primary" asp-area="Identity" asp-page="/Account/Register">S'inscrire</a>
-                <a class="btn btn-outline-primary" asp-area="Identity" asp-page="/Account/Login">Se connecter</a>
+                <a class="btn custom-button" asp-area="Identity" asp-page="/Account/Register">S'inscrire</a>
+                <a class="btn custom-button" asp-area="Identity" asp-page="/Account/Login">Se connecter</a>
             }
         </div>
     </form>
