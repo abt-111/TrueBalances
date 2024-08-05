@@ -7,9 +7,9 @@ namespace TrueBalances.Repositories.Services
 {
     public class CategoryService : ICategoryRepository
     {
-        private readonly UserContext _context;
+        private readonly Data.UserContext _context;
 
-        public CategoryService(UserContext context)
+        public CategoryService(Data.UserContext context)
         {
             _context = context;
         }

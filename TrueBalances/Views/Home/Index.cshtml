@@ -20,7 +20,8 @@
         <div class="d-grid gap-2 col-6 mx-auto">
             @if (User.Identity.IsAuthenticated)
             {
-            <a class="btn btn-outline-primary" asp-controller= "Expense" asp-action="Index">Gérer les dépenses</a>                <a class="btn btn-outline-primary">Gérer les catégories</a>
+                <a class="btn btn-outline-primary" asp-controller="Expense" asp-action="Index">Gérer les dépenses</a>
+                <a class="btn btn-outline-primary" asp-controller="Category" asp-action="Index">Gérer les catégories</a>
                 <a class="btn btn-outline-primary">Gérer les groupes</a>
             }
             else

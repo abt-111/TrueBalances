@@ -4,10 +4,12 @@ using TrueBalances.Repositories;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
 using TrueBalances.Data;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace TrueBalances.Controllers
 {
+    [Authorize]
     public class CategoryController : Controller
     {
         private readonly ICategoryRepository _categoryRepository;

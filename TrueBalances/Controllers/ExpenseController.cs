@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,13 +9,14 @@ using TrueBalances.Models;
 
 namespace TrueBalances.Controllers
 {
+    [Authorize]
     public class ExpenseController : Controller
     {
-        private readonly UserContext _context;
+        private readonly Data.UserContext _context;
         private readonly UserManager<CustomUser> _userManager;
 
         
-        public ExpenseController(UserContext context,UserManager<CustomUser> userManager)
+        public ExpenseController(Data.UserContext context,UserManager<CustomUser> userManager)
         {
             _context = context;
             _userManager = userManager;
