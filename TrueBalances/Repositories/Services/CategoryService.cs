@@ -1,54 +1,51 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TrueBalances.Data;
 using TrueBalances.Models;
+using TrueBalances.Repositories.DbRepositories;
 using TrueBalances.Repositories.Interfaces;
 
 namespace TrueBalances.Repositories.Services
 {
-    public class CategoryService : ICategoryRepository
+    public class CategoryService : ICategoryService
     {
-        private readonly Data.UserContext _context;
+        private readonly IGenericRepository<Category> _categoryrepository;
 
-        public CategoryService(Data.UserContext context)
+        public CategoryService(IGenericRepository<Category> categoryrepository)
         {
-            _context = context;
+            _categoryrepository = categoryrepository;
         }
 
-        public async Task<List<Category>> GetAllCategoriesAsync()
+        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
-            return await _context.Categories.ToListAsync();
+            return await _categoryrepository.GetAllAsync();
         }
 
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
-            return await _context.Categories.FindAsync(id);
+            return await _categoryrepository.GetByIdAsync(id);
         }
 
-        public async Task AddCategoryAsync(Category category)
+        public async Task<int> AddCategoryAsync(Category category)
         {
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
+           
+            return await _categoryrepository.AddAsync(category);
         }
 
-        public async Task UpdateCategoryAsync(Category category)
+        public async Task<int> UpdateCategoryAsync(Category category)
         {
-            _context.Categories.Update(category);
-            await _context.SaveChangesAsync();
+            return await _categoryrepository.UpdateAsync(category);
         }
 
-        public async Task DeleteCategoryAsync(int id)
+        public async Task<int> DeleteCategoryAsync(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
-            {
-                _context.Categories.Remove(category);
-                await _context.SaveChangesAsync();
-            }
+            return await _categoryrepository.DeleteAsync(id);
         }
 
         public async Task<bool> CategoryExistsAsync(int id)
         {
-            return await _context.Categories.AnyAsync(e => e.Id == id);
+            var categoryRepository = _categoryrepository as ICategoryService;
+            return categoryRepository != null && await categoryRepository.CategoryExistsAsync(id);
         }
     }
+
 }
