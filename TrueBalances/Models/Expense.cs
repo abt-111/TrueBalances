@@ -24,11 +24,13 @@ public class Expense
     // Clés étrangères
     public int? CategoryId { get; set; }
     public string CustomUserId { get; set; }
+    public string GroupId { get; set; }
 
     // Propriétés de navigation
     [Display(Name = "Catégorie")]
 
     public Category? Category { get; set; }
     public CustomUser? CustomUser { get; set; }
+    public Group? Group { get; set; }
    
 }

@@ -22,7 +22,7 @@ namespace TrueBalances.Repositories.DbRepositories
         {
             group.Members = new List<UserGroup>
             {
-                new UserGroup { UserId = userId}
+                new UserGroup { CustomUserId = userId}
             };
 
             _context.Groups.Add(group);
@@ -78,7 +78,7 @@ namespace TrueBalances.Repositories.DbRepositories
             var userGroup = new UserGroup
             {
                 GroupId = groupId,
-                UserId = userId
+                CustomUserId = userId
             };
 
             _context.UsersGroup.Add(userGroup);
@@ -89,7 +89,7 @@ namespace TrueBalances.Repositories.DbRepositories
         public async Task RemoveMemberAsync(int groupId, string userId)
         {
             var groupMember = await _context.UsersGroup
-                .FirstOrDefaultAsync(m => m.GroupId == groupId && m.UserId == userId);
+                .FirstOrDefaultAsync(m => m.GroupId == groupId && m.CustomUserId == userId);
             if (groupMember != null)
             {
                 _context.UsersGroup.Remove(groupMember);

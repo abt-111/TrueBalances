@@ -9,7 +9,7 @@ using Group = TrueBalances.Models.Group;
 
 namespace TrueBalances.Repositories.Services
 {
-    public class GroupService : IGroupService
+    public class GroupService: IGroupService
     {
         private readonly UserContext _context;
         public GroupService(UserContext context)
@@ -17,14 +17,14 @@ namespace TrueBalances.Repositories.Services
             _context = context;
         }
 
-       
+
         //Methode pour creer un group
         public async Task CreateGroupAsync(Group group, string userId)
         {
             group.Members = new List<UserGroup>
-            {
-                new UserGroup { UserId = userId} 
-            };
+                    {
+                        new UserGroup { CustomUserId = userId}
+                    };
 
             _context.Groups.Add(group);
             await _context.SaveChangesAsync();
@@ -34,10 +34,11 @@ namespace TrueBalances.Repositories.Services
         //Methode pour Trouver un group via son Id
         public async Task<Group?> GetGroupAsync(int groupId)
         {
-            return await _context.Groups
+            var group = await _context.Groups
                 .Include(g => g.Members)
                 .Include(g => g.Expenses)
                 .FirstOrDefaultAsync(g => g.Id == groupId);
+            return group;
         }
 
         //Methode pour modifier le group
@@ -79,7 +80,7 @@ namespace TrueBalances.Repositories.Services
             var userGroup = new UserGroup
             {
                 GroupId = groupId,
-                UserId = userId
+                CustomUserId = userId
             };
 
             _context.UsersGroup.Add(userGroup);
@@ -90,7 +91,7 @@ namespace TrueBalances.Repositories.Services
         public async Task RemoveMemberAsync(int groupId, string userId)
         {
             var groupMember = await _context.UsersGroup
-                .FirstOrDefaultAsync(m => m.GroupId == groupId && m.UserId == userId);
+                .FirstOrDefaultAsync(m => m.GroupId == groupId && m.CustomUserId == userId);
             if (groupMember != null)
             {
                 _context.UsersGroup.Remove(groupMember);
@@ -100,15 +101,3 @@ namespace TrueBalances.Repositories.Services
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-    
