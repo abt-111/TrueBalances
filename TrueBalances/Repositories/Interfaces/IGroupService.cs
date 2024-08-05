@@ -10,8 +10,11 @@ namespace TrueBalances.Repositories.Interfaces
         Task CreateGroupAsync(Models.Group group, string userId);
         Task UpdateGroupAsync(Models.Group group);
         Task DeleteGroupAsync(int groupId);
-        Task AddMemberAsync(int groupId, string userId);
+        Task<List<string>> AddMembersAsync(int groupId, List<string> userIds);
         Task RemoveMemberAsync(int groupId, string userId);
+
+        Task<bool> IsMemberInGroupAsync(int groupId, string userId);
+        //Task AddMembersAsync(int groupId, List<string> selectedUserIds);
         //Ajouter le code pour la partie Solde
     }
 }

@@ -19,14 +19,27 @@ public class UserContext : IdentityDbContext<CustomUser>
 
     public DbSet<Group> Groups { get; set; }
     public DbSet<UserGroup> UsersGroup { get; set; }
+    public DbSet<CustomUser> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
 
         builder.Entity<UserGroup>()
+            .HasKey(ug => new { ug.GroupId, ug.CustomUserId });
+
+        builder.Entity<UserGroup>()
             .HasOne(ug => ug.Group)
             .WithMany(g => g.Members)
             .HasForeignKey(ug => ug.GroupId);
+
+        //builder.Entity<UserGroup>()
+        //    .HasOne(ug => ug.CustomUser)
+        //    .WithMany(u => u.Groups)
+        //    .HasForeignKey(ug => ug.CustomUserId);
+
+        builder.Entity<UserGroup>()
+           .HasKey(ug => ug.Id);
+
 
         base.OnModelCreating(builder);
         // Customize the ASP.NET Identity model and override the defaults if needed.
