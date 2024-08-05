@@ -27,6 +27,10 @@ namespace TrueBalances.Controllers
         public async Task<ActionResult> Index()
         {
             var expenses = await _context.Expenses.Include(e => e.Category).ToListAsync();
+            var customUsers = await _userManager.Users.ToListAsync();
+
+            ViewBag.customUsers = customUsers;
+
             return View(expenses);
         }
 

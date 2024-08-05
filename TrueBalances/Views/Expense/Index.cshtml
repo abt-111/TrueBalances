@@ -1,7 +1,9 @@
+@using TrueBalances.Areas.Identity.Data
 @model IEnumerable<TrueBalances.Models.Expense>
 
 @{
     ViewData["Title"] = "Index";
+    var users = ViewBag.customUsers as List<CustomUser>;
 }
 
 <h1>Dépenses</h1>
@@ -25,7 +27,10 @@
         <th>
             @Html.DisplayNameFor(model => model.Category.Name)
         </th>
-        <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomUser)
+            </th>
+            <th></th>
     </tr>
     </thead>
     <tbody>
@@ -44,7 +49,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Category!.Name)
             </td>
-            <td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomUser.FirstName)
+                </td>
+                <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Détails</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
@@ -53,3 +61,12 @@
     }
     </tbody>
 </table>
+
+@foreach (var item in users)
+{
+    <p>@item.FirstName</p>
+    var debt = Model.Where(e => e.CustomUserId != item.Id).Sum(e => e.Amount / users.Count);
+    var credit = Model.Where(e => e.CustomUserId == item.Id).Sum(e => (e.Amount / users.Count) * (users.Count - 1));
+    <p>debt : @debt</p>
+    <p>debt : @credit</p>
+}
