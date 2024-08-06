@@ -51,7 +51,7 @@ public class UserContext : IdentityDbContext<CustomUser>
             }
         );
 
-        builder.Entity<Expense>().HasData(
+        /*builder.Entity<Expense>().HasData(
             new Expense()
             {
                 Id = 1,
@@ -152,7 +152,7 @@ public class UserContext : IdentityDbContext<CustomUser>
                 CustomUserId = "94981d8e-a7f9-4ce0-a695-5420627372ed",
                 GroupId = null,
             }
-        );
+        );*/
 
     }
 }
