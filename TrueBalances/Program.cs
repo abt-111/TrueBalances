@@ -17,6 +17,7 @@ builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.Requir
 
 builder.Services.AddScoped<IGenericRepository<Category>, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IGenericRepository<Group>, GroupDbRepository>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IUserService, UserService>();
 // Add services to the container.
