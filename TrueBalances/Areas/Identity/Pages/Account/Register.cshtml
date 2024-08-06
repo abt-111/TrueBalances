@@ -41,12 +41,10 @@
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
 
-            <div class="form-floating mb-3">
-                <label asp-for="Input.ProfilePhotoUrl">Profile Photo URL</label>
-                <div>
-                    <input asp-for="Input.ProfilePhotoUrl" type="file" class="form-control" />
-                    <span asp-validation-for="Input.ProfilePhotoUrl" class="text-danger"></span>
-                </div>
+            <div class="form-group mb-3">
+                <label asp-for="Input.ProfilePhotoFile" class="form-label">Profile Photo URL</label>
+                <input asp-for="Input.ProfilePhotoFile" type="file" class="form-control" />
+                <span asp-validation-for="Input.ProfilePhotoFile" class="text-danger"></span>
             </div>
 
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>

@@ -22,6 +22,7 @@ using Microsoft.Extensions.Logging;
 using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
+using TrueBalances.Repositories.Interfaces;
 
 namespace TrueBalances.Areas.Identity.Pages.Account
 {
@@ -34,7 +35,7 @@ namespace TrueBalances.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IServiceProvider _serviceProvider;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IProfilePhotoService _profilePhotoService;
 
         public RegisterModel(
             UserManager<CustomUser> userManager,
@@ -43,7 +44,7 @@ namespace TrueBalances.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
             IServiceProvider serviceProvider,
-            IWebHostEnvironment webHostEnvironment)
+            IProfilePhotoService profilePhotoService)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -52,7 +53,7 @@ namespace TrueBalances.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _serviceProvider = serviceProvider;
-            _webHostEnvironment = webHostEnvironment;
+            _profilePhotoService = profilePhotoService;
         }
 
         /// <summary>
@@ -121,7 +122,7 @@ namespace TrueBalances.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             [Display(Name = "Profile Photo URL")]
-            public IFormFile ProfilePhotoUrl { get; set; }
+            public IFormFile ProfilePhotoFile { get; set; }
         }
 
 
@@ -151,11 +152,11 @@ namespace TrueBalances.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     // Enregistrer l'URL de la photo de profil
-                    if (Input.ProfilePhotoUrl != null)
+                    if (Input.ProfilePhotoFile != null)
                     {
-                        // Code à revoir
-                        var profilePhoto = ChargerFichier(Input.ProfilePhotoUrl);
+                        var profilePhoto = _profilePhotoService.RegisterProfilePhotoFile(Input.ProfilePhotoFile);
 
+                        // Enregistrer l'utilisateur de la photo de profil
                         profilePhoto.CustomUserId = user.Id;
 
                         // Utiliser IServiceProvider pour obtenir UserContext
@@ -220,25 +221,6 @@ namespace TrueBalances.Areas.Identity.Pages.Account
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<CustomUser>)_userStore;
-        }
-
-        // Méthode à détailler et expliquer
-        private ProfilePhoto ChargerFichier(IFormFile photoFile)
-        {
-            var profilePhoto = new ProfilePhoto();
-            if(photoFile != null)
-            {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                string titre = Guid.NewGuid().ToString() + "_" + photoFile.FileName;
-                string filePath = Path.Combine(uploadsFolder, titre);
-                profilePhoto.Url = filePath;
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    photoFile.CopyTo(fileStream);
-                }
-                profilePhoto.Url = filePath;                
-            }
-            return profilePhoto;
         }
     }
 }

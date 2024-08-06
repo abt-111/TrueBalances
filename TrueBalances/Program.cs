@@ -16,6 +16,8 @@ builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.Requir
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IProfilePhotoService, ProfilePhotoService>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
