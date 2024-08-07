@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
+using TrueBalances.Repositories.Interfaces;
 
 namespace TrueBalances.Controllers
 {
@@ -134,14 +135,14 @@ namespace TrueBalances.Controllers
         // POST: ExpenseController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Amount,Date,CategoryId")] Expense expense)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Amount,Date,CategoryId, CustomUserId")] Expense expense)
         {
             if (id != expense.Id)
             {
                 return NotFound();
             }
             
-            expense = new Expense() {Title = expense.Title, Amount = expense.Amount, Date = expense.Date, CategoryId = expense.CategoryId, CustomUserId = "bea02416-0619-4beb-a944-a881c4e6a227"};
+            //expense = new Expense() {Title = expense.Title, Amount = expense.Amount, Date = expense.Date, CategoryId = expense.CategoryId, CustomUserId = user.Id };
                                 _context.Update(expense);
                                 await _context.SaveChangesAsync();
 
