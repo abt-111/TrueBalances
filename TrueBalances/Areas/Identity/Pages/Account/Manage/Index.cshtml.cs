@@ -150,17 +150,9 @@ namespace TrueBalances.Areas.Identity.Pages.Account.Manage
 
             if (Input.ProfilePhotoFile != null)
             {
-                ProfilePhoto profilePhoto = _profilePhotoService.GetProfilePhoto(user.Id);
+                var profilePhoto = await _profilePhotoService.GetProfilePhoto(user.Id);
 
                 _profilePhotoService.UpdateProfilePhotoFile(Input.ProfilePhotoFile, profilePhoto);
-
-                // Utiliser IServiceProvider pour obtenir UserContext
-                using (var scope = _serviceProvider.CreateScope())
-                {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<UserContext>();
-                    dbContext.ProfilePhotos.Update(profilePhoto);
-                    await dbContext.SaveChangesAsync();
-                }
             }
 
             await _userManager.UpdateAsync(user);

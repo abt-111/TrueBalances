@@ -10,6 +10,6 @@ namespace TrueBalances.Repositories.Interfaces
 
         public string GetProfilePhotoFile(string customUserId);
 
-        public ProfilePhoto GetProfilePhoto(string customUserId);
+        public Task<ProfilePhoto> GetProfilePhoto(string customUserId);
     }
 }

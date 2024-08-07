@@ -60,9 +60,10 @@ namespace TrueBalances.Repositories.Services
             return filePath;
         }
 
-        public ProfilePhoto GetProfilePhoto(string customUserId)
+        public async Task<ProfilePhoto> GetProfilePhoto(string customUserId)
         {
-            return _context.ProfilePhotos.FirstOrDefault(x => x.CustomUserId == customUserId);
+            var profilePhoto = await _context.ProfilePhotos.FirstOrDefaultAsync(x => x.CustomUserId == customUserId);
+            return profilePhoto;
         }
     }
 }

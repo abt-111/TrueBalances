@@ -10,7 +10,7 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
-            @* <p>@ProfilePhotoService.GetProfilePhoto(UserManager.GetUserId(User))</p> *@
+            <p>@ProfilePhotoService.GetProfilePhotoFile(UserManager.GetUserId(User))</p>
             <img src="@ProfilePhotoService.GetProfilePhotoFile(UserManager.GetUserId(User))" alt="Image circulaire" class="circle-img">
         </li>
         <li class="nav-item">
