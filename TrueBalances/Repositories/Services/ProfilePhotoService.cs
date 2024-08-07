@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
 
@@ -6,10 +8,12 @@ namespace TrueBalances.Repositories.Services
 {
     public class ProfilePhotoService : IProfilePhotoService
     {
+        private readonly UserContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProfilePhotoService(IWebHostEnvironment webHostEnvironment)
+        public ProfilePhotoService(UserContext context, IWebHostEnvironment webHostEnvironment)
         {
+            _context = context;
             _webHostEnvironment = webHostEnvironment;
         }
 
@@ -30,6 +34,14 @@ namespace TrueBalances.Repositories.Services
                 profilePhoto.Url = titre;
             }
             return profilePhoto;
+        }
+
+        public string GetProfilePhoto(string customUserId)
+        {
+            ProfilePhoto profilePhoto = _context.ProfilePhotos.FirstOrDefault(x => x.CustomUserId == customUserId);
+            string filePath = Path.Combine("images", profilePhoto.Url);
+
+            return filePath;
         }
     }
 }
