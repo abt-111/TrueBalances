@@ -2,7 +2,6 @@
 using System.Text.RegularExpressions;
 using TrueBalances.Data;
 using TrueBalances.Models;
-using TrueBalances.Repositories.DbRepositories;
 using TrueBalances.Repositories.Interfaces;
 using TrueBalances.Repositories.Services;
 using Group = TrueBalances.Models.Group;
@@ -10,24 +9,17 @@ using Group = TrueBalances.Models.Group;
 
 namespace TrueBalances.Repositories.Services
 {
-    public class GroupService : IGroupService
+    public class GroupService: IGroupService
     {
-        private readonly IGenericRepository<Group> _groupRepository;
-        public GroupService(IGenericRepository<Group> groupRepository)
+        private readonly UserContext _context;
+        public GroupService(UserContext context)
         {
-            _groupRepository = groupRepository;
+            _context = context;
         }
 
-        public async Task<IEnumerable<Group>> GetAllGroups()
+        public List<Group> GetAllGroups()
         {
-            var groups = await _groupRepository.GetAllAsync();
-            return groups.ToList();
-        }
-
-        //Methode pour Trouver un group via son Id
-        public async Task<Group?> GetGroupAsync(int groupId)
-        {
-            return await _groupRepository.GetByIdAsync(groupId);
+            return _context.Groups.ToList();
         }
 
         //Methode pour creer un group
@@ -38,43 +30,69 @@ namespace TrueBalances.Repositories.Services
                         new UserGroup { CustomUserId = userId}
                     };
 
-            await _groupRepository.AddAsync(group);
+            _context.Groups.Add(group);
+            await _context.SaveChangesAsync();
 
         }
 
+        //Methode pour Trouver un group via son Id
+        public async Task<Group?> GetGroupAsync(int groupId)
+        {
+            var group = await _context.Groups
+                .Include(g => g.Members)
+                .Include(g => g.Expenses)
+                .FirstOrDefaultAsync(g => g.Id == groupId);
+            return group;
+        }
 
         //Methode pour modifier le group
         public async Task UpdateGroupAsync(Group group)
         {
-            await _groupRepository.UpdateAsync(group);
+            var existingGroup = await _context.Groups.FindAsync(group.Id);
+            if (existingGroup == null)
+            {
+                throw new KeyNotFoundException($"Le group {group.Id} n'existe pas.");
+            }
+
+            // Mettez à jour les propriétés nécessaires
+            existingGroup.Name = group.Name;
+            existingGroup.Members = group.Members;
+            existingGroup.Expenses = group.Expenses;
+
+            _context.Groups.Update(existingGroup);
+            await _context.SaveChangesAsync();
+
+            //_context.Update(group);
+            //await _context.SaveChangesAsync();
 
         }
 
         ////Methode pour supprimer le group
-        public async Task DeleteGroupAsync(int groupId)
+        public async Task DeleteGroupAsync(int id)
         {
-            await _groupRepository.DeleteAsync(groupId);
+            var group = await _context.Groups.FindAsync(id);
+            if (group != null)
+            {
+                _context.Groups.Remove(group);
+                await _context.SaveChangesAsync();
+            }
         }
-
         //Methode pour vérifier si l'utilisateur est ajouté dans le group
         public async Task<bool> IsMemberInGroupAsync(int groupId, string userId)
         {
-            var group = await GetGroupAsync(groupId);
-            return group?.Members.Any(m => m.CustomUserId == userId) ?? false;
+            return await _context.UsersGroup
+                .AnyAsync(ug => ug.GroupId == groupId && ug.CustomUserId == userId);
         }
 
         //Methode pour ajouter un user dans le group
         public async Task<List<string>> AddMembersAsync(int groupId, List<string> userIds)
         {
             var errors = new List<string>();
-            var group = await GetGroupAsync(groupId);
-            if (group == null)
-            {
-                errors.Add($"Group with ID {groupId} not found.");
-                return errors;
-            }
+            var existingUserIds = await _context.UsersGroup
+                .Where(ug => ug.GroupId == groupId)
+                .Select(ug => ug.CustomUserId)
+                .ToListAsync();
 
-            var existingUserIds = group.Members.Select(m => m.CustomUserId).ToList();
             foreach (var userId in userIds)
             {
                 if (existingUserIds.Contains(userId))
@@ -83,34 +101,45 @@ namespace TrueBalances.Repositories.Services
                 }
                 else
                 {
-                    group.Members.Add(new UserGroup
+                    var userGroup = new UserGroup
                     {
                         GroupId = groupId,
                         CustomUserId = userId
-                    });
+                    };
+
+                    _context.UsersGroup.Add(userGroup);
                 }
             }
 
-            await _groupRepository.UpdateAsync(group);
+            await _context.SaveChangesAsync();
             return errors;
+        
+        //var isMemberInGroup = await IsMemberInGroupAsync(groupId, userId);
+        //if (isMemberInGroup)
+        //{
+        //    throw new InvalidOperationException($"l'utilisateur {userId} est déjà membre du groupe {groupId}.");
+        //}
+        //var userGroup = new UserGroup
+        //{
+        //    GroupId = groupId,
+        //    CustomUserId = userId
+        //};
 
-        }
+        //_context.UsersGroup.Add(userGroup);
+        //await _context.SaveChangesAsync();
+    }
 
-            ////Methode pour supprimer un user dans le Group
-            public async Task RemoveMemberAsync(int groupId, string userId)
+        ////Methode pour supprimer un user dans le Group
+        public async Task RemoveMemberAsync(int groupId, string userId)
+        {
+            var groupMember = await _context.UsersGroup
+                .FirstOrDefaultAsync(m => m.GroupId == groupId && m.CustomUserId == userId);
+            if (groupMember != null)
             {
-            var group = await GetGroupAsync(groupId);
-            if (group != null)
-            {
-                var member = group.Members.FirstOrDefault(m => m.CustomUserId == userId);
-                if (member != null)
-                {
-                    group.Members.Remove(member);
-                    await _groupRepository.UpdateAsync(group);
-                }
+                _context.UsersGroup.Remove(groupMember);
+                await _context.SaveChangesAsync();
             }
         }
 
-        
     }
-    }
+}

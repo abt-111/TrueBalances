@@ -20,9 +20,10 @@ namespace TrueBalances.Controllers
             _userService = userService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var groups = await _groupService.GetAllGroups();
+
+            List<Group> groups = _groupService.GetAllGroups();
             return View(groups);
         }
 
