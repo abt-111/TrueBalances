@@ -20,6 +20,7 @@ namespace TrueBalances.Repositories.Services
 
         public async Task<IEnumerable<Group>> GetAllGroups()
         {
+
             var groups = await _groupRepository.GetAllAsync();
             return groups.ToList();
         }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using System.Security.Claims;
+using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
@@ -27,23 +28,57 @@ namespace TrueBalances.Controllers
         }
 
         // Create Group (GET)
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
-        }
+            var availableUsers = await _userService.GetAllUsersAsync();
 
+            // Créer un ViewModel avec la liste des utilisateurs
+            var viewModel = new GroupDetailsViewModel
+            {
+                AvailableUsers = availableUsers.Select(u => new CustomUser { Id = u.Id, UserName = u.UserName }).ToList(),
+                SelectedUserIds = new List<string>() // Liste des IDs sélectionnés
+            };
+
+            return View(viewModel);
+            //return View();
+
+        }
         // Create Group (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Group group)
+        public async Task<IActionResult> Create(GroupDetailsViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                // Créer un groupe à partir des données du ViewModel
+                var group = new Group
+                {
+                    Name = viewModel.Group.Name,
+                    Members = viewModel.SelectedUserIds.Select(id => new UserGroup { CustomUserId = id }).ToList()
+                };
+
+                // Ajouter l'utilisateur courant comme membre du groupe
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    group.Members.Add(new UserGroup { CustomUserId = userId });
+                }
+
+                // Créer le groupe en utilisant le service
                 await _groupService.CreateGroupAsync(group, userId);
-                return RedirectToAction(actionName: "Index", controllerName: "Group");
+
+                return RedirectToAction("Index");
             }
-            return View(group);
+            viewModel.AvailableUsers = await _userService.GetAllUsersAsync();
+            return View(viewModel);
+
+            //if (ModelState.IsValid)
+            //{
+            //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //    await _groupService.CreateGroupAsync(group, userId);
+            //    return RedirectToAction(actionName: "Index", controllerName: "Group");
+            //}
+            //return View(group);
         }
 
         // Edit Group (GET)

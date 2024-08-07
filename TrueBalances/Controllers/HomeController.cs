@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Security.Principal;
 using TrueBalances.Areas.Identity.Data;
-using TrueBalances.Data;
 using TrueBalances.Models;
 
 namespace TrueBalances.Controllers
