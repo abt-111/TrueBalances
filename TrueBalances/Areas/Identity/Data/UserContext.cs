@@ -33,6 +33,10 @@ public class UserContext : IdentityDbContext<CustomUser>
         // For example, you can rename the ASP.NET Identity table names and more.
         // Add your customizations after calling base.OnModelCreating(builder);
 
+        builder.Entity<Expense>()
+        .Property(e => e.Amount)
+        .HasColumnType("decimal(18, 2)");
+
         builder.Entity<Category>().HasData(
             new Category()
             {

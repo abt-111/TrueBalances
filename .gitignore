@@ -362,6 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-TruBalances/Migrations/*.cs
-TruBalances/wwwroot/images/*.png
-/TrueBalances/Migrations/20240805095751_Initial.cs
+/TrueBalances/Migrations/*.cs
+/TrueBalances/wwwroot/images/*.png
