@@ -1,25 +1,27 @@
-﻿@model Group
+﻿@model TrueBalances.Models.GroupDetailsViewModel
 
 @{
-    ViewData["Title"] = "Create Group";
+    ViewData["Title"] = "Ajouter un groupe";
 }
 
-<h1>Create Group</h1>
+<h1>@ViewData["Title"]</h1>
 
 <form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    
     <div class="form-group">
-        <label asp-for="Name" class="control-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+        <label asp-for="Group.Name" class="control-label"></label>
+        <input asp-for="Group.Name" class="form-control" />
+        <span asp-validation-for="Group.Name" class="text-danger"></span>
     </div>
-   @*  <div class="form-group">
-        <label asp-for="ImageUrl" class="control-label"></label>
-        <input asp-for="ImageUrl" class="form-control" />
-        <span asp-validation-for="ImageUrl" class="text-danger"></span>
-    </div> *@
+
     <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
+        <label for="AvailableUsers">Membres</label>
+        <select asp-for="SelectedUserIds" asp-items="@(new SelectList(Model.AvailableUsers, "Id", "UserName"))" class="form-control">
+        </select>
     </div>
+
+    <input type="submit" value="Créer le groupe" class="btn btn-primary" />
 </form>
 
 <div>
@@ -31,3 +33,4 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+ 

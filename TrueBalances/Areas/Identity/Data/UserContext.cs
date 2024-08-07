@@ -34,7 +34,7 @@ public class UserContext : IdentityDbContext<CustomUser>
 
         //builder.Entity<UserGroup>()
         //    .HasOne(ug => ug.CustomUser)
-        //    .WithMany(u => u.Groups)
+        //    .WithMany(u => u.UserGroups)
         //    .HasForeignKey(ug => ug.CustomUserId);
 
         builder.Entity<UserGroup>()
@@ -172,15 +172,3 @@ public class UserContext : IdentityDbContext<CustomUser>
 
     }
 }
-
-
-
-
-//builder.Entity<UserGroup>()
-//            .HasKey(ug => new { ug.GroupId, ug.UserId });
-
-
-//builder.Entity<Group>()
-//    .HasMany(g => g.Members)
-//    .WithOne(m => m.Group)
-//    .HasForeignKey(m => m.GroupId);
