@@ -9,7 +9,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.DependencyInjection;
 using TrueBalances.Areas.Identity.Data;
+using TrueBalances.Data;
+using TrueBalances.Models;
+using TrueBalances.Repositories.Interfaces;
 
 namespace TrueBalances.Areas.Identity.Pages.Account.Manage
 {
@@ -17,13 +21,19 @@ namespace TrueBalances.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<CustomUser> _userManager;
         private readonly SignInManager<CustomUser> _signInManager;
+        private readonly IProfilePhotoService _profilePhotoService;
+        private readonly IServiceProvider _serviceProvider;
 
         public IndexModel(
             UserManager<CustomUser> userManager,
-            SignInManager<CustomUser> signInManager)
+            SignInManager<CustomUser> signInManager,
+            IProfilePhotoService profilePhotoService,
+            IServiceProvider serviceProvider)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _profilePhotoService = profilePhotoService;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -71,6 +81,9 @@ namespace TrueBalances.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [Display(Name = "Profile Photo URL")]
+            public IFormFile ProfilePhotoFile { get; set; }
         }
 
         private async Task LoadAsync(CustomUser user)
@@ -133,6 +146,21 @@ namespace TrueBalances.Areas.Identity.Pages.Account.Manage
             if (Input.LastName != user.LastName)
             {
                 user.LastName = Input.LastName;
+            }
+
+            if (Input.ProfilePhotoFile != null)
+            {
+                ProfilePhoto profilePhoto = _profilePhotoService.GetProfilePhoto(user.Id);
+
+                _profilePhotoService.UpdateProfilePhotoFile(Input.ProfilePhotoFile, profilePhoto);
+
+                // Utiliser IServiceProvider pour obtenir UserContext
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetRequiredService<UserContext>();
+                    dbContext.ProfilePhotos.Update(profilePhoto);
+                    await dbContext.SaveChangesAsync();
+                }
             }
 
             await _userManager.UpdateAsync(user);

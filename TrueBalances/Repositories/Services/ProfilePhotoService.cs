@@ -36,12 +36,33 @@ namespace TrueBalances.Repositories.Services
             return profilePhoto;
         }
 
-        public string GetProfilePhoto(string customUserId)
+        public void UpdateProfilePhotoFile(IFormFile photoFile, ProfilePhoto registeredProfilePhoto)
+        {
+            var profilePhoto = new ProfilePhoto();
+            if (photoFile != null)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                string titre = registeredProfilePhoto.Url;
+                string filePath = Path.Combine(uploadsFolder, titre);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    photoFile.CopyTo(fileStream);
+                }
+            }
+        }
+
+        public string GetProfilePhotoFile(string customUserId)
         {
             ProfilePhoto profilePhoto = _context.ProfilePhotos.FirstOrDefault(x => x.CustomUserId == customUserId);
             string filePath = Path.Combine("images", profilePhoto.Url);
 
             return filePath;
+        }
+
+        public ProfilePhoto GetProfilePhoto(string customUserId)
+        {
+            return _context.ProfilePhotos.FirstOrDefault(x => x.CustomUserId == customUserId);
         }
     }
 }
