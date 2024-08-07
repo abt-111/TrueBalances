@@ -11,7 +11,7 @@
     {
         <li class="nav-item">
             @* <p>@ProfilePhotoService.GetProfilePhoto(UserManager.GetUserId(User))</p> *@
-            @* <img src="@ProfilePhotoService.GetProfilePhoto(UserManager.GetUserId(User))" alt="Image circulaire" class="circle-img"> *@
+            <img src="@ProfilePhotoService.GetProfilePhotoFile(UserManager.GetUserId(User))" alt="Image circulaire" class="circle-img">
         </li>
         <li class="nav-item">
             <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Bonjour @UserManager.GetUserName(User)!</a>
