@@ -1,0 +1,36 @@
+﻿@model TrueBalances.Models.GroupDetailsViewModel
+
+@{
+    ViewData["Title"] = "Ajouter un groupe";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    
+    <div class="form-group">
+        <label asp-for="Group.Name" class="control-label"></label>
+        <input asp-for="Group.Name" class="form-control" />
+        <span asp-validation-for="Group.Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="AvailableUsers">Membres</label>
+        <select asp-for="SelectedUserIds" asp-items="@(new SelectList(Model.AvailableUsers, "Id", "UserName"))" class="form-control">
+        </select>
+    </div>
+
+    <input type="submit" value="Créer le groupe" class="btn btn-primary" />
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+ 

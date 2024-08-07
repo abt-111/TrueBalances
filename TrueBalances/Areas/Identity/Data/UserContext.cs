@@ -19,14 +19,27 @@ public class UserContext : IdentityDbContext<CustomUser>
 
     public DbSet<Group> Groups { get; set; }
     public DbSet<UserGroup> UsersGroup { get; set; }
+    public DbSet<CustomUser> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
 
         builder.Entity<UserGroup>()
+            .HasKey(ug => new { ug.GroupId, ug.CustomUserId });
+
+        builder.Entity<UserGroup>()
             .HasOne(ug => ug.Group)
             .WithMany(g => g.Members)
             .HasForeignKey(ug => ug.GroupId);
+
+        //builder.Entity<UserGroup>()
+        //    .HasOne(ug => ug.CustomUser)
+        //    .WithMany(u => u.UserGroups)
+        //    .HasForeignKey(ug => ug.CustomUserId);
+
+        builder.Entity<UserGroup>()
+           .HasKey(ug => ug.Id);
+
 
         base.OnModelCreating(builder);
         // Customize the ASP.NET Identity model and override the defaults if needed.
@@ -55,7 +68,10 @@ public class UserContext : IdentityDbContext<CustomUser>
             }
         );
 
-        /*builder.Entity<Expense>().HasData(
+        /*
+         * A ne pas utilisé finalement. Les CustomUserId sont spécifique à ma BDD et donc posent problème pour les migrations.
+         * 
+         * builder.Entity<Expense>().HasData(
             new Expense()
             {
                 Id = 1,
@@ -160,15 +176,3 @@ public class UserContext : IdentityDbContext<CustomUser>
 
     }
 }
-
-
-
-
-//builder.Entity<UserGroup>()
-//            .HasKey(ug => new { ug.GroupId, ug.UserId });
-
-
-//builder.Entity<Group>()
-//    .HasMany(g => g.Members)
-//    .WithOne(m => m.Group)
-//    .HasForeignKey(m => m.GroupId);

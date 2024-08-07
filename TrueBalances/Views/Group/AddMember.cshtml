@@ -1,0 +1,29 @@
+﻿@model TrueBalances.Models.UserGroup
+
+@{
+    ViewData["Title"] = "Ajouter un membre";
+}
+
+<h1 class="display-4 text-center my-4">Ajouter un membre</h1>
+
+<form asp-action="AddMember">
+    <input type="hidden" asp-for="GroupId" />
+    <div class="form-group">
+        <label asp-for="CustomUser" class="control-label"></label>
+        <input asp-for="CustomUser" class="form-control" />
+        <span asp-validation-for="CustomUser" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Ajouter" class="btn btn-primary" />
+    </div>
+</form>
+
+<div>
+    <a asp-action="Details" asp-route-id="@Model.GroupId">Retour aux détails du groupe</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

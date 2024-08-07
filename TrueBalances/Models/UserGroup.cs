@@ -11,5 +11,6 @@ namespace TrueBalances.Models
         //public ApplicationUser User { get; set; }
         public int GroupId { get; set; }
         public Group Group { get; set; }
+        
     }
 }

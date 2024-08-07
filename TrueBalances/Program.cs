@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
+using TrueBalances.Models;
 using TrueBalances.Repositories.DbRepositories;
 using TrueBalances.Repositories.Interfaces;
 using TrueBalances.Repositories.Services;
@@ -14,10 +15,12 @@ builder.Services.AddDbContext<TrueBalances.Data.UserContext>(options => options.
 
 builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TrueBalances.Data.UserContext>();
 
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IGenericRepository<Category>, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IGenericRepository<Group>, GroupDbRepository>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IProfilePhotoService, ProfilePhotoService>();
-
+builder.Services.AddScoped<IUserService, UserService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

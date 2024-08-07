@@ -2,45 +2,83 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using System.Security.Claims;
+using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
+using TrueBalances.Repositories.Services;
 
 namespace TrueBalances.Controllers
 {
     public class GroupController : Controller
     {
         private readonly IGroupService _groupService;
+        private readonly IUserService _userService;
 
-        public GroupController(IGroupService groupService)
+        public GroupController(IGroupService groupService, IUserService userService)
         {
             _groupService = groupService;
+            _userService = userService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-
-            return View();
+            var groups = await _groupService.GetAllGroups();
+            return View(groups);
         }
 
         // Create Group (GET)
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
-        }
+            var availableUsers = await _userService.GetAllUsersAsync();
 
+            // Créer un ViewModel avec la liste des utilisateurs
+            var viewModel = new GroupDetailsViewModel
+            {
+                AvailableUsers = availableUsers.Select(u => new CustomUser { Id = u.Id, UserName = u.UserName }).ToList(),
+                SelectedUserIds = new List<string>() // Liste des IDs sélectionnés
+            };
+
+            return View(viewModel);
+            //return View();
+
+        }
         // Create Group (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Group group)
+        public async Task<IActionResult> Create(GroupDetailsViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
+                // Créer un groupe à partir des données du ViewModel
+                var group = new Group
+                {
+                    Name = viewModel.Group.Name,
+                    Members = viewModel.SelectedUserIds.Select(id => new UserGroup { CustomUserId = id }).ToList()
+                };
+
+                // Ajouter l'utilisateur courant comme membre du groupe
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    group.Members.Add(new UserGroup { CustomUserId = userId });
+                }
+
+                // Créer le groupe en utilisant le service
                 await _groupService.CreateGroupAsync(group, userId);
-                return RedirectToAction(actionName: "Index", controllerName: "Group");
+
+                return RedirectToAction("Index");
             }
-            return View(group);
+            viewModel.AvailableUsers = await _userService.GetAllUsersAsync();
+            return View(viewModel);
+
+            //if (ModelState.IsValid)
+            //{
+            //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //    await _groupService.CreateGroupAsync(group, userId);
+            //    return RedirectToAction(actionName: "Index", controllerName: "Group");
+            //}
+            //return View(group);
         }
 
         // Edit Group (GET)
@@ -103,11 +141,23 @@ namespace TrueBalances.Controllers
         // Add Member (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddMember(int groupId, string userId)
+        public async Task<IActionResult> AddMembers(int groupId, List<string> selectedUserIds)
         {
-            await _groupService.AddMemberAsync(groupId, userId);
+            var errors = await _groupService.AddMembersAsync(groupId, selectedUserIds);
+            if (errors.Any())
+            {
+                TempData["Errors"] = errors;
+            }
+
             return RedirectToAction(nameof(Details), new { id = groupId });
+            //foreach (var userId in selectedUserIds)
+            //{
+            //    await _groupService.AddMemberAsync(groupId, userId);
+            //}
+
+            //return RedirectToAction(nameof(Details), new { id = groupId });
         }
+
 
         // Remove Member (POST)
         [HttpPost]
@@ -126,12 +176,19 @@ namespace TrueBalances.Controllers
             {
                 return NotFound();
             }
+            var availableUsers = await _userService.GetAllUsersAsync();
 
+            var viewModel = new GroupDetailsViewModel
+            {
+                Group = group,
+                AvailableUsers = availableUsers
+            };
             //var summary = _groupService.CalculateSummary(group);
             //ViewBag.Summary = summary;
 
-            return View(group);
+            return View(viewModel);
         }
+
 
         private bool GroupExists(int id)
         {

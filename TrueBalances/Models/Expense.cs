@@ -24,7 +24,9 @@ public class Expense
     // Clés étrangères
     public int? CategoryId { get; set; }
     public string CustomUserId { get; set; }
+
     public int? GroupId { get; set; }
+
 
     // Propriétés de navigation
     [Display(Name = "Catégorie")]

@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using TrueBalances.Data;
 using TrueBalances.Models;
+using TrueBalances.Repositories.DbRepositories;
 using TrueBalances.Repositories.Interfaces;
 using TrueBalances.Repositories.Services;
 using Group = TrueBalances.Models.Group;
@@ -9,14 +10,26 @@ using Group = TrueBalances.Models.Group;
 
 namespace TrueBalances.Repositories.Services
 {
-    public class GroupService: IGroupService
+    public class GroupService : IGroupService
     {
-        private readonly UserContext _context;
-        public GroupService(UserContext context)
+        private readonly IGenericRepository<Group> _groupRepository;
+        public GroupService(IGenericRepository<Group> groupRepository)
         {
-            _context = context;
+            _groupRepository = groupRepository;
         }
 
+        public async Task<IEnumerable<Group>> GetAllGroups()
+        {
+
+            var groups = await _groupRepository.GetAllAsync();
+            return groups.ToList();
+        }
+
+        //Methode pour Trouver un group via son Id
+        public async Task<Group?> GetGroupAsync(int groupId)
+        {
+            return await _groupRepository.GetByIdAsync(groupId);
+        }
 
         //Methode pour creer un group
         public async Task CreateGroupAsync(Group group, string userId)
@@ -26,78 +39,79 @@ namespace TrueBalances.Repositories.Services
                         new UserGroup { CustomUserId = userId}
                     };
 
-            _context.Groups.Add(group);
-            await _context.SaveChangesAsync();
+            await _groupRepository.AddAsync(group);
 
         }
 
-        //Methode pour Trouver un group via son Id
-        public async Task<Group?> GetGroupAsync(int groupId)
-        {
-            var group = await _context.Groups
-                .Include(g => g.Members)
-                .Include(g => g.Expenses)
-                .FirstOrDefaultAsync(g => g.Id == groupId);
-            return group;
-        }
 
         //Methode pour modifier le group
         public async Task UpdateGroupAsync(Group group)
         {
-            var existingGroup = await _context.Groups.FindAsync(group.Id);
-            if (existingGroup == null)
-            {
-                throw new KeyNotFoundException($"Le group {group.Id} n'existe pas.");
-            }
-
-            // Mettez à jour les propriétés nécessaires
-            existingGroup.Name = group.Name;
-            existingGroup.Members = group.Members;
-            existingGroup.Expenses = group.Expenses;
-
-            _context.Groups.Update(existingGroup);
-            await _context.SaveChangesAsync();
-
-            //_context.Update(group);
-            //await _context.SaveChangesAsync();
+            await _groupRepository.UpdateAsync(group);
 
         }
 
         ////Methode pour supprimer le group
-        public async Task DeleteGroupAsync(int id)
+        public async Task DeleteGroupAsync(int groupId)
         {
-            var group = await _context.Groups.FindAsync(id);
+            await _groupRepository.DeleteAsync(groupId);
+        }
+
+        //Methode pour vérifier si l'utilisateur est ajouté dans le group
+        public async Task<bool> IsMemberInGroupAsync(int groupId, string userId)
+        {
+            var group = await GetGroupAsync(groupId);
+            return group?.Members.Any(m => m.CustomUserId == userId) ?? false;
+        }
+
+        //Methode pour ajouter un user dans le group
+        public async Task<List<string>> AddMembersAsync(int groupId, List<string> userIds)
+        {
+            var errors = new List<string>();
+            var group = await GetGroupAsync(groupId);
+            if (group == null)
+            {
+                errors.Add($"Group with ID {groupId} not found.");
+                return errors;
+            }
+
+            var existingUserIds = group.Members.Select(m => m.CustomUserId).ToList();
+            foreach (var userId in userIds)
+            {
+                if (existingUserIds.Contains(userId))
+                {
+                    errors.Add($"User with ID {userId} is already a member of the group.");
+                }
+                else
+                {
+                    group.Members.Add(new UserGroup
+                    {
+                        GroupId = groupId,
+                        CustomUserId = userId
+                    });
+                }
+            }
+
+            await _groupRepository.UpdateAsync(group);
+            return errors;
+
+        }
+
+            ////Methode pour supprimer un user dans le Group
+            public async Task RemoveMemberAsync(int groupId, string userId)
+            {
+            var group = await GetGroupAsync(groupId);
             if (group != null)
             {
-                _context.Groups.Remove(group);
-                await _context.SaveChangesAsync();
+                var member = group.Members.FirstOrDefault(m => m.CustomUserId == userId);
+                if (member != null)
+                {
+                    group.Members.Remove(member);
+                    await _groupRepository.UpdateAsync(group);
+                }
             }
         }
 
-        ////Methode pour ajouter un user dans le group
-        public async Task AddMemberAsync(int groupId, string userId)
-        {
-            var userGroup = new UserGroup
-            {
-                GroupId = groupId,
-                CustomUserId = userId
-            };
-
-            _context.UsersGroup.Add(userGroup);
-            await _context.SaveChangesAsync();
-        }
-
-        ////Methode pour supprimer un user dans le Group
-        public async Task RemoveMemberAsync(int groupId, string userId)
-        {
-            var groupMember = await _context.UsersGroup
-                .FirstOrDefaultAsync(m => m.GroupId == groupId && m.CustomUserId == userId);
-            if (groupMember != null)
-            {
-                _context.UsersGroup.Remove(groupMember);
-                await _context.SaveChangesAsync();
-            }
-        }
-
+        
     }
-}
+    }
