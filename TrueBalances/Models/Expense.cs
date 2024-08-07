@@ -19,7 +19,8 @@ public class Expense
     [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
     [Display(Name = "Montant")]
     public decimal Amount { get; set; }
-    
+
+    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     public DateTime Date { get; set; }
 
     // Clés étrangères

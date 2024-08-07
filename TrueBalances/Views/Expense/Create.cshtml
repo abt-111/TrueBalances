@@ -24,12 +24,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="Date" class="control-label">Date</label>
-                <input asp-for="Date" class="form-control" />
+                <input asp-for="Date" class="form-control" type="date" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label">Catégorie</label>
-                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories"></select>
+                <select asp-for="CategoryId" class="form-control" asp-items="@(ViewBag.Categories)">
+                    <option value=""> </option>
+                </select>
+                @* <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories"></select> *@
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">

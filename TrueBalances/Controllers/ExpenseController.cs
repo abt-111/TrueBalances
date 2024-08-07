@@ -91,10 +91,24 @@ namespace TrueBalances.Controllers
                     Console.WriteLine(modelError.ErrorMessage);
                 }
             }
-            
-            
-            
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
+
+
+            var categories = await _context.Categories.ToListAsync();
+            var categoryList = categories.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
+
+            // Ajouter l'option "Aucune" au début de la liste
+            categoryList.Insert(0, new SelectListItem
+            {
+                Value = string.Empty,
+                Text = "Aucune"
+            });
+
+            ViewBag.Categories = categoryList;
+            //ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
             return View(expense);
         }
 
