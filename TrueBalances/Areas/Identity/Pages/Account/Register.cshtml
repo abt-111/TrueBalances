@@ -8,7 +8,7 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
             <h2>Create a new account.</h2>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
@@ -41,10 +41,10 @@
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ProfilePhotoUrl" class="form-control" />
-                <label asp-for="Input.ProfilePhotoUrl">Profile Photo URL</label>
-                <span asp-validation-for="Input.ProfilePhotoUrl" class="text-danger"></span>
+            <div class="form-group mb-3">
+                <label asp-for="Input.ProfilePhotoFile" class="form-label">Profile Photo URL</label>
+                <input asp-for="Input.ProfilePhotoFile" type="file" class="form-control" />
+                <span asp-validation-for="Input.ProfilePhotoFile" class="text-danger"></span>
             </div>
 
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
@@ -59,8 +59,10 @@
                 {
                     <div>
                         <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
+                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+                                article
+                                about setting up this ASP.NET application to support logging in via external services
+                            </a>.
                         </p>
                     </div>
                 }

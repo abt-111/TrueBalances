@@ -22,6 +22,7 @@ using Microsoft.Extensions.Logging;
 using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
+using TrueBalances.Repositories.Interfaces;
 
 namespace TrueBalances.Areas.Identity.Pages.Account
 {
@@ -34,6 +35,7 @@ namespace TrueBalances.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IProfilePhotoService _profilePhotoService;
 
         public RegisterModel(
             UserManager<CustomUser> userManager,
@@ -41,7 +43,8 @@ namespace TrueBalances.Areas.Identity.Pages.Account
             SignInManager<CustomUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            IProfilePhotoService profilePhotoService)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -50,6 +53,7 @@ namespace TrueBalances.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _serviceProvider = serviceProvider;
+            _profilePhotoService = profilePhotoService;
         }
 
         /// <summary>
@@ -117,9 +121,8 @@ namespace TrueBalances.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            [Url]
             [Display(Name = "Profile Photo URL")]
-            public string ProfilePhotoUrl { get; set; }
+            public IFormFile ProfilePhotoFile { get; set; }
         }
 
 
@@ -149,13 +152,12 @@ namespace TrueBalances.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     // Enregistrer l'URL de la photo de profil
-                    if (!string.IsNullOrEmpty(Input.ProfilePhotoUrl))
+                    if (Input.ProfilePhotoFile != null)
                     {
-                        var profilePhoto = new ProfilePhoto
-                        {
-                            Url = Input.ProfilePhotoUrl,
-                            CustomUserId = user.Id
-                        };
+                        var profilePhoto = _profilePhotoService.RegisterProfilePhotoFile(Input.ProfilePhotoFile);
+
+                        // Enregistrer l'utilisateur de la photo de profil
+                        profilePhoto.CustomUserId = user.Id;
 
                         // Utiliser IServiceProvider pour obtenir UserContext
                         using (var scope = _serviceProvider.CreateScope())
