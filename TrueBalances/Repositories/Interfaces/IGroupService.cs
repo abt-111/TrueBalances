@@ -5,7 +5,7 @@ namespace TrueBalances.Repositories.Interfaces
 {
     public interface IGroupService
     {
-        List<Group> GetAllGroups();
+        Task <IEnumerable<Group>> GetAllGroups();
         Task<Group?> GetGroupAsync(int groupId);
         Task CreateGroupAsync(Models.Group group, string userId);
         Task UpdateGroupAsync(Models.Group group);
