@@ -65,15 +65,3 @@ public class UserContext : IdentityDbContext<CustomUser>
         );
     }
 }
-
-
-
-
-//builder.Entity<UserGroup>()
-//            .HasKey(ug => new { ug.GroupId, ug.UserId });
-
-
-//builder.Entity<Group>()
-//    .HasMany(g => g.Members)
-//    .WithOne(m => m.Group)
-//    .HasForeignKey(m => m.GroupId);

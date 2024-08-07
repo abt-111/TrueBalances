@@ -48,7 +48,7 @@ namespace TrueBalances.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(GroupDetailsViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 // Créer un groupe à partir des données du ViewModel
                 var group = new Group
