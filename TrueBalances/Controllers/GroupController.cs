@@ -23,7 +23,6 @@ namespace TrueBalances.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //List<Group> groups = (List<Group>)await _groupService.GetAllGroups();
             var groups = await _groupService.GetAllGroups();
             return View(groups);
         }
@@ -33,15 +32,13 @@ namespace TrueBalances.Controllers
         {
             var availableUsers = await _userService.GetAllUsersAsync();
 
-            // Créer un ViewModel avec la liste des utilisateurs
             var viewModel = new GroupDetailsViewModel
             {
                 AvailableUsers = availableUsers.Select(u => new CustomUser { Id = u.Id, UserName = u.UserName }).ToList(),
-                SelectedUserIds = new List<string>() // Liste des IDs sélectionnés
+                SelectedUserIds = new List<string>()
             };
 
             return View(viewModel);
-            //return View();
 
         }
         // Create Group (POST)
@@ -51,7 +48,6 @@ namespace TrueBalances.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Créer un groupe à partir des données du ViewModel
                 var group = new Group
                 {
                     Name = viewModel.Group.Name,
@@ -65,7 +61,6 @@ namespace TrueBalances.Controllers
                     group.Members.Add(new UserGroup { CustomUserId = userId });
                 }
 
-                // Créer le groupe en utilisant le service
                 await _groupService.CreateGroupAsync(group, userId);
 
                 return RedirectToAction("Index");
