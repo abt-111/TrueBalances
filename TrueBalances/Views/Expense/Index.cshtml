@@ -8,7 +8,7 @@
     var users = ViewBag.customUsers as List<CustomUser>;
 }
 
-<h1>Dépenses</h1>
+<h1 class="text-center" >Gestion des Dépenses</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-primary">Ajouter une dépense</a>
@@ -52,15 +52,15 @@
     <div class="col-md-4">
         <div class="card border-primary mb-3">
             <div class="card-header text-center bg-primary text-white">
-                <h2 class="mb-0">Dettes et Crédits</h2>
+                <h2 class="mb-0">Récapitulatif</h2>
             </div>
             <div class="card-body">
                 <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>Nom</th>
-                            <th>Dettes (€)</th>
-                            <th>Crédits (€)</th>
+                            <th>Sommes dues (€)</th>
+                            <th>Sommes attendues (€)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -82,7 +82,7 @@
         </div>
     </div>
 </div>
-
+<a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Retour à l'accueil</a>
 
 
 @* 
@@ -154,11 +154,11 @@
 
 
 
-@foreach (var item in users)
+@* @foreach (var item in users)
 {
     <p>@item.FirstName</p>
     var debt = Math.Round(Model.Where(e => e.CustomUserId != item.Id).Sum(e => e.Amount / users.Count), 2);
     var credit = Math.Round(Model.Where(e => e.CustomUserId == item.Id).Sum(e => (e.Amount / users.Count) * (users.Count - 1)), 2);
     <p>debt : @debt</p>
     <p>credit : @credit</p>
-} 
+}  *@

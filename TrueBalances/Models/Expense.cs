@@ -33,6 +33,8 @@ public class Expense
     // Propriétés de navigation
     [Display(Name = "Catégorie")]
     public Category? Category { get; set; }
+
+    [Display(Name = "Auteur")]
     public CustomUser? CustomUser { get; set; }
     //public Group? Group { get; set; }
    
