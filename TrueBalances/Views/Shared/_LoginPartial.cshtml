@@ -15,7 +15,7 @@
         @if (hasProfilePhoto)
         {
             <li class="nav-item">
-                <p>@ProfilePhotoService.GetProfilePhotoFile(customUserId)</p>
+                @* <p>@ProfilePhotoService.GetProfilePhotoFile(customUserId)</p> *@
                 <img src="@ProfilePhotoService.GetProfilePhotoFile(customUserId)" alt="Image circulaire" class="circle-img">
             </li>
         }
