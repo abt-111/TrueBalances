@@ -8,149 +8,137 @@
     var users = ViewBag.customUsers as List<CustomUser>;
 }
 
-<h1 class="text-center" >Gestion des Dépenses</h1>
+<style>
+    .custom-header {
+        background-color: #08a045;
+        color: white;
+    }
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Ajouter une dépense</a>
-</p>
+    .custom-create-btn {
+        background-color: #ddb771;
+        color: white;
+        border-color: #ddb771;
+    }
 
-<div class="row">
-    <!-- Colonne pour les dépenses plus large -->
-    <div class="col-md-8">
-        <table class="table table-striped table-bordered">
-            <thead class="thead-dark">
-                <tr>
-                    <th>@Html.DisplayNameFor(model => model.Title)</th>
-                    <th>@Html.DisplayNameFor(model => model.Amount)</th>
-                    <th>@Html.DisplayNameFor(model => model.Date)</th>
-                    <th>@Html.DisplayNameFor(model => model.Category)</th>
-                    <th>@Html.DisplayNameFor(model => model.CustomUser)</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Title)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Amount)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Date)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Category!.Name)</td>
-                        <td>@Html.DisplayFor(modelItem => item.CustomUser.FirstName)</td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
-                            <a asp-action="Details" asp-route-id="@item.Id">Détails</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        .custom-create-btn:hover {
+            background-color: #ddb771;
+            border-color: #ddb771;
+        }
+
+    .custom-back-btn {
+        background-color: black;
+        color: white;
+        border-color: black;
+    }
+
+        .custom-back-btn:hover {
+            background-color: #333;
+            border-color: #333;
+        }
+
+    .custom-table-header {
+        background-color: #08a045;
+        color: white;
+    }
+
+    .custom-table-info {
+        background-color: #fbb02d;
+        color: white;
+    }
+
+    .custom-table-info {
+        background-color: #ddb771;
+        color: white;
+    }
+
+    .action-links a {
+        color: #073b3a;
+    }
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center">Gestion des Dépenses</h1>
+        </div>
     </div>
 
-    <!-- Colonne pour le récapitulatif plus étroite -->
-    <div class="col-md-4">
-        <div class="card border-primary mb-3">
-            <div class="card-header text-center bg-primary text-white">
-                <h2 class="mb-0">Récapitulatif</h2>
-            </div>
-            <div class="card-body">
-                <table class="table table-striped">
-                    <thead>
+    <p >
+        <a asp-action="Create" class="btn custom-create-btn">Ajouter une dépense</a>
+
+    </p>
+
+    <div class="row">
+        <!-- Colonne pour les dépenses plus large -->
+        <div class="col-md-8">
+            <table class="table table-striped table-bordered">
+                <thead class="custom-table-header">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Title)</th>
+                        <th>@Html.DisplayNameFor(model => model.Amount)</th>
+                        <th>@Html.DisplayNameFor(model => model.Date)</th>
+                        <th>@Html.DisplayNameFor(model => model.Category)</th>
+                        <th>@Html.DisplayNameFor(model => model.CustomUser)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
                         <tr>
-                            <th>Nom</th>
-                            <th>Sommes dues (€)</th>
-                            <th>Sommes attendues (€)</th>
+                            <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Amount)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Date)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Category!.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => item.CustomUser.FirstName)</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
+                                <a asp-action="Details" asp-route-id="@item.Id">Détails</a> |
+                                <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var user in users)
-                        {
-                            <tr class="table-info">
-                                <td>@user.FirstName</td>
-                                @{
-                                    var debt = Math.Round(Model.Where(e => e.CustomUserId != user.Id).Sum(e => e.Amount / users.Count), 2);
-                                    var credit = Math.Round(Model.Where(e => e.CustomUserId == user.Id).Sum(e => (e.Amount / users.Count) * (users.Count - 1)), 2);
-                                }
-                                <td>@debt</td>
-                                <td>@credit</td>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Colonne pour le récapitulatif plus étroite -->
+        <div class="col-md-4">
+            <div class="card border-primary mb-3">
+                <div class="card-header text-center custom-header">
+                    <h2 class="mb-0">Récapitulatif</h2>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Sommes dues</th>
+                                <th>Sommes attendues</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in users)
+                            {
+                                <tr class="custom-table-info">
+                                    <td>@user.FirstName</td>
+                                    @{
+                                        var debt = Math.Round(Model.Where(e => e.CustomUserId != user.Id).Sum(e => e.Amount / users.Count), 2);
+                                        var credit = Math.Round(Model.Where(e => e.CustomUserId == user.Id).Sum(e => (e.Amount / users.Count) * (users.Count - 1)), 2);
+                                    }
+                                    <td>@debt €</td>
+                                    <td>@credit €</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Retour à l'accueil</a>
-
-
-@* 
-@{
-    ViewData["Title"] = "Index";
-
-    // Valeur de ViewBag.customUsers est affecter dans l'action Index de ExpenseController
-    var users = ViewBag.customUsers as List<CustomUser>;
-}
-
-<h1>Dépenses</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Ajouter une dépense</a>
-</p>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomUser)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Amount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Category!.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CustomUser.FirstName)
-                </td>
-
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Détails</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table> *@
-
-
 
 
 

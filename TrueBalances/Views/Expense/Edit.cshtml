@@ -6,7 +6,7 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<h4>Dépense</h4>
+@* <h4>Dépense</h4> *@
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -34,8 +34,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label">Catégorie</label>
+                <select asp-for="CategoryId" class="form-control" asp-items="@(ViewBag.Categories)">
+                    <option value=""> </option>
+                </select>
+               @*  <label asp-for="CategoryId" class="control-label">Catégorie</label>
                 <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories"></select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
+                <option value=""> </option> *@
             </div>
             <div class="form-group">
                 <input type="submit" value="Modifier" class="btn btn-primary" />
