@@ -80,12 +80,13 @@ namespace TrueBalances.Areas.Identity.Pages.Account.Manage
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Phone]
-            [Display(Name = "Phone number")]
+            [Display(Name = "Numero de téléphone")]
             public string PhoneNumber { get; set; }
 
             [Display(Name = "Profile Photo URL")]
             [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png" })]
             [MaxFileSize(2 * 1024 * 1024)]
+            [Display(Name = "Photo de profil")]
             public IFormFile ProfilePhotoFile { get; set; }
         }
 
@@ -160,7 +161,7 @@ namespace TrueBalances.Areas.Identity.Pages.Account.Manage
 
             await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Votre profil a été mis à jour.";
             return RedirectToPage();
         }
     }
