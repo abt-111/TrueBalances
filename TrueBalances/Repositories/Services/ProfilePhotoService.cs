@@ -17,7 +17,7 @@ namespace TrueBalances.Repositories.Services
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public ProfilePhoto RegisterProfilePhotoFile(IFormFile photoFile)
+        public async Task RegisterProfilePhotoFile(IFormFile photoFile, string customUserId)
         {
             var profilePhoto = new ProfilePhoto();
             if (photoFile != null)
@@ -31,9 +31,12 @@ namespace TrueBalances.Repositories.Services
                     photoFile.CopyTo(fileStream);
                 }
 
+                profilePhoto.CustomUserId = customUserId;
                 profilePhoto.Url = titre;
+
+                _context.ProfilePhotos.AddAsync(profilePhoto);
+                await _context.SaveChangesAsync();
             }
-            return profilePhoto;
         }
 
         public void UpdateProfilePhotoFile(IFormFile photoFile, ProfilePhoto registeredProfilePhoto)

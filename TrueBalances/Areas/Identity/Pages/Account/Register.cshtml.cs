@@ -154,21 +154,10 @@ namespace TrueBalances.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    // Enregistrer l'URL de la photo de profil
+                    // Enregistrement de la photo de profil
                     if (Input.ProfilePhotoFile != null)
                     {
-                        var profilePhoto = _profilePhotoService.RegisterProfilePhotoFile(Input.ProfilePhotoFile);
-
-                        // Enregistrer l'utilisateur de la photo de profil
-                        profilePhoto.CustomUserId = user.Id;
-
-                        // Utiliser IServiceProvider pour obtenir UserContext
-                        using (var scope = _serviceProvider.CreateScope())
-                        {
-                            var dbContext = scope.ServiceProvider.GetRequiredService<UserContext>();
-                            dbContext.ProfilePhotos.Add(profilePhoto);
-                            await dbContext.SaveChangesAsync();
-                        }
+                        _profilePhotoService.RegisterProfilePhotoFile(Input.ProfilePhotoFile, user.Id);
                     }
 
                     var userId = await _userManager.GetUserIdAsync(user);

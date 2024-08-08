@@ -4,7 +4,7 @@ namespace TrueBalances.Repositories.Interfaces
 {
     public interface IProfilePhotoService
     {
-        public ProfilePhoto RegisterProfilePhotoFile(IFormFile photoFile);
+        public Task RegisterProfilePhotoFile(IFormFile photoFile, string customUserId);
 
         public void UpdateProfilePhotoFile(IFormFile photoFile, ProfilePhoto registeredProfilePhoto);
 
