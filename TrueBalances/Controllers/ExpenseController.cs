@@ -32,13 +32,11 @@ namespace TrueBalances.Controllers
         // GET: ExpenseController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            // Inclure les informations de la catégorie associée
             var expense = await _context.Expenses
+                .Include(e => e.Category)  // Cette ligne inclut les données de la catégorie
                 .FirstOrDefaultAsync(e => e.Id == id);
+        
             if (expense == null)
             {
                 return NotFound();
@@ -108,7 +106,8 @@ namespace TrueBalances.Controllers
         }
 
 
-        // POST: ExpenseController/Edit/5
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Amount,Date,CategoryId")] Expense expense)
@@ -117,16 +116,23 @@ namespace TrueBalances.Controllers
             {
                 return NotFound();
             }
-            
-            expense = new Expense() {Title = expense.Title, Amount = expense.Amount, Date = expense.Date, CategoryId = expense.CategoryId, CustomUserId = "bea02416-0619-4beb-a944-a881c4e6a227"};
-                                _context.Update(expense);
-                                await _context.SaveChangesAsync();
 
-            if (ModelState.IsValid)
+            var existingExpense = await _context.Expenses.FindAsync(id);
+            if (existingExpense == null)
+            {
+                return NotFound();
+            }
+
+            existingExpense.Title = expense.Title;
+            existingExpense.Amount = expense.Amount;
+            existingExpense.Date = expense.Date;
+            existingExpense.CategoryId = expense.CategoryId;
+
+            if (User.Identity.IsAuthenticated)
             {
                 try
                 {
-                    
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -143,27 +149,32 @@ namespace TrueBalances.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Recharger les catégories en cas d'échec de validation
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
             return View(expense);
+            
         }
+
+
 
 
         // GET: ExpenseController/Delete/5
         public async Task<ActionResult> Delete(int? id)
-        
         {
-            if (id == null )
-            {
-                return NotFound();
-            }
-
-            var expense = await _context.Expenses
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (id == null)
             {
                 return NotFound();
             }
+
+            // Inclure les informations de la catégorie associée
+            var expense = await _context.Expenses
+                .Include(e => e.Category)  // Cette ligne inclut les données de la catégorie
+                .FirstOrDefaultAsync(m => m.Id == id);
+        
+            if (expense == null)
+            {
+                return NotFound();
+            }
+
             return View(expense);
         }
 
