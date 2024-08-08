@@ -1,4 +1,6 @@
-﻿namespace TrueBalances.Repositories.Interfaces
+﻿using TrueBalances.Models;
+
+namespace TrueBalances.Repositories.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {
@@ -7,5 +9,6 @@
         Task<int> AddAsync(T entity);
         Task<int> UpdateAsync(T entity);
         Task<int> DeleteAsync(int id);
+        Task<Category?> GetCategoryWithExpensesByIdAsync(int id);
     }
 }

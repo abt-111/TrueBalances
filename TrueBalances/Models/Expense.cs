@@ -24,7 +24,7 @@ public class Expense
     public DateTime Date { get; set; }
 
     // Clés étrangères
-    public int? CategoryId { get; set; }
+    public int CategoryId { get; set; }
     public string CustomUserId { get; set; }
 
     //public int? GroupId { get; set; }
@@ -32,7 +32,7 @@ public class Expense
 
     // Propriétés de navigation
     [Display(Name = "Catégorie")]
-    public Category? Category { get; set; }
+    public Category Category { get; set; }
 
     [Display(Name = "Auteur")]
     public CustomUser? CustomUser { get; set; }

@@ -11,19 +11,32 @@
         text-align: center;
         border-radius: 0.25rem;
         margin-bottom: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
     }
 
         .custom-header h1 {
             margin: 0;
-            font-size: 2rem;
+            font-size: 2.5rem;
         }
 
-        .custom-header img {
-            height: 50px;
+    .welcome-section {
+        margin-top: 20px;
+    }
+
+        .welcome-section h1 {
+            margin-bottom: 20px;
         }
+
+        .welcome-section img {
+            height: 150px;
+            margin-bottom: 20px;
+        }
+
+    .tagline {
+        font-size: 1.25rem;
+        font-style: italic;
+        color: #555;
+        margin-bottom: 20px;
+    }
 
     .custom-buttons {
         display: flex;
@@ -50,12 +63,11 @@
         }
 </style>
 
-<div class="custom-header">
+@* <div class="custom-header">
     <h1>TrueBalances</h1>
-    <img src="~/logo7_29_101234.png" alt="Logo de l'application">
-</div>
+</div> *@
 
-<div class="text-center">
+<div class="text-center welcome-section">
     <h1 class="display-4">
         @if (User.Identity.IsAuthenticated)
         {
@@ -66,6 +78,8 @@
             @:Bienvenue visiteur
         }
     </h1>
+    <p class="tagline">Les bons comptes font les bons amis : TrueBalances vous permet de partager et de gérer vos dépenses collectives, pour que chaque instant passé ensemble soit un souvenir inoubliable.</p>
+    <img src="~/logo7_29_101234.png" alt="Logo de l'application">
 
     <div class="custom-buttons">
         @if (User.Identity.IsAuthenticated)
@@ -81,39 +95,3 @@
         }
     </div>
 </div>
-
-@* @model UserViewModel
-
-@{
-    ViewData["Title"] = "Home Page";
-}
-
-<div class="text-center">
-    <h1 class="display-4">
-        @if (User.Identity.IsAuthenticated)
-        {
-            @:Bienvenue @Model.FirstName @Model.LastName
-        }
-        else
-        {
-            @:Bienvenue visiteur
-        }
-    </h1>
-
-    <form>
-        <div class="d-grid gap-2 col-6 mx-auto">
-            @if (User.Identity.IsAuthenticated)
-            {
-                <a class="btn custom-button" asp-controller="Expense" asp-action="Index">Gérer les dépenses</a>
-                <a class="btn custom-button" asp-controller="Category" asp-action="Index">Gérer les catégories</a>
-                <a class="btn custom-button">Gérer les groupes</a>
-            }
-            else
-            {
-                <a class="btn custom-button" asp-area="Identity" asp-page="/Account/Register">S'inscrire</a>
-                <a class="btn custom-button" asp-area="Identity" asp-page="/Account/Login">Se connecter</a>
-            }
-        </div>
-    </form>
-</div>
- *@

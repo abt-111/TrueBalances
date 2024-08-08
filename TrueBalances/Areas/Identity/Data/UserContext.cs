@@ -56,6 +56,12 @@ public class UserContext : IdentityDbContext<CustomUser>
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+        builder.Entity<Expense>()
+       .HasOne(e => e.Category)
+       .WithMany(c => c.Expenses)
+       .HasForeignKey(e => e.CategoryId)
+       .OnDelete(DeleteBehavior.SetNull);
+
         builder.Entity<Category>().HasData(
             new Category()
             {
