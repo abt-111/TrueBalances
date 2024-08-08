@@ -17,28 +17,28 @@ public class UserContext : IdentityDbContext<CustomUser>
     public DbSet<Expense> Expenses { get; set; }
     public DbSet<ProfilePhoto> ProfilePhotos { get; set; }
 
-    public DbSet<Group> Groups { get; set; }
-    public DbSet<UserGroup> UsersGroup { get; set; }
+    //public DbSet<Group> Groups { get; set; }
+    //public DbSet<UserGroup> UsersGroup { get; set; }
     public DbSet<CustomUser> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
 
-        builder.Entity<UserGroup>()
-            .HasKey(ug => new { ug.GroupId, ug.CustomUserId });
+        //builder.Entity<UserGroup>()
+        //    .HasKey(ug => new { ug.GroupId, ug.CustomUserId });
 
-        builder.Entity<UserGroup>()
-            .HasOne(ug => ug.Group)
-            .WithMany(g => g.Members)
-            .HasForeignKey(ug => ug.GroupId);
+        //builder.Entity<UserGroup>()
+        //    .HasOne(ug => ug.Group)
+        //    .WithMany(g => g.Members)
+        //    .HasForeignKey(ug => ug.GroupId);
 
         //builder.Entity<UserGroup>()
         //    .HasOne(ug => ug.CustomUser)
         //    .WithMany(u => u.UserGroups)
         //    .HasForeignKey(ug => ug.CustomUserId);
 
-        builder.Entity<UserGroup>()
-           .HasKey(ug => ug.Id);
+        //builder.Entity<UserGroup>()
+        //   .HasKey(ug => ug.Id);
 
 
         base.OnModelCreating(builder);
@@ -49,6 +49,12 @@ public class UserContext : IdentityDbContext<CustomUser>
         builder.Entity<Expense>()
         .Property(e => e.Amount)
         .HasColumnType("decimal(18, 2)");
+
+        builder.Entity<Expense>()
+                .HasOne(e => e.Category)
+                .WithMany(c => c.Expenses)
+                .HasForeignKey(e => e.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
 
         builder.Entity<Category>().HasData(
             new Category()
