@@ -6,6 +6,10 @@ namespace TrueBalances.Repositories.Interfaces
     {
         public ProfilePhoto RegisterProfilePhotoFile(IFormFile photoFile);
 
-        public string GetProfilePhoto(string customUserId);
+        public void UpdateProfilePhotoFile(IFormFile photoFile, ProfilePhoto registeredProfilePhoto);
+
+        public string GetProfilePhotoFile(string customUserId);
+
+        public Task<ProfilePhoto> GetProfilePhoto(string customUserId);
     }
 }
