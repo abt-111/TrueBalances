@@ -17,8 +17,8 @@ public class UserContext : IdentityDbContext<CustomUser>
     public DbSet<Expense> Expenses { get; set; }
     public DbSet<ProfilePhoto> ProfilePhotos { get; set; }
 
-    //public DbSet<Group> Groups { get; set; }
-    //public DbSet<UserGroup> UsersGroup { get; set; }
+    public DbSet<Group> Groups { get; set; }
+    public DbSet<UserGroup> UsersGroup { get; set; }
     public DbSet<CustomUser> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
