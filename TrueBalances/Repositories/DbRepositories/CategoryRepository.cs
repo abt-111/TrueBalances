@@ -55,7 +55,7 @@ namespace TrueBalances.Repositories.DbRepositories
         public async Task<Category?> GetCategoryWithExpensesByIdAsync(int id)
         {
             return await _context.Categories
-            .Include(c => c.Expenses) // Inclut les dépenses associées
+            .Include(c => c.Expenses)
             .ThenInclude(e => e.CustomUser)
             .FirstOrDefaultAsync(c => c.Id == id);
         }

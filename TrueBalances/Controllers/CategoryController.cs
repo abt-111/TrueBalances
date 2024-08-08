@@ -127,9 +127,6 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
             return View(category);
-
-            //var category = await _context.GetCategoryByIdAsync(id);
-            //return View(category);
         }
 
     }
