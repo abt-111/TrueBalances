@@ -65,5 +65,12 @@ namespace TrueBalances.Repositories.Services
             var profilePhoto = await _context.ProfilePhotos.FirstOrDefaultAsync(x => x.CustomUserId == customUserId);
             return profilePhoto;
         }
+
+        public async Task<bool> HasProfilePhoto(string customUserId)
+        {
+            var hasProfilePhoto = await _context.ProfilePhotos.AnyAsync(x => x.CustomUserId == customUserId);
+
+            return hasProfilePhoto;
+        }
     }
 }
