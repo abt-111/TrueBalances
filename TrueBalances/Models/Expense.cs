@@ -27,14 +27,13 @@ public class Expense
     public int? CategoryId { get; set; }
     public string CustomUserId { get; set; }
 
-    public int? GroupId { get; set; }
+    //public int? GroupId { get; set; }
 
 
     // Propriétés de navigation
     [Display(Name = "Catégorie")]
-
     public Category? Category { get; set; }
     public CustomUser? CustomUser { get; set; }
-    public Group? Group { get; set; }
+    //public Group? Group { get; set; }
    
 }
