@@ -4,39 +4,118 @@
     ViewData["Title"] = "Categories";
 }
 
+<style>
+    /* Styles pour les boutons */
+    .custom-create-btn, .custom-button {
+        background-color: #08a045; /* Couleur de fond verte */
+        color: white; /* Couleur du texte */
+        border-color: #08a045; /* Bordure verte */
+        border-radius: 0.25rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+        .custom-create-btn:hover, .custom-button:hover {
+            background-color: #06a03d; /* Couleur de fond verte plus foncée au survol */
+            border-color: #06a03d; /* Bordure verte plus foncée au survol */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    /* Styles pour l'en-tête de tableau */
+    .custom-table-header {
+        background-color: #08a045;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    /* Styles pour la table */
+    .table {
+        border-radius: 0.25rem;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .table thead th {
+            background-color: #08a045;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: white;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa; /* Couleur de fond légèrement grise au survol pour contraste */
+        }
+
+    /* Styles pour les liens d'action */
+    .action-links a, .action-link a {
+        color: #073b3a;
+        font-size: 1.2rem;
+        margin: 0 5px;
+        transition: color 0.3s;
+    }
+
+        .action-links a:hover, .action-link a:hover {
+            color: #0056b3;
+        }
+
+    .action-links i, .action-link i {
+        transition: color 0.3s;
+    }
+
+    /* Styles pour les lignes d'information dans le tableau */
+    .custom-table-info {
+        background-color: white;
+    }
+
+        .custom-table-info td {
+            color: black;
+            font-weight: bold;
+        }
+        
+
+    .custom-header {
+        background-color: #08a045;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        border-radius: 0.25rem;
+    }
+</style>
+
 <div class="container">
     <div class="row">
         <div class="col-md-12 text-center my-4">
-            <h1 class="display-4">Gestion des catégories</h1>
+            <h1 class="display-4 custom-header">Gestion des catégories</h1>
         </div>
     </div>
     <div class="row mb-4">
         <div class="col-md-12 text-right">
-            <a class="btn btn-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter une catégorie</a>
+            <a class="btn custom-create-btn" asp-action="Create"><i class="fas fa-plus"></i> Ajouter une catégorie</a>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <table class="table table-striped table-hover">
-                <thead class="thead-dark">
+                <thead class="custom-table-header">
                     <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.First().Name)
-                        </th>
-                        <th></th>
+                        <th>@Html.DisplayNameFor(model => model.First().Name)</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Name)
-                            </td>
+                        <tr class="custom-table-info">
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
                             <td class="text-right">
-                                <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-categorieId="@item.Id"><i class="fas fa-edit"></i> Edit</a>
-                                <a class="btn btn-secondary btn-sm" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i> Details</a>
-                                <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash-alt"></i> Delete</a>
+                                <a class="btn custom-create-btn btn-sm" asp-action="Edit" asp-route-categorieId="@item.Id"><i class="fas fa-edit"></i> Modifier</a>
+                                <a class="btn custom-create-btn btn-sm" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i> Détails</a>
+                                <a class="btn custom-create-btn btn-sm" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash-alt"></i> Supprimer</a>
                             </td>
                         </tr>
                     }
@@ -44,9 +123,11 @@
             </table>
         </div>
     </div>
+    <div>
+        <a asp-controller="Home" asp-action="Index" style="color: #073b3a;">Retour à l'accueil</a>
+    </div>
 </div>
 
 @section Scripts {
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 }
-

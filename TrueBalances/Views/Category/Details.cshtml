@@ -1,24 +1,140 @@
 ﻿@model TrueBalances.Models.Category
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Détails";
 }
 
-<h1>Details</h1>
+<style>
+    /* Styles pour l'en-tête */
+    .custom-header {
+        background-color: #08a045;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        border-radius: 0.25rem;
+        margin-bottom: 20px;
+    }
 
-<div>
-    <h4>Category</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    /* Styles pour les tableaux */
+    .table {
+        border-radius: 0.25rem;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .table thead th {
+            background-color: #08a045;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: white;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa; /* Couleur de fond légèrement grise au survol pour contraste */
+        }
+
+    /* Styles pour les boutons */
+    .btn-primary {
+        background-color: #08a045;
+        border-color: #08a045;
+        border-radius: 0.25rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+        .btn-primary:hover {
+            background-color: #06a03d;
+            border-color: #06a03d;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    /* Styles pour les liens d'action */
+    .action-link {
+        color: #073b3a;
+        font-size: 1rem; /* Taille du texte */
+        margin-top: 10px;
+        display: inline-block;
+        transition: color 0.3s;
+    }
+
+        .action-link:hover {
+            color: #0056b3;
+        }
+
+    /* Styles généraux */
+    .container {
+        margin-top: 20px;
+    }
+
+    dl.row dt {
+        font-weight: bold;
+    }
+
+    dl.row dd {
+        margin-bottom: 20px;
+    }
+</style>
+
+<h1 class="custom-header">@ViewData["Title"]</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <!-- Section pour afficher les dépenses associées à cette catégorie -->
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h4>Dépenses associées</h4>
+            <hr />
+            @if (Model.Expenses.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Titre</th>
+                            <th>Montant</th>
+                            <th>Date</th>
+                            <th>Utilisateur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var expense in Model.Expenses)
+                        {
+                            <tr>
+                                <td>@expense.Title</td>
+                                <td>@expense.Amount €</td>
+                                <td>@expense.Date.ToString("d")</td>
+                                <td>@expense.CustomUser.FirstName</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>Aucune dépense associée à cette catégorie.</p>
+            }
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-8 offset-md-2 text-right">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Modifier</a>
+            <a asp-action="Index" class="btn btn-primary">Retour à la liste</a>
+        </div>
+    </div>
 </div>

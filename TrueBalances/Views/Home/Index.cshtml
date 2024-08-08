@@ -4,6 +4,90 @@
     ViewData["Title"] = "Home Page";
 }
 
+<style>
+    .custom-header {
+        color: #08a045;
+        padding: 20px;
+        text-align: center;
+        border-radius: 0.25rem;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .custom-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .custom-header img {
+            height: 50px;
+        }
+
+    .custom-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .custom-button {
+        background-color: #08a045;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 0.25rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, box-shadow 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .custom-button:hover {
+            background-color: #06a03d;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+</style>
+
+<div class="custom-header">
+    <h1>TrueBalances</h1>
+    <img src="~/logo7_29_101234.png" alt="Logo de l'application">
+</div>
+
+<div class="text-center">
+    <h1 class="display-4">
+        @if (User.Identity.IsAuthenticated)
+        {
+            @:Bienvenue @Model.FirstName @Model.LastName
+        }
+        else
+        {
+            @:Bienvenue visiteur
+        }
+    </h1>
+
+    <div class="custom-buttons">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a class="btn custom-button" asp-controller="Expense" asp-action="Index">Gérer les dépenses</a>
+            <a class="btn custom-button" asp-controller="Category" asp-action="Index">Gérer les catégories</a>
+            <a class="btn custom-button" asp-controller="Group" asp-action="Index">Gérer les groupes</a>
+        }
+        else
+        {
+            <a class="btn custom-button" asp-area="Identity" asp-page="/Account/Register">S'inscrire</a>
+            <a class="btn custom-button" asp-area="Identity" asp-page="/Account/Login">Se connecter</a>
+        }
+    </div>
+</div>
+
+@* @model UserViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
 <div class="text-center">
     <h1 class="display-4">
         @if (User.Identity.IsAuthenticated)
@@ -32,3 +116,4 @@
         </div>
     </form>
 </div>
+ *@
