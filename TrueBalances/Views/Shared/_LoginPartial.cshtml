@@ -16,17 +16,34 @@
         {
             <li class="nav-item">
                 @* <p>@ProfilePhotoService.GetProfilePhotoFile(customUserId)</p> *@
-                <img src="@ProfilePhotoService.GetProfilePhotoFile(customUserId)" alt="Image circulaire" class="circle-img">
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="@ProfilePhotoService.GetProfilePhotoFile(customUserId)" alt="Image circulaire" class="circle-img">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-lg-start" aria-labelledby="dropdownMenuButton1">
+                        <li>
+                            <a id="manage" class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Mon compte</a>
+                        </li>
+                        <li>
+                            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <button id="logout" type="submit" class="dropdown-item" text-dark border-0">Se deconnecter </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </li>
         }
-        <li class="nav-item">
-            <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Mon compte</a>
-        </li>
-        <li class="nav-item">
-            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Se deconnecter </button>
-            </form>
-        </li>
+        else
+        {
+            <li class="nav-item">
+                <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Mon compte</a>
+            </li>
+            <li class="nav-item">
+                <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Se deconnecter </button>
+                </form>
+            </li>
+        }
     }
     else
     {
