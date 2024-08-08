@@ -23,6 +23,7 @@ using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
+using TrueBalances.Tools;
 
 namespace TrueBalances.Areas.Identity.Pages.Account
 {
@@ -122,6 +123,8 @@ namespace TrueBalances.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             [Display(Name = "Profile Photo URL")]
+            [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png" })]
+            [MaxFileSize(2 * 1024 * 1024)]
             public IFormFile ProfilePhotoFile { get; set; }
         }
 
@@ -151,21 +154,10 @@ namespace TrueBalances.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    // Enregistrer l'URL de la photo de profil
+                    // Enregistrement de la photo de profil
                     if (Input.ProfilePhotoFile != null)
                     {
-                        var profilePhoto = _profilePhotoService.RegisterProfilePhotoFile(Input.ProfilePhotoFile);
-
-                        // Enregistrer l'utilisateur de la photo de profil
-                        profilePhoto.CustomUserId = user.Id;
-
-                        // Utiliser IServiceProvider pour obtenir UserContext
-                        using (var scope = _serviceProvider.CreateScope())
-                        {
-                            var dbContext = scope.ServiceProvider.GetRequiredService<UserContext>();
-                            dbContext.ProfilePhotos.Add(profilePhoto);
-                            await dbContext.SaveChangesAsync();
-                        }
+                        _profilePhotoService.RegisterProfilePhotoFile(Input.ProfilePhotoFile, user.Id);
                     }
 
                     var userId = await _userManager.GetUserIdAsync(user);

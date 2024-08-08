@@ -14,6 +14,7 @@ using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
+using TrueBalances.Tools;
 
 namespace TrueBalances.Areas.Identity.Pages.Account.Manage
 {
@@ -82,6 +83,9 @@ namespace TrueBalances.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Numero de téléphone")]
             public string PhoneNumber { get; set; }
 
+            [Display(Name = "Profile Photo URL")]
+            [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png" })]
+            [MaxFileSize(2 * 1024 * 1024)]
             [Display(Name = "Photo de profil")]
             public IFormFile ProfilePhotoFile { get; set; }
         }
