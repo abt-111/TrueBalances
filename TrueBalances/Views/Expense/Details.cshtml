@@ -1,42 +1,30 @@
-@model TrueBalances.Models.Expense
-
-@{
-    ViewData["Title"] = "Details";
-}
-
-<h1>Details de la dépense</h1>
-
 <div>
     <h4>Dépense</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
+            Titre
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
+            @Model.Title
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Amount)
+            Montant
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Amount)
+            @Model.Amount
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
+            Date
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Date)
+            @Model.Date
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
+            Catégorie
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Category)
+            @Model.Category?.Name 
         </dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Modifier</a> |
-    <a asp-action="Index">Retourner a la liste</a>
 </div>
