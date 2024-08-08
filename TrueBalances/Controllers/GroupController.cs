@@ -23,8 +23,9 @@ namespace TrueBalances.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //var groups = await _groupService.GetAllGroups();
-            return View();
+            //List<Group> groups = (List<Group>)await _groupService.GetAllGroups();
+            var groups = await _groupService.GetAllGroups();
+            return View(groups);
         }
 
         // Create Group (GET)

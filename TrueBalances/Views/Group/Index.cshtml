@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Liste des groupes";
 }
+@{
+    var groups = Model ?? new List<TrueBalances.Models.Group>();
+}
 
 <h2>Liste des groupes</h2>
 <p class="text-center">
@@ -18,19 +21,19 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var group in Model)
+        @foreach (var group in groups)
         {
             <tr>
                 <td>@group.Name</td>
                 <td>@group.Members.Count()</td>
-                <td>
+                @* <td>
                     @foreach (var member in group.Members)
                     {
                         <span>@member.CustomUserId</span>
 
                         <br />
                     }
-                </td>
+                </td> *@
                 <td>
                     <a asp-action="Edit" asp-route-id="@group.Id" class="btn btn-sm btn-warning">Editer</a>
                     <a asp-action="Details" asp-route-id="@group.Id" class="btn btn-sm btn-info">Détails</a>

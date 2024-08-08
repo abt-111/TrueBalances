@@ -22,7 +22,7 @@ namespace TrueBalances.Repositories.Services
         {
 
             var groups = await _groupRepository.GetAllAsync();
-            return groups.ToList();
+            return groups.ToList() ?? new List<Group>();
         }
 
         //Methode pour Trouver un group via son Id
