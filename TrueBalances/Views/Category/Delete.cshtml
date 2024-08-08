@@ -1,15 +1,15 @@
 ﻿@model TrueBalances.Models.Category
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Supprimer une catégorie";
 }
 
-<h1>Delete</h1>
+<h1>Supprimer une catégorie</h1>
 
-<h4>Category</h4>
+@* <h4>Category</h4> *@
 <hr />
 <div>
-    <h4>Êtes-vous sûr de vouloir supprimer cette catègorie?</h4>
+    <h4>Êtes-vous sûr de vouloir supprimer cette catégorie?</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -22,7 +22,7 @@
 
     <form asp-action="Delete" method="post">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        <input type="submit" value="Supprimer" class="btn btn-danger" /> |
+        <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
     </form>
 </div>
