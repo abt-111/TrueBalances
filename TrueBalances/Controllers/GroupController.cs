@@ -179,8 +179,7 @@ namespace TrueBalances.Controllers
                 Group = group,
                 AvailableUsers = availableUsers
             };
-            //var summary = _groupService.CalculateSummary(group);
-            //ViewBag.Summary = summary;
+
 
             return View(viewModel);
         }

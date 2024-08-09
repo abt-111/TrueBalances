@@ -20,9 +20,8 @@ namespace TrueBalances.Repositories.Services
 
         public async Task<IEnumerable<Group>> GetAllGroups()
         {
-
             var groups = await _groupRepository.GetAllAsync();
-            return groups.ToList() ?? new List<Group>();
+            return groups.ToList();
         }
 
         //Methode pour Trouver un group via son Id
