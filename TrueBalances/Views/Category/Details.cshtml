@@ -100,7 +100,7 @@
         <div class="col-md-8 offset-md-2">
             <h4>Dépenses associées</h4>
             <hr />
-            @if (Model.Expenses.Any())
+            @if (Model?.Expenses != null && Model.Expenses.Any())
             {
                 <table class="table table-striped">
                     <thead>
@@ -108,7 +108,7 @@
                             <th>Titre</th>
                             <th>Montant</th>
                             <th>Date</th>
-                            <th>Utilisateur</th>
+                            <th>Auteur</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -118,7 +118,7 @@
                                 <td>@expense.Title</td>
                                 <td>@expense.Amount €</td>
                                 <td>@expense.Date.ToString("d")</td>
-                                <td>@expense.CustomUser.FirstName</td>
+                                <td>@expense.CustomUser.FirstName </td>
                             </tr>
                         }
                     </tbody>

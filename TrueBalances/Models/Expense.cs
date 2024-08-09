@@ -40,3 +40,5 @@ namespace TrueBalances.Models
         public List<string> SelectedUserIds { get; set; } = new List<string>();
     }
 }
+
+    

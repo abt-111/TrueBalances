@@ -5,6 +5,7 @@ using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
 using TrueBalances.Data;
 using Microsoft.AspNetCore.Authorization;
+using TrueBalances.Repositories.Services;
 
 
 namespace TrueBalances.Controllers
@@ -99,8 +100,8 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
 
-            // Réinitialiser les identifiants de catégorie des dépenses associées
-            //var expenses = _context.Expenses.Where(e => e.CategoryId == id).ToList(); 
+            //Réinitialiser les identifiants de catégorie des dépenses associées
+            //var expenses = _context.Expenses.Where(e => e.CategoryId == id).ToList();
             //foreach (var expense in expenses)
             //{
             //    expense.CategoryId = null;
@@ -120,15 +121,11 @@ namespace TrueBalances.Controllers
         //Détails 
         public async Task<IActionResult> Details(int id)
         {
-            //var category = await _context.GetCategoryByIdAsync(id).Include(c => c.Expenses).FirstOrDefaultAsync(m => m.Id == id);
-
-            //if (category == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return View(category);
-            var category = await _context.GetCategoryByIdAsync(id);
+            var category = await _context.GetCategoryWithExpensesByIdAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
             return View(category);
         }
 

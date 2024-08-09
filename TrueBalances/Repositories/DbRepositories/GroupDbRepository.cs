@@ -57,6 +57,10 @@ namespace TrueBalances.Repositories.DbRepositories
             return -1;
         }
 
+        public Task<Category?> GetCategoryWithExpensesByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }
