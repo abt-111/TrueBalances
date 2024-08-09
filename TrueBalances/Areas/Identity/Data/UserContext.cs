@@ -15,6 +15,8 @@ public class UserContext : IdentityDbContext<CustomUser>
 
     public DbSet<Category> Categories { get; set; }
     public DbSet<Expense> Expenses { get; set; }
+    public DbSet<CustomUser> CustomUsers { get; set; }
+
     public DbSet<ProfilePhoto> ProfilePhotos { get; set; }
 
     public DbSet<Group> Groups { get; set; }
@@ -42,19 +44,38 @@ public class UserContext : IdentityDbContext<CustomUser>
 
 
         base.OnModelCreating(builder);
-        // Customize the ASP.NET Identity model and override the defaults if needed.
-        // For example, you can rename the ASP.NET Identity table names and more.
-        // Add your customizations after calling base.OnModelCreating(builder);
+
+        // Configuration de la relation one-to-many entre Expense et CustomUser (en tant que créateur)
+        builder.Entity<Expense>()
+            .HasOne(e => e.CustomUser)
+            .WithMany(u => u.CreatedExpenses)
+            .HasForeignKey(e => e.CustomUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Configuration de la relation many-to-many entre Expense et CustomUser (en tant que participant)
+        builder.Entity<Expense>()
+            .HasMany(e => e.Participants)
+            .WithMany(u => u.ParticipatingExpenses)
+            .UsingEntity<Dictionary<string, object>>(
+                "ExpenseParticipant",
+                j => j.HasOne<CustomUser>()
+                    .WithMany()
+                    .HasForeignKey("CustomUserId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<Expense>()
+                    .WithMany()
+                    .HasForeignKey("ExpenseId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("ExpenseId", "CustomUserId");
+                    j.ToTable("ExpenseParticipants");
+                }
+            );
 
         builder.Entity<Expense>()
-        .Property(e => e.Amount)
-        .HasColumnType("decimal(18, 2)");
-
-        builder.Entity<Expense>()
-                .HasOne(e => e.Category)
-                .WithMany(c => c.Expenses)
-                .HasForeignKey(e => e.CategoryId)
-                .OnDelete(DeleteBehavior.SetNull);
+            .Property(e => e.Amount)
+            .HasColumnType("decimal(18, 2)");
 
         builder.Entity<Expense>()
        .HasOne(e => e.Category)
@@ -79,112 +100,4 @@ public class UserContext : IdentityDbContext<CustomUser>
                 Name = "Co-voiturage",
             }
         );
-
-        /*
-         * A ne pas utilisé finalement. Les CustomUserId sont spécifique à ma BDD et donc posent problème pour les migrations.
-         * 
-         * builder.Entity<Expense>().HasData(
-            new Expense()
-            {
-                Id = 1,
-                Title = "Lunch",
-                Amount = 16,
-                Date = DateTime.Parse("2023-08-01 12:30:00"),
-                CategoryId = 1,
-                CustomUserId = "94981d8e-a7f9-4ce0-a695-5420627372ed",
-                GroupId = null,
-            },
-            new Expense()
-            {
-                Id = 2,
-                Title = "Office Supplies",
-                Amount = 26,
-                Date = DateTime.Parse("2023-08-02 09:15:00"),
-                CategoryId = 1,
-                CustomUserId = "9b208126-4a01-4e86-bac5-b272e239c47b",
-                GroupId = null,
-            },
-            new Expense()
-            {
-                Id = 3,
-                Title = "Transportation",
-                Amount = 7,
-                Date = DateTime.Parse("2023-08-03 08:00:00"),
-                CategoryId = 1,
-                CustomUserId = "fba2ff14-ea5b-460e-a832-6957513e97c1",
-                GroupId = null,
-            },
-            new Expense()
-            {
-                Id = 4,
-                Title = "Coffee",
-                Amount = 4,
-                Date = DateTime.Parse("2023-08-04 10:45:00"),
-                CategoryId = 1,
-                CustomUserId = "94981d8e-a7f9-4ce0-a695-5420627372ed",
-                GroupId = null,
-            },
-            new Expense()
-            {
-                Id = 5,
-                Title = "Dinner",
-                Amount = 20,
-                Date = DateTime.Parse("2023-08-05 19:30:00"),
-                CategoryId = 1,
-                CustomUserId = "9b208126-4a01-4e86-bac5-b272e239c47b",
-                GroupId = null,
-            },
-            new Expense()
-            {
-                Id = 6,
-                Title = "Parking",
-                Amount = 5,
-                Date = DateTime.Parse("2023-08-06 14:00:00"),
-                CategoryId = 1,
-                CustomUserId = "fba2ff14-ea5b-460e-a832-6957513e97c1",
-                GroupId = null,
-            },
-            new Expense()
-            {
-                Id = 7,
-                Title = "Books",
-                Amount = 30,
-                Date = DateTime.Parse("2023-08-07 11:00:00"),
-                CategoryId = 1,
-                CustomUserId = "94981d8e-a7f9-4ce0-a695-5420627372ed",
-                GroupId = null,
-            },
-            new Expense()
-            {
-                Id = 8,
-                Title = "Groceries",
-                Amount = 46,
-                Date = DateTime.Parse("2023-08-08 17:00:00"),
-                CategoryId = 1,
-                CustomUserId = "9b208126-4a01-4e86-bac5-b272e239c47b",
-                GroupId = null,
-            },
-            new Expense()
-            {
-                Id = 9,
-                Title = "Gym Membership",
-                Amount = 50,
-                Date = DateTime.Parse("2023-08-09 07:00:00"),
-                CategoryId = 1,
-                CustomUserId = "fba2ff14-ea5b-460e-a832-6957513e97c1",
-                GroupId = null,
-            },
-            new Expense()
-            {
-                Id = 10,
-                Title = "Medical Expenses",
-                Amount = 100,
-                Date = DateTime.Parse("2023-08-10 15:00:00"),
-                CategoryId = 1,
-                CustomUserId = "94981d8e-a7f9-4ce0-a695-5420627372ed",
-                GroupId = null,
-            }
-        );*/
-
     }
-}

@@ -86,7 +86,7 @@ namespace TrueBalances.Areas.Identity.Pages.Account.Manage
             //[Display(Name = "Profile Photo URL")]
             [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png" })]
             [MaxFileSize(2 * 1024 * 1024)]
-            [Display(Name = "Photo de profil")]
+            /*[Display(Name = "Photo de profil")]*/
             public IFormFile ProfilePhotoFile { get; set; }
         }
 

@@ -48,7 +48,10 @@ namespace TrueBalances.Controllers
             }
 
             var expense = await _context.Expenses
+                .Include(e => e.Category) // Inclure la catégorie
+                .Include(e => e.Participants) // Inclure les participants
                 .FirstOrDefaultAsync(e => e.Id == id);
+
             if (expense == null)
             {
                 return NotFound();
@@ -57,61 +60,50 @@ namespace TrueBalances.Controllers
             return View(expense);
         }
 
-        // GET: ExpenseController/Create
+
         public IActionResult Create()
         {
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
+
+            // Récupérer tous les utilisateurs disponibles
+            var allUsers = _context.Users.ToList();
+            ViewBag.Users = allUsers;
+
             return View();
         }
 
 
-        // POST: ExpenseController/Create
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Amount,Date,CategoryId")] Expense expense)
+        public async Task<IActionResult> Create([Bind("Title,Amount,Date,CategoryId")] Expense expense, string[] SelectedUserIds)
         {
-        
-            
             if (User.Identity.IsAuthenticated)
             {
                 var user = await _userManager.GetUserAsync(User);
-                expense = new Expense() {Title = expense.Title, Amount = expense.Amount, Date = expense.Date, CategoryId = expense.CategoryId, CustomUserId = user.Id};
+                expense.CustomUserId = user.Id;
+
+                if (SelectedUserIds != null && SelectedUserIds.Length > 0)
+                {
+                    foreach (var userId in SelectedUserIds)
+                    {
+                        var selectedUser = await _context.Users.FindAsync(userId);
+                        if (selectedUser != null)
+                        {
+                            expense.Participants.Add(selectedUser);
+                        }
+                    }
+                }
+
                 _context.Expenses.Add(expense);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            if (ModelState.IsValid)
-            {
-                
 
-            }
-            else
-            {
-                foreach (var modelError in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine(modelError.ErrorMessage);
-                }
-            }
-
-
-            var categories = await _context.Categories.ToListAsync();
-            var categoryList = categories.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            }).ToList();
-
-            // Ajouter l'option "Aucune" au début de la liste
-            categoryList.Insert(0, new SelectListItem
-            {
-                Value = string.Empty,
-                Text = "Aucune"
-            });
-
-            ViewBag.Categories = categoryList;
-            //ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
+            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
+            ViewBag.Users = _context.Users.ToList();
             return View(expense);
         }
+
+
 
         // GET: ExpenseController/Edit/5
         public async Task<IActionResult> Edit(int id)
@@ -121,56 +113,100 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
 
-            var expense = await _context.Expenses.Include(e => e.Category).FirstOrDefaultAsync(e => e.Id == id);
+            var expense = await _context.Expenses
+                .Include(e => e.Category)
+                .Include(e => e.Participants)  // Inclure les participants
+                .FirstOrDefaultAsync(e => e.Id == id);
+
             if (expense == null)
             {
                 return NotFound();
             }
 
+            // Empêcher l'accès quand la dépenses n'appartient pas à l'utilisateur
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user.Id != expense.CustomUserId)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
+
+            // Récupérer la liste des utilisateurs
+            ViewBag.Users = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
+
             return View(expense);
         }
 
 
         // POST: ExpenseController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Amount,Date,CategoryId, CustomUserId")] Expense expense)
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Edit(int id, Expense expense, string[] selectedUserIds)
+{
+    if (id != expense.Id)
+    {
+        return NotFound();
+    }
+
+    if (ModelState.IsValid)
+    {
+        try
         {
-            if (id != expense.Id)
+            var existingExpense = await _context.Expenses
+                .Include(e => e.Participants)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (existingExpense == null)
             {
                 return NotFound();
             }
-            
-            //expense = new Expense() {Title = expense.Title, Amount = expense.Amount, Date = expense.Date, CategoryId = expense.CategoryId, CustomUserId = user.Id };
-                                _context.Update(expense);
-                                await _context.SaveChangesAsync();
 
-            if (ModelState.IsValid)
+            // Mettre à jour les propriétés de l'expense
+            existingExpense.Title = expense.Title;
+            existingExpense.Amount = expense.Amount;
+            existingExpense.Date = expense.Date;
+            existingExpense.CategoryId = expense.CategoryId;
+            existingExpense.CustomUserId = expense.CustomUserId;
+
+            // Mettre à jour la liste des participants
+            existingExpense.Participants.Clear();
+            if (selectedUserIds != null)
             {
-                try
+                var selectedUsers = await _context.Users
+                    .Where(u => selectedUserIds.Contains(u.Id))
+                    .ToListAsync();
+                foreach (var user in selectedUsers)
                 {
-                    
+                    existingExpense.Participants.Add(user);
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ExpenseExists(expense.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-
-                return RedirectToAction(nameof(Index));
             }
 
-            // Recharger les catégories en cas d'échec de validation
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
-            return View(expense);
+            _context.Update(existingExpense);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!ExpenseExists(expense.Id))
+            {
+                return NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+    }
+
+    // Recharger les catégories et les utilisateurs en cas d'échec de validation
+    ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
+    ViewBag.Users = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
+
+    return View(expense);
+}
 
 
         // GET: ExpenseController/Delete/5
@@ -188,6 +224,15 @@ namespace TrueBalances.Controllers
             {
                 return NotFound();
             }
+
+            // Empêcher l'accès quand la dépenses n'appartient pas à l'utilisateur
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user.Id != expense.CustomUserId)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(expense);
         }
 

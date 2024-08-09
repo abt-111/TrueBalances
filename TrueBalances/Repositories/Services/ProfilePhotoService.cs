@@ -58,7 +58,7 @@ namespace TrueBalances.Repositories.Services
         public string GetProfilePhotoFile(string customUserId)
         {
             ProfilePhoto profilePhoto = _context.ProfilePhotos.FirstOrDefault(x => x.CustomUserId == customUserId);
-            string filePath = Path.Combine("images", profilePhoto.Url);
+            string filePath = Path.Combine("\\images", profilePhoto.Url);
 
             return filePath;
         }
