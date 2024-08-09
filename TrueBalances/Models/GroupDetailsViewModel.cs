@@ -7,6 +7,6 @@ namespace TrueBalances.Models
         public Group Group { get; set; }
         public List<CustomUser> AvailableUsers { get; set; }
         public List<string> SelectedUserIds { get; set; }
-        //public IFormFile BannerImage { get; set; }
+
     }
 }

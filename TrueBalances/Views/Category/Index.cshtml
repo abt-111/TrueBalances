@@ -5,29 +5,18 @@
 }
 
 <style>
-    /* Styles pour les boutons */
-    .custom-create-btn, .custom-button {
-        background-color: #08a045; /* Couleur de fond verte */
-        color: white; /* Couleur du texte */
-        border-color: #08a045; /* Bordure verte */
-        border-radius: 0.25rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s, box-shadow 0.3s;
+    /* Styles pour les icônes d'action */
+    .action-icon {
+        color: #073b3a; /* Couleur des icônes */
+        font-size: 1.5rem; /* Taille des icônes */
+        margin: 0 5px;
+        transition: color 0.3s;
+        text-decoration: none;
     }
 
-        .custom-create-btn:hover, .custom-button:hover {
-            background-color: #06a03d; /* Couleur de fond verte plus foncée au survol */
-            border-color: #06a03d; /* Bordure verte plus foncée au survol */
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        .action-icon:hover {
+            color: #0056b3; /* Couleur des icônes au survol */
         }
-
-    /* Styles pour l'en-tête de tableau */
-    .custom-table-header {
-        background-color: #08a045;
-        color: white;
-        text-align: center;
-        font-weight: bold;
-    }
 
     /* Styles pour la table */
     .table {
@@ -37,7 +26,7 @@
     }
 
         .table thead th {
-            background-color: #08a045;
+            background-color: #74a57f;
             color: white;
             text-align: center;
             font-weight: bold;
@@ -51,20 +40,12 @@
             background-color: #f8f9fa; /* Couleur de fond légèrement grise au survol pour contraste */
         }
 
-    /* Styles pour les liens d'action */
-    .action-links a, .action-link a {
-        color: #073b3a;
-        font-size: 1.2rem;
-        margin: 0 5px;
-        transition: color 0.3s;
-    }
-
-        .action-links a:hover, .action-link a:hover {
-            color: #0056b3;
-        }
-
-    .action-links i, .action-link i {
-        transition: color 0.3s;
+    /* Styles pour l'en-tête de tableau */
+    .custom-table-header {
+        background-color: #08a045;
+        color: white;
+        text-align: center;
+        font-weight: bold;
     }
 
     /* Styles pour les lignes d'information dans le tableau */
@@ -76,7 +57,6 @@
             color: black;
             font-weight: bold;
         }
-        
 
     .custom-header {
         background-color: #08a045;
@@ -113,9 +93,9 @@
                         <tr class="custom-table-info">
                             <td>@Html.DisplayFor(modelItem => item.Name)</td>
                             <td class="text-right">
-                                <a class="btn custom-create-btn btn-sm" asp-action="Edit" asp-route-categorieId="@item.Id"><i class="fas fa-edit"></i> Modifier</a>
-                                <a class="btn custom-create-btn btn-sm" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i> Détails</a>
-                                <a class="btn custom-create-btn btn-sm" asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash-alt"></i> Supprimer</a>
+                                <a class="action-icon" asp-action="Edit" asp-route-categorieId="@item.Id" title="Modifier"><i class="fas fa-edit"></i></a>
+                                <a class="action-icon" asp-action="Details" asp-route-id="@item.Id" title="Détails"><i class="fas fa-info-circle"></i></a>
+                                <a class="action-icon" asp-action="Delete" asp-route-id="@item.Id" title="Supprimer"><i class="fas fa-trash-alt"></i></a>
                             </td>
                         </tr>
                     }
