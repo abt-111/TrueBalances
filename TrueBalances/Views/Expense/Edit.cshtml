@@ -16,10 +16,10 @@
         transition: border-color 0.3s, box-shadow 0.3s;
     }
 
-    .form-control:focus {
-        border-color: #08a045;
-        box-shadow: 0 0 0 0.2rem rgba(8, 160, 69, 0.25);
-    }
+        .form-control:focus {
+            border-color: #08a045;
+            box-shadow: 0 0 0 0.2rem rgba(8, 160, 69, 0.25);
+        }
 
     .btn-primary {
         background-color: #08a045;
@@ -29,11 +29,11 @@
         transition: background-color 0.3s, box-shadow 0.3s;
     }
 
-    .btn-primary:hover {
-        background-color: #06a03d;
-        border-color: #06a03d;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
+        .btn-primary:hover {
+            background-color: #06a03d;
+            border-color: #06a03d;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
 
     .text-danger {
         color: #dc3545;
@@ -46,9 +46,9 @@
         display: inline-block;
     }
 
-    .action-link:hover {
-        color: #0056b3;
-    }
+        .action-link:hover {
+            color: #0056b3;
+        }
 </style>
 
 <h1 class="custom-header text-center">@ViewData["Title"]</h1>
@@ -96,7 +96,7 @@
                         @foreach (var user in (SelectList)ViewBag.Users)
                         {
                             <div>
-                                <input type="checkbox" name="SelectedUserIds" value="@user.Value"
+                                <input type="checkbox" name="selectedUserIds" value="@user.Value"
                                     @(Model.Participants.Any(p => p.Id == user.Value) ? "checked" : "") />
                                 <label>@user.Text</label>
                             </div>
@@ -113,7 +113,7 @@
 </div>
 
 <div>
-    <a asp-action="Index" class="action-link">Retourner à la liste</a>
+    <a asp-action="Index" class="action-link">Retour à la liste</a>
 </div>
 
 @section Scripts {
