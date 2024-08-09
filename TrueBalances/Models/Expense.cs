@@ -35,5 +35,8 @@ namespace TrueBalances.Models
 
         // Liste des participants
         public ICollection<CustomUser> Participants { get; set; } = new List<CustomUser>();
+        
+        [NotMapped]
+        public List<string> SelectedUserIds { get; set; } = new List<string>();
     }
 }
