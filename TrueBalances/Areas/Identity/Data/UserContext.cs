@@ -15,6 +15,8 @@ public class UserContext : IdentityDbContext<CustomUser>
 
     public DbSet<Category> Categories { get; set; }
     public DbSet<Expense> Expenses { get; set; }
+    public DbSet<CustomUser> CustomUsers { get; set; }
+
     public DbSet<ProfilePhoto> ProfilePhotos { get; set; }
 
     public DbSet<Group> Groups { get; set; }
@@ -42,13 +44,38 @@ public class UserContext : IdentityDbContext<CustomUser>
 
 
         base.OnModelCreating(builder);
-        // Customize the ASP.NET Identity model and override the defaults if needed.
-        // For example, you can rename the ASP.NET Identity table names and more.
-        // Add your customizations after calling base.OnModelCreating(builder);
+
+        // Configuration de la relation one-to-many entre Expense et CustomUser (en tant que créateur)
+        builder.Entity<Expense>()
+            .HasOne(e => e.CustomUser)
+            .WithMany(u => u.CreatedExpenses)
+            .HasForeignKey(e => e.CustomUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Configuration de la relation many-to-many entre Expense et CustomUser (en tant que participant)
+        builder.Entity<Expense>()
+            .HasMany(e => e.Participants)
+            .WithMany(u => u.ParticipatingExpenses)
+            .UsingEntity<Dictionary<string, object>>(
+                "ExpenseParticipant",
+                j => j.HasOne<CustomUser>()
+                    .WithMany()
+                    .HasForeignKey("CustomUserId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<Expense>()
+                    .WithMany()
+                    .HasForeignKey("ExpenseId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("ExpenseId", "CustomUserId");
+                    j.ToTable("ExpenseParticipants");
+                }
+            );
 
         builder.Entity<Expense>()
-        .Property(e => e.Amount)
-        .HasColumnType("decimal(18, 2)");
+            .Property(e => e.Amount)
+            .HasColumnType("decimal(18, 2)");
 
         builder.Entity<Expense>()
        .HasOne(e => e.Category)
@@ -74,4 +101,3 @@ public class UserContext : IdentityDbContext<CustomUser>
             }
         );
     }
-}
