@@ -1,7 +1,12 @@
+@using Microsoft.AspNetCore.Identity
 @using TrueBalances.Areas.Identity.Data
 @model IEnumerable<TrueBalances.Models.Expense>
 
 @{
+    @inject UserManager<CustomUser> UserManager
+
+    string customUserId = UserManager.GetUserId(User);
+
     ViewData["Title"] = "Index";
 
     // Valeur de ViewBag.customUsers est affectée dans l'action Index de ExpenseController
@@ -109,15 +114,23 @@
                             <td>@Html.DisplayFor(modelItem => item.Category!.Name)</td>
                             <td>@Html.DisplayFor(modelItem => item.CustomUser.FirstName)</td>
                             <td class="action-links text-center">
-                                <a asp-action="Edit" asp-route-id="@item.Id" title="Modifier">
-                                    <i class="fas fa-edit"></i>
-                                </a>
+                                @if (customUserId == item.CustomUserId)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                }
+                                
                                 <a asp-action="Details" asp-route-id="@item.Id" title="Détails">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" title="Supprimer">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
+
+                                @if (customUserId == item.CustomUserId)
+                                {
+                                    <a asp-action="Delete" asp-route-id="@item.Id" title="Supprimer">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                }
                             </td>
                         </tr>
                     }

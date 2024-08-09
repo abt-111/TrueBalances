@@ -123,6 +123,14 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
 
+            // Empêcher l'accès quand la dépenses n'appartient pas à l'utilisateur
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user.Id != expense.CustomUserId)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
 
             // Récupérer la liste des utilisateurs
@@ -216,6 +224,15 @@ public async Task<IActionResult> Edit(int id, Expense expense, string[] selected
             {
                 return NotFound();
             }
+
+            // Empêcher l'accès quand la dépenses n'appartient pas à l'utilisateur
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user.Id != expense.CustomUserId)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(expense);
         }
 
