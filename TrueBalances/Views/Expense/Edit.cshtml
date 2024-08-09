@@ -59,7 +59,6 @@
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <form asp-action="Edit">
-
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <input type="hidden" asp-for="Id" />
@@ -89,6 +88,20 @@
                         <option value=""> </option>
                     </select>
                     <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Participants</label>
+                    <div>
+                        @foreach (var user in (SelectList)ViewBag.Users)
+                        {
+                            <div>
+                                <input type="checkbox" name="selectedUserIds" value="@user.Value"
+                                    @(Model.Participants.Any(p => p.Id == user.Value) ? "checked" : "") />
+                                <label>@user.Text</label>
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <div class="form-group">
