@@ -160,7 +160,9 @@
                                     <td>@user.FirstName</td>
                                     @{
                                         var debt = Math.Round(Model.Where(e => e.CustomUserId != user.Id).Sum(e => e.Amount / users.Count), 2);
+                                        // var debt = Math.Round(Model.Where(e => e.CustomUserId != user.Id && e.Participants.Any(p => p.Id == user.Id)).Sum(e => e.Amount / e.Participants.Count), 2);
                                         var credit = Math.Round(Model.Where(e => e.CustomUserId == user.Id).Sum(e => (e.Amount / users.Count) * (users.Count - 1)), 2);
+                                        // var credit = Math.Round(Model.Where(e => e.CustomUserId == user.Id).Sum(e => (e.Amount / e.Participants.Count) * (e.Participants.Count - 1)), 2);
                                     }
                                     <td>@debt €</td>
                                     <td>@credit €</td>
