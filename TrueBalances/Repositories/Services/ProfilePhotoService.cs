@@ -40,20 +40,28 @@ namespace TrueBalances.Repositories.Services
             return string.Empty;
         }
 
-        public void UpdateProfilePhotoFile(IFormFile photoFile, ProfilePhoto registeredProfilePhoto)
+        public string UpdateProfilePhotoFile(IFormFile photoFile, string registeredProfilePhoto)
         {
-            var profilePhoto = new ProfilePhoto();
             if (photoFile != null)
             {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                string titre = registeredProfilePhoto.Url;
-                string filePath = Path.Combine(uploadsFolder, titre);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                // Suppression de l'image stockée
+                if (registeredProfilePhoto != null)
                 {
-                    photoFile.CopyTo(fileStream);
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+
+                    string filePath = Path.Combine(uploadsFolder, registeredProfilePhoto);
+
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
                 }
+
+                return RegisterProfilePhotoFile(photoFile);
             }
+
+            // Gérer le cas au niveau de Register.cshtml.cs
+            return string.Empty;
         }
 
         public bool HasProfilePhoto(CustomUser user)
@@ -68,12 +76,6 @@ namespace TrueBalances.Repositories.Services
             string filePath = Path.Combine("\\images", profilePhotoUrl);
 
             return filePath;
-        }
-
-        public async Task<ProfilePhoto> GetProfilePhoto(string customUserId)
-        {
-            var profilePhoto = await _context.ProfilePhotos.FirstOrDefaultAsync(x => x.CustomUserId == customUserId);
-            return profilePhoto;
         }
     }
 }
