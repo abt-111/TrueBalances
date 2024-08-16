@@ -8,20 +8,14 @@ namespace TrueBalances.Data;
 
 public class UserContext : IdentityDbContext<CustomUser>
 {
-    public UserContext(DbContextOptions<UserContext> options)
-        : base(options)
-    {
-    }
+    public UserContext(DbContextOptions<UserContext> options) : base(options)
+    {}
 
     public DbSet<Category> Categories { get; set; }
     public DbSet<Expense> Expenses { get; set; }
-    public DbSet<CustomUser> CustomUsers { get; set; }
-
     public DbSet<ProfilePhoto> ProfilePhotos { get; set; }
-
     public DbSet<Group> Groups { get; set; }
     public DbSet<UserGroup> UsersGroup { get; set; }
-    public DbSet<CustomUser> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
