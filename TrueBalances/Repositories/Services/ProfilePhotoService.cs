@@ -44,7 +44,7 @@ namespace TrueBalances.Repositories.Services
         {
             if (photoFile != null)
             {
-                // Suppression de l'image stockée
+                // Suppression de l'image stockée si il y en a une
                 if (registeredProfilePhoto != null)
                 {
                     string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
