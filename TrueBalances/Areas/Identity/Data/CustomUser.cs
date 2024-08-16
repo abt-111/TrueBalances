@@ -12,6 +12,7 @@ public class CustomUser : IdentityUser
 {
     [PersonalData] public string? FirstName { get; set; }
     [PersonalData] public string? LastName { get; set; }
+    [PersonalData] public string? ProfilePhotoUrl { get; set; }
 
     public ICollection<Expense> CreatedExpenses { get; set; } = new List<Expense>(); // Pour la relation one-to-many
 
