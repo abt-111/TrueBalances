@@ -89,6 +89,7 @@ body {
     padding: 10px;
     text-align: center;
     border-radius: 0.25rem;
+    margin-bottom: 20px;
 }
 
 .form-control {
@@ -142,6 +143,10 @@ body {
     display: inline-block;
 }
 
+    .action-link:hover {
+        color: #0056b3;
+    }
+
 .action-links a {
     color: #073b3a;
     font-size: 1.2rem;
@@ -152,6 +157,6 @@ body {
     transition: color 0.3s;
 }
 
-    .action-link:hover {
-        color: #0056b3;
-    }
+.action-links a:hover {
+    color: #0056b3;
+}
