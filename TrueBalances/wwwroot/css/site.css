@@ -28,19 +28,6 @@ body {
     object-fit: cover;
 }
 
-.custom-header {
-    color: #08a045;
-    padding: 20px;
-    text-align: center;
-    border-radius: 0.25rem;
-    margin-bottom: 20px;
-}
-
-    .custom-header h1 {
-        margin: 0;
-        font-size: 2.5rem;
-    }
-
 .welcome-section {
     margin-top: 20px;
 }
@@ -92,4 +79,79 @@ body {
 
     .custom-button:active {
         transform: scale(1); /* Réinitialise l'effet de zoom lorsque le bouton est cliqué */
+    }
+
+/* Expenses : Index Create Details Edit */
+
+.custom-header {
+    background-color: #08a045;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-radius: 0.25rem;
+}
+
+.form-control {
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+    .form-control:focus {
+        border-color: #08a045;
+        box-shadow: 0 0 0 0.2rem rgba(8, 160, 69, 0.25);
+    }
+
+.btn-primary {
+    background-color: #08a045;
+    border-color: #08a045;
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+    .btn-primary:hover {
+        background-color: #06a03d;
+        border-color: #06a03d;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+.btn-custom {
+    background-color: #08a045; /* Couleur de fond verte */
+    border-color: #08a045; /* Bordure verte */
+    border-radius: 0.25rem;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+    .btn-custom:hover {
+        background-color: #007d1e; /* Couleur de fond verte plus foncée au survol */
+        border-color: #007d1e; /* Bordure verte plus foncée au survol */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+.text-danger {
+    color: #dc3545;
+}
+
+.action-link {
+    color: #073b3a;
+    font-size: 1rem; /* Taille du texte */
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.action-links a {
+    color: #073b3a;
+    font-size: 1.2rem;
+    margin: 0 5px;
+}
+
+.action-links i {
+    transition: color 0.3s;
+}
+
+    .action-link:hover {
+        color: #0056b3;
     }

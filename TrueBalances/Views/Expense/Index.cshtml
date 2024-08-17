@@ -14,20 +14,6 @@
 }
 
 <style>
-    .custom-create-btn {
-        background-color: #08a045;
-        color: white;
-        border-color: #08a045;
-        border-radius: 0.25rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s, box-shadow 0.3s;
-    }
-
-        .custom-create-btn:hover {
-            background-color: #06a03d;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
     .custom-table-header {
         background-color: #08a045;
         color: white;
@@ -55,20 +41,6 @@
             background-color: white;
         }
 
-    .action-links a {
-        color: #073b3a;
-        font-size: 1.2rem; 
-        margin: 0 5px; 
-    }
-
-        .action-links a:hover {
-            color: #0056b3;
-        }
-
-    .action-links i {
-        transition: color 0.3s;
-    }
-
     .custom-table-info td {
         color: black;
         font-weight: bold;
@@ -85,7 +57,7 @@
             <h1>Gestion des Dépenses</h1>
         </div>
             <p>
-                <a asp-action="Create" class="btn custom-create-btn">Ajouter une dépense</a>
+            <a asp-action="Create" class="btn btn-primary">Ajouter une dépense</a>
             </p>
 
     </div>
