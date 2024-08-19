@@ -20,3 +20,21 @@
     .table tbody tr:hover {
         background-color: #f8f9fa; /* Couleur de fond légèrement grise au survol pour contraste */
     }
+
+/* Styles pour l'en-tête de tableau */
+.custom-table-header {
+    background-color: #08a045;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Styles pour les lignes d'information dans le tableau */
+.custom-table-info {
+    background-color: white;
+}
+
+    .custom-table-info td {
+        color: black;
+        font-weight: bold;
+    }

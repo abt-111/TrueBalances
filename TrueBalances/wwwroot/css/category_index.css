@@ -1,23 +1,5 @@
 ﻿/* Feuille de style spécifique à la vue Index de Category */
 
-/* Styles pour l'en-tête de tableau */
-.custom-table-header {
-    background-color: #08a045;
-    color: white;
-    text-align: center;
-    font-weight: bold;
-}
-
-/* Styles pour les lignes d'information dans le tableau */
-.custom-table-info {
-    background-color: white;
-}
-
-    .custom-table-info td {
-        color: black;
-        font-weight: bold;
-    }
-
 /* Styles pour les icônes d'action */
 .action-icon {
     color: #073b3a; /* Couleur des icônes */
