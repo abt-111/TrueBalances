@@ -1,3 +1,5 @@
+/* Feuille de style communes à toutes les vues */
+
 html {
     font-size: 14px;
 }
@@ -27,59 +29,6 @@ body {
     border-radius: 50%;
     object-fit: cover;
 }
-
-.welcome-section {
-    margin-top: 20px;
-}
-
-    .welcome-section h1 {
-        margin-bottom: 20px;
-        font-size: 3rem; /* Taille du texte pour la bienvenue */
-        color: #08a045; /* Couleur du texte */
-    }
-
-    .welcome-section img {
-        height: 300px; /* Taille du logo */
-        margin-bottom: 20px;
-    }
-
-.tagline {
-    font-size: 1.25rem;
-    font-style: italic;
-    color: #555;
-    margin-bottom: 20px;
-}
-
-.custom-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px; /* Espacement entre les boutons */
-    margin-top: 20px;
-}
-
-.custom-button {
-    background-color: #548c2f;
-    color: white;
-    border: none;
-    padding: 15px 30px; /* Taille du bouton */
-    border-radius: 0.5rem; /* Coins arrondis plus marqués */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 1.25rem; /* Taille du texte sur le bouton */
-}
-
-    .custom-button:hover {
-        background-color: #06a03d;
-        color: white;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        transform: scale(1.05); /* Effet de zoom au survol */
-    }
-
-    .custom-button:active {
-        transform: scale(1); /* Réinitialise l'effet de zoom lorsque le bouton est cliqué */
-    }
 
 /* Expenses : Index Create Details Edit */
 

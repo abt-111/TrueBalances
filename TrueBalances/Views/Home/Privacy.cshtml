@@ -1,68 +1,11 @@
-﻿@{
+﻿@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/home_privacy.css" asp-append-version="true" />
+}
+
+@{
     ViewData["Title"] = "Conditions d'utilisation";
 }
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"]</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
 
-        header {
-            background: #f4f4f4;
-            padding: 10px 0;
-            text-align: center;
-        }
-
-            header h1 {
-                margin: 0;
-                color: #104911;
-            }
-
-        main {
-            width: 80%;
-            margin: 20px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        h2 {
-            color: #08a045;
-        }
-
-        h3 {
-            color: #08a045;
-            margin-top: 20px;
-        }
-
-        p {
-            margin: 0;
-            padding: 10px 0;
-        }
-
-        ul {
-            list-style-type: disc;
-            padding-left: 20px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 10px 0;
-            background: #f4f4f4;
-            border-top: 1px solid #ddd;
-        }
-    </style>
-</head>
 <body>
     <header>
         <h1>@ViewData["Title"]</h1>
@@ -185,4 +128,3 @@
         <p>&copy; 2024 TrueBalances Inc. Tous droits réservés.</p>
     </footer>
 </body>
-</html>
