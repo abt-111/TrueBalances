@@ -1,15 +1,12 @@
 ﻿@model TrueBalances.Models.Category
 
+@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/category_edit.css" asp-append-version="true" />
+}
+
 @{
     ViewData["Title"] = "Modifier une catégorie";
 }
-
-<style>
-    /* Styles généraux */
-    .container {
-        margin-top: 20px;
-    }
-</style>
 
 <h1 class="custom-header">@ViewData["Title"]</h1>
 
