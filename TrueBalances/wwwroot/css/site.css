@@ -23,6 +23,7 @@ body {
     margin-bottom: 60px;
 }
 
+/* Règles de style pour l'affichage de la photo de profile */
 .circle-img {
     width: 5em;
     height: 5em;
