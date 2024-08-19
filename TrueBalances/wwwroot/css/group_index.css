@@ -1,0 +1,28 @@
+﻿/* Feuille de style spécifique à la vue Index de Group */
+
+.custom-table-header {
+    background-color: #9ece9a;
+    color: white;
+    text-align: center;
+}
+
+.table {
+    border-radius: 0.25rem;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    .table thead th {
+        background-color: #74a57f;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .table tbody tr:nth-child(even) {
+        background-color: white;
+    }
+
+    .table tbody tr:hover {
+        background-color: white;
+    }
