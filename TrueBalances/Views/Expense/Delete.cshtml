@@ -1,55 +1,12 @@
 @model TrueBalances.Models.Expense
 
+@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/details_container.css" asp-append-version="true" />
+}
+
 @{
     ViewData["Title"] = "Supprimer une dépense";
 }
-
-<style>
-    .custom-header {
-        background-color: #08a045;
-        color: white;
-        padding: 10px;
-        text-align: center;
-        border-radius: 0.25rem;
-    }
-
-    .details-container {
-        padding: 20px;
-        background-color: #f8f9fa;
-        border-radius: 0.25rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
-    }
-
-        .details-container dl {
-            margin-bottom: 0;
-        }
-
-        .details-container dt {
-            font-weight: bold;
-            color: #073b3a;
-        }
-
-        .details-container dd {
-            margin-left: 0;
-            color: #333;
-        }
-
-    .btn-custom {
-        background-color: #08a045; /* Couleur de fond verte */
-        border-color: #08a045; /* Bordure verte */
-        border-radius: 0.25rem;
-        color: white;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s, box-shadow 0.3s;
-    }
-
-        .btn-custom:hover {
-            background-color: #007d1e; /* Couleur de fond verte plus foncée au survol */
-            border-color: #007d1e; /* Bordure verte plus foncée au survol */
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-</style>
 
 <h1 class="custom-header">@ViewData["Title"]</h1>
 

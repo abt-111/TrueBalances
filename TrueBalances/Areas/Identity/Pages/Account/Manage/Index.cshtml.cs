@@ -154,9 +154,7 @@ namespace TrueBalances.Areas.Identity.Pages.Account.Manage
 
             if (Input.ProfilePhotoFile != null)
             {
-                var profilePhoto = await _profilePhotoService.GetProfilePhoto(user.Id);
-
-                _profilePhotoService.UpdateProfilePhotoFile(Input.ProfilePhotoFile, profilePhoto);
+                user.ProfilePhotoUrl = _profilePhotoService.UpdateProfilePhotoFile(Input.ProfilePhotoFile, user.ProfilePhotoUrl);
             }
 
             await _userManager.UpdateAsync(user);

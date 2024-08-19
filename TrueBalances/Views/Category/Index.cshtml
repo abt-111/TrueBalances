@@ -1,81 +1,23 @@
 ﻿@model IEnumerable<TrueBalances.Models.Category>
 
+@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/category_index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/table.css" asp-append-version="true" />
+}
+
 @{
     ViewData["Title"] = "Categories";
 }
 
-<style>
-    /* Styles pour les icônes d'action */
-    .action-icon {
-        color: #073b3a; /* Couleur des icônes */
-        font-size: 1.5rem; /* Taille des icônes */
-        margin: 0 5px;
-        transition: color 0.3s;
-        text-decoration: none;
-    }
-
-        .action-icon:hover {
-            color: #0056b3; /* Couleur des icônes au survol */
-        }
-
-    /* Styles pour la table */
-    .table {
-        border-radius: 0.25rem;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-        .table thead th {
-            background-color: #74a57f;
-            color: white;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .table tbody tr:nth-child(even) {
-            background-color: white;
-        }
-
-        .table tbody tr:hover {
-            background-color: #f8f9fa; /* Couleur de fond légèrement grise au survol pour contraste */
-        }
-
-    /* Styles pour l'en-tête de tableau */
-    .custom-table-header {
-        background-color: #08a045;
-        color: white;
-        text-align: center;
-        font-weight: bold;
-    }
-
-    /* Styles pour les lignes d'information dans le tableau */
-    .custom-table-info {
-        background-color: white;
-    }
-
-        .custom-table-info td {
-            color: black;
-            font-weight: bold;
-        }
-
-    .custom-header {
-        background-color: #08a045;
-        color: white;
-        padding: 10px;
-        text-align: center;
-        border-radius: 0.25rem;
-    }
-</style>
-
 <div class="container">
     <div class="row">
-        <div class="col-md-12 text-center my-4">
-            <h1 class="display-4 custom-header">Gestion des catégories</h1>
+        <div class="col-12 text-center mb-3">
+            <h1>Gestion des catégories</h1>
         </div>
     </div>
     <div class="row mb-4">
         <div class="col-md-12 text-right">
-            <a class="btn custom-create-btn" asp-action="Create"><i class="fas fa-plus"></i> Ajouter une catégorie</a>
+            <a class="btn btn-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter une catégorie</a>
         </div>
     </div>
     <div class="row">

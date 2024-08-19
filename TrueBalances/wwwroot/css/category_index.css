@@ -1,0 +1,14 @@
+﻿/* Feuille de style spécifique à la vue Index de Category */
+
+/* Styles pour les icônes d'action */
+.action-icon {
+    color: #073b3a; /* Couleur des icônes */
+    font-size: 1.5rem; /* Taille des icônes */
+    margin: 0 5px;
+    transition: color 0.3s;
+    text-decoration: none;
+}
+
+    .action-icon:hover {
+        color: #0056b3; /* Couleur des icônes au survol */
+    }

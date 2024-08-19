@@ -2,6 +2,10 @@
 @using TrueBalances.Areas.Identity.Data
 @model IEnumerable<TrueBalances.Models.Expense>
 
+@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/table.css" asp-append-version="true" />
+}
+
 @{
     @inject UserManager<CustomUser> UserManager
 
@@ -13,79 +17,13 @@
     var users = ViewBag.customUsers as List<CustomUser>;
 }
 
-<style>
-    .custom-create-btn {
-        background-color: #08a045;
-        color: white;
-        border-color: #08a045;
-        border-radius: 0.25rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s, box-shadow 0.3s;
-    }
-
-        .custom-create-btn:hover {
-            background-color: #06a03d;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-    .custom-table-header {
-        background-color: #08a045;
-        color: white;
-        text-align: center;
-    }
-
-    .table {
-        border-radius: 0.25rem;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-        .table thead th {
-            background-color: #08a045;
-            color: white;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .table tbody tr:nth-child(even) {
-            background-color: white;
-        }
-
-        .table tbody tr:hover {
-            background-color: white;
-        }
-
-    .action-links a {
-        color: #073b3a;
-        font-size: 1.2rem; 
-        margin: 0 5px; 
-    }
-
-        .action-links a:hover {
-            color: #0056b3;
-        }
-
-    .action-links i {
-        transition: color 0.3s;
-    }
-
-    .custom-table-info td {
-        color: black;
-        font-weight: bold;
-    }
-
-    .custom-table-info {
-        background-color: white;
-    }
-</style>
-
 <div class="container">
     <div class="row">
         <div class="col-12 text-center mb-3">
             <h1>Gestion des Dépenses</h1>
         </div>
             <p>
-                <a asp-action="Create" class="btn custom-create-btn">Ajouter une dépense</a>
+            <a asp-action="Create" class="btn btn-primary">Ajouter une dépense</a>
             </p>
 
     </div>
@@ -160,7 +98,9 @@
                                     <td>@user.FirstName</td>
                                     @{
                                         var debt = Math.Round(Model.Where(e => e.CustomUserId != user.Id).Sum(e => e.Amount / users.Count), 2);
+                                        // var debt = Math.Round(Model.Where(e => e.CustomUserId != user.Id && e.Participants.Any(p => p.Id == user.Id)).Sum(e => e.Amount / e.Participants.Count), 2);
                                         var credit = Math.Round(Model.Where(e => e.CustomUserId == user.Id).Sum(e => (e.Amount / users.Count) * (users.Count - 1)), 2);
+                                        // var credit = Math.Round(Model.Where(e => e.CustomUserId == user.Id).Sum(e => (e.Amount / e.Participants.Count) * (e.Participants.Count - 1)), 2);
                                     }
                                     <td>@debt €</td>
                                     <td>@credit €</td>

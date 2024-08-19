@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
@@ -17,13 +18,14 @@ namespace TrueBalances.Repositories.Services
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task RegisterProfilePhotoFile(IFormFile photoFile, string customUserId)
+        public string RegisterProfilePhotoFile(IFormFile photoFile)
         {
-            var profilePhoto = new ProfilePhoto();
             if (photoFile != null)
             {
                 string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+
                 string titre = Guid.NewGuid().ToString() + "_" + photoFile.FileName;
+
                 string filePath = Path.Combine(uploadsFolder, titre);
 
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -31,49 +33,49 @@ namespace TrueBalances.Repositories.Services
                     photoFile.CopyTo(fileStream);
                 }
 
-                profilePhoto.CustomUserId = customUserId;
-                profilePhoto.Url = titre;
-
-                _context.ProfilePhotos.AddAsync(profilePhoto);
-                await _context.SaveChangesAsync();
+                return titre;
             }
+
+            // Gérer le cas au niveau de Register.cshtml.cs
+            return string.Empty;
         }
 
-        public void UpdateProfilePhotoFile(IFormFile photoFile, ProfilePhoto registeredProfilePhoto)
+        public string UpdateProfilePhotoFile(IFormFile photoFile, string registeredProfilePhoto)
         {
-            var profilePhoto = new ProfilePhoto();
             if (photoFile != null)
             {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                string titre = registeredProfilePhoto.Url;
-                string filePath = Path.Combine(uploadsFolder, titre);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                // Suppression de l'image stockée si il y en a une
+                if (registeredProfilePhoto != null)
                 {
-                    photoFile.CopyTo(fileStream);
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+
+                    string filePath = Path.Combine(uploadsFolder, registeredProfilePhoto);
+
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
                 }
+
+                return RegisterProfilePhotoFile(photoFile);
             }
+
+            // Gérer le cas au niveau de Register.cshtml.cs
+            return string.Empty;
         }
 
-        public string GetProfilePhotoFile(string customUserId)
+        public bool HasProfilePhoto(CustomUser user)
         {
-            ProfilePhoto profilePhoto = _context.ProfilePhotos.FirstOrDefault(x => x.CustomUserId == customUserId);
-            string filePath = Path.Combine("\\images", profilePhoto.Url);
+            return user.ProfilePhotoUrl != null;
+        }
+
+        public string GetProfilePhotoFile(CustomUser user)
+        {
+            string profilePhotoUrl = user.ProfilePhotoUrl;
+
+            string filePath = Path.Combine("\\images", profilePhotoUrl);
 
             return filePath;
-        }
-
-        public async Task<ProfilePhoto> GetProfilePhoto(string customUserId)
-        {
-            var profilePhoto = await _context.ProfilePhotos.FirstOrDefaultAsync(x => x.CustomUserId == customUserId);
-            return profilePhoto;
-        }
-
-        public async Task<bool> HasProfilePhoto(string customUserId)
-        {
-            var hasProfilePhoto = await _context.ProfilePhotos.AnyAsync(x => x.CustomUserId == customUserId);
-
-            return hasProfilePhoto;
         }
     }
 }

@@ -1,0 +1,10 @@
+﻿/* Feuille de style spécifique à la vue Details de Category */
+
+/* Styles généraux */
+dl.row dt {
+    font-weight: bold;
+}
+
+dl.row dd {
+    margin-bottom: 20px;
+}

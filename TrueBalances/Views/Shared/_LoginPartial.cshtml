@@ -9,16 +9,16 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
-        string customUserId = UserManager.GetUserId(User);
-        bool hasProfilePhoto = await ProfilePhotoService.HasProfilePhoto(customUserId);
+        CustomUser customUser = await UserManager.GetUserAsync(User);
+        bool hasProfilePhoto = ProfilePhotoService.HasProfilePhoto(customUser);
 
         @if (hasProfilePhoto)
         {
             <li class="nav-item">
-                @* <p>@ProfilePhotoService.GetProfilePhotoFile(customUserId)</p> *@
+                @* <p>@ProfilePhotoService.GetProfilePhotoFile(customUser)</p> *@
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="@ProfilePhotoService.GetProfilePhotoFile(customUserId)" alt="Image circulaire" class="circle-img">
+                        <img src="@ProfilePhotoService.GetProfilePhotoFile(customUser)" alt="Image circulaire" class="circle-img">
                     </button>
                     <ul class="dropdown-menu dropdown-menu-lg-start" aria-labelledby="dropdownMenuButton1">
                         <li>
@@ -45,7 +45,7 @@
             </li>
         }
     }
-    else
+    @* else
     {
         <li class="nav-item">
             <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">S'inscrire</a>
@@ -53,5 +53,5 @@
         <li class="nav-item">
             <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Se connecter</a>
         </li>
-    }
+    } *@
 </ul>
