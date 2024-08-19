@@ -1,31 +1,12 @@
 @model TrueBalances.Models.Expense
 
+@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/expense_details.css" asp-append-version="true" />
+}
+
 @{
     ViewData["Title"] = "Détails";
 }
-
-<style>
-    .details-container {
-        padding: 20px;
-        background-color: #f8f9fa;
-        border-radius: 0.25rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-        .details-container dl {
-            margin-bottom: 0;
-        }
-
-        .details-container dt {
-            font-weight: bold;
-            color: #073b3a;
-        }
-
-        .details-container dd {
-            margin-left: 0;
-            color: #333;
-        }
-</style>
 
 <h1 class="custom-header">@ViewData["Title"]</h1>
 
