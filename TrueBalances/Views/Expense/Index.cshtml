@@ -7,25 +7,21 @@
 }
 
 @{
-    @inject UserManager<CustomUser> UserManager
-
-    string customUserId = UserManager.GetUserId(User);
-
     ViewData["Title"] = "Index";
 
-    // Valeur de ViewBag.customUsers est affectée dans l'action Index de ExpenseController
+    var currentCustomUserId = ViewBag.currentCustomUserId;
     var users = ViewBag.customUsers as List<CustomUser>;
 }
 
 <div class="container">
+
     <div class="row">
         <div class="col-12 text-center mb-3">
             <h1>Gestion des Dépenses</h1>
         </div>
-            <p>
+        <p>
             <a asp-action="Create" class="btn btn-primary">Ajouter une dépense</a>
-            </p>
-
+        </p>
     </div>
 
     <div class="row">
@@ -51,19 +47,22 @@
                             <td>@Html.DisplayFor(modelItem => item.Date)</td>
                             <td>@Html.DisplayFor(modelItem => item.Category!.Name)</td>
                             <td>@Html.DisplayFor(modelItem => item.CustomUser.FirstName)</td>
+
                             <td class="action-links text-center">
-                                @if (customUserId == item.CustomUserId)
+                                @* Affichage du bouton modifier si la dépense à été crée par l'utilisateur courant *@
+                                @if (currentCustomUserId == item.CustomUserId)
                                 {
                                     <a asp-action="Edit" asp-route-id="@item.Id" title="Modifier">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 }
-                                
+
                                 <a asp-action="Details" asp-route-id="@item.Id" title="Détails">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
 
-                                @if (customUserId == item.CustomUserId)
+                                @* Affichage du bouton supprimer si la dépense à été crée par l'utilisateur courant *@
+                                @if (currentCustomUserId == item.CustomUserId)
                                 {
                                     <a asp-action="Delete" asp-route-id="@item.Id" title="Supprimer">
                                         <i class="fas fa-trash-alt"></i>

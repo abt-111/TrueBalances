@@ -6,28 +6,31 @@ using Microsoft.EntityFrameworkCore;
 using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
-using TrueBalances.Repositories.Interfaces;
 
 namespace TrueBalances.Controllers
 {
     [Authorize]
     public class ExpenseController : Controller
     {
-        private readonly Data.UserContext _context;
+        private readonly UserContext _context;
         private readonly UserManager<CustomUser> _userManager;
-
         
-        public ExpenseController(Data.UserContext context,UserManager<CustomUser> userManager)
+        public ExpenseController(UserContext context,UserManager<CustomUser> userManager)
         {
             _context = context;
             _userManager = userManager;
-
         }
 
         // GET: ExpenseController
         public async Task<ActionResult> Index()
         {
             var expenses = await _context.Expenses.Include(e => e.Category).ToListAsync();
+
+            // Récupération de l'id l'utilisateur courant
+            var currentCustomUserId = _userManager.GetUserId(User);
+
+            // Utilisation du ViewBag pour récupérer l'id de l'utilisateur courant dans la vue Index
+            ViewBag.currentCustomUserId = currentCustomUserId;
 
             // Récupération de la liste de tous les utilisateurs
             var customUsers = await _userManager.Users.ToListAsync();
@@ -37,7 +40,6 @@ namespace TrueBalances.Controllers
 
             return View(expenses);
         }
-
 
         // GET: ExpenseController/Details/5
         public async Task<ActionResult> Details(int id)
