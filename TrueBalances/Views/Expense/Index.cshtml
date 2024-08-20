@@ -1,5 +1,5 @@
-@using Microsoft.AspNetCore.Identity
 @using TrueBalances.Areas.Identity.Data
+
 @model IEnumerable<TrueBalances.Models.Expense>
 
 @section SpecificStylesheet {
@@ -9,8 +9,8 @@
 @{
     ViewData["Title"] = "Index";
 
-    var currentCustomUserId = ViewBag.currentCustomUserId;
-    var users = ViewBag.customUsers as List<CustomUser>;
+    var currentUserId = ViewBag.CurrentUserId;
+    var users = ViewBag.Users as List<CustomUser>;
 }
 
 <div class="container">
@@ -50,7 +50,7 @@
 
                             <td class="action-links text-center">
                                 @* Affichage du bouton modifier si la dépense à été crée par l'utilisateur courant *@
-                                @if (currentCustomUserId == item.CustomUserId)
+                                @if (currentUserId == item.CustomUserId)
                                 {
                                     <a asp-action="Edit" asp-route-id="@item.Id" title="Modifier">
                                         <i class="fas fa-edit"></i>
@@ -62,7 +62,7 @@
                                 </a>
 
                                 @* Affichage du bouton supprimer si la dépense à été crée par l'utilisateur courant *@
-                                @if (currentCustomUserId == item.CustomUserId)
+                                @if (currentUserId == item.CustomUserId)
                                 {
                                     <a asp-action="Delete" asp-route-id="@item.Id" title="Supprimer">
                                         <i class="fas fa-trash-alt"></i>
