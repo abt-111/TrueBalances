@@ -75,20 +75,13 @@ namespace TrueBalances.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Title,Amount,Date,CategoryId,CustomUserId")] Expense expense, string[] SelectedUserIds)
+        public async Task<IActionResult> Create(Expense expense)
         {
             if (ModelState.IsValid)
             {
-                if (SelectedUserIds != null && SelectedUserIds.Length > 0)
+                if (expense.SelectedUserIds != null && expense.SelectedUserIds.Count > 0)
                 {
-                    foreach (var userId in SelectedUserIds)
-                    {
-                        var selectedUser = await _context.Users.FindAsync(userId);
-                        if (selectedUser != null)
-                        {
-                            expense.Participants.Add(selectedUser);
-                        }
-                    }
+                    expense.Participants = await _context.Users.Where(u => expense.SelectedUserIds.Contains(u.Id)).ToListAsync();
                 }
 
                 _context.Expenses.Add(expense);
