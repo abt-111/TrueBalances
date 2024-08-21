@@ -38,7 +38,7 @@ namespace TrueBalances.Controllers
         // GET: ExpenseController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
+            if (id == 0)
             {
                 return NotFound();
             }
@@ -188,7 +188,6 @@ namespace TrueBalances.Controllers
 
         // GET: ExpenseController/Delete/5
         public async Task<ActionResult> Delete(int? id)
-
         {
             if (id == null)
             {
@@ -228,9 +227,8 @@ namespace TrueBalances.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
-
-
         }
+
         private bool ExpenseExists(int id) // Vérifie si une dépense avec l'ID spécifié existe dans la base de données.// 
         {
             return _context.Expenses.Any(e => e.Id == id);
