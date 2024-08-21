@@ -67,15 +67,12 @@ namespace TrueBalances.Controllers
             };
 
             ViewBag.Categories = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
-
-            // Utilisation du ViewBag pour récupérer la liste des utilisateurs dans la vue
             ViewBag.Users = await _userManager.Users.ToListAsync();
-
             return View(expense);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Expense expense)
+        public async Task<IActionResult> Create(Expense expense) // Le Bind ce fait automatiquement
         {
             if (ModelState.IsValid)
             {
@@ -89,6 +86,7 @@ namespace TrueBalances.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // Recharger les catégories et les utilisateurs en cas d'échec de validation
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
             ViewBag.Users = _context.Users.ToList();
             return View(expense);
@@ -97,13 +95,13 @@ namespace TrueBalances.Controllers
         // GET: ExpenseController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
+            if (id == 0)
             {
                 return NotFound();
             }
 
             var expense = await _context.Expenses
-                .Include(e => e.Category)
+                .Include(e => e.Category)  // Inclure les catégories
                 .Include(e => e.Participants)  // Inclure les participants
                 .FirstOrDefaultAsync(e => e.Id == id);
 
@@ -121,17 +119,14 @@ namespace TrueBalances.Controllers
             }
 
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
-
-            // Récupérer la liste des utilisateurs
-            ViewBag.Users = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
-
+            ViewBag.Users = await _userManager.Users.ToListAsync();
             return View(expense);
         }
 
         // POST: ExpenseController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Expense expense, string[] selectedUserIds)
+        public async Task<IActionResult> Edit(int id, Expense expense)
         {
             if (id != expense.Id)
             {
@@ -160,15 +155,11 @@ namespace TrueBalances.Controllers
 
                     // Mettre à jour la liste des participants
                     existingExpense.Participants.Clear();
-                    if (selectedUserIds != null)
+
+                    if (expense.SelectedUserIds != null && expense.SelectedUserIds.Count > 0)
                     {
-                        var selectedUsers = await _context.Users
-                            .Where(u => selectedUserIds.Contains(u.Id))
-                            .ToListAsync();
-                        foreach (var user in selectedUsers)
-                        {
-                            existingExpense.Participants.Add(user);
-                        }
+                        expense.Participants = await _context.Users.Where(u => expense.SelectedUserIds.Contains(u.Id)).ToListAsync();
+                        existingExpense.Participants = expense.Participants;
                     }
 
                     _context.Update(existingExpense);
@@ -189,10 +180,8 @@ namespace TrueBalances.Controllers
                 }
             }
 
-            // Recharger les catégories et les utilisateurs en cas d'échec de validation
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
-            ViewBag.Users = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
-
+            ViewBag.Users = await _userManager.Users.ToListAsync();
             return View(expense);
         }
 
