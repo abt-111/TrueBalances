@@ -24,7 +24,7 @@ namespace TrueBalances.Controllers
         // GET: ExpenseController
         public async Task<IActionResult> Index()
         {
-            var expenses = await _context.Expenses.Include(e => e.Category).ToListAsync();
+            var expenses = await _context.Expenses.Include(e => e.Category).Include(e => e.Participants).ToListAsync();
 
             // Utilisation du ViewBag pour récupérer l'id de l'utilisateur courant dans la vue
             ViewBag.CurrentUserId = _userManager.GetUserId(User);
@@ -48,7 +48,12 @@ namespace TrueBalances.Controllers
             {
                 foreach (var other in others)
                 {
-                    var debt = Math.Round(expenses.Where(e => e.CustomUserId == other.Id).Sum(e => e.Amount / users.Count), 2);
+                    var debt = 
+                        Math.Round(
+                            expenses
+                            .Where(e => e.CustomUserId == other.Id && e.Participants.Any(p => p.Id == currentUserId))
+                            .Sum(e => e.Participants.Count != 0 ? e.Amount / e.Participants.Count : 0)
+                        , 2);
 
                     debts.Add(other.FirstName, debt);
                 }
@@ -66,7 +71,12 @@ namespace TrueBalances.Controllers
             {
                 foreach (var other in others)
                 {
-                    var credit = Math.Round(expenses.Where(e => e.CustomUserId == currentUserId).Sum(e => e.Amount / users.Count), 2);
+                    var credit =
+                        Math.Round(
+                            expenses
+                            .Where(e => e.CustomUserId == currentUserId && e.Participants.Any(p => p.Id == other.Id))
+                            .Sum(e => e.Participants.Count != 0 ? e.Amount / e.Participants.Count : 0)
+                        , 2);
 
                     credits.Add(other.FirstName, credit);
                 }
