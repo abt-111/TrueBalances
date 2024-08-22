@@ -11,6 +11,8 @@
 
     var currentUserId = ViewBag.CurrentUserId;
     var users = ViewBag.Users as List<CustomUser>;
+    var debts = ViewBag.Debts as Dictionary<string, decimal>;
+    var credits = ViewBag.Credits as Dictionary<string, decimal>;
 }
 
 <div class="container">
@@ -91,25 +93,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var user in users)
+
+                            @foreach (var userFisrtName in debts.Keys)
                             {
                                 <tr class="custom-table-info">
-                                    <td>@user.FirstName</td>
-                                    @{
-                                        var debt = Math.Round(Model.Where(e => e.CustomUserId != user.Id).Sum(e => e.Amount / users.Count), 2);
-                                        // var debt = Math.Round(Model.Where(e => e.CustomUserId != user.Id && e.Participants.Any(p => p.Id == user.Id)).Sum(e => e.Amount / e.Participants.Count), 2);
-                                        var credit = Math.Round(Model.Where(e => e.CustomUserId == user.Id).Sum(e => (e.Amount / users.Count) * (users.Count - 1)), 2);
-                                        // var credit = Math.Round(Model.Where(e => e.CustomUserId == user.Id).Sum(e => (e.Amount / e.Participants.Count) * (e.Participants.Count - 1)), 2);
-                                    }
-                                    <td>@debt €</td>
-                                    <td>@credit €</td>
+                                    <td>@userFisrtName</td>
+                                    <td>
+                                        @debts.GetValueOrDefault(userFisrtName) € @* Penser à faire la version avec la condition dans le cas où il n'y a pas de dette à ce nom*@
+                                    </td>
+                                    <td>
+                                        @credits.GetValueOrDefault(userFisrtName) € @* Idem mais pour les crédits *@
+                                    </td>
                                 </tr>
                             }
+
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+
     </div>
 
     <div>

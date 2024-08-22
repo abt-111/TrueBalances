@@ -32,7 +32,46 @@ namespace TrueBalances.Controllers
             // Utilisation du ViewBag pour récupérer la liste des utilisateurs dans la vue
             ViewBag.Users = await _userManager.Users.ToListAsync();
 
+            ViewBag.Debts = GetDebts(expenses, ViewBag.Users, ViewBag.CurrentUserId);
+            ViewBag.Credits = GetCredits(expenses, ViewBag.Users, ViewBag.CurrentUserId);
+
             return View(expenses);
+        }
+
+        public Dictionary<string, decimal> GetDebts(List<Expense> expenses, List<CustomUser> users, string currentUserId)
+        {
+            Dictionary<string, decimal> debts = new Dictionary<string, decimal>();
+
+            var others = users.FindAll(u => u.Id != currentUserId);
+
+            if (others != null && others.Count > 0)
+            {
+                foreach (var other in others)
+                {
+                    var debt = Math.Round(expenses.Where(e => e.CustomUserId == other.Id).Sum(e => e.Amount / users.Count), 2);
+
+                    debts.Add(other.FirstName, debt);
+                }
+            }
+            return debts;
+        }
+
+        public Dictionary<string, decimal> GetCredits(List<Expense> expenses, List<CustomUser> users, string currentUserId)
+        {
+            Dictionary<string, decimal> credits = new Dictionary<string, decimal>();
+
+            var others = users.FindAll(u => u.Id != currentUserId);
+
+            if (others != null && others.Count > 0)
+            {
+                foreach (var other in others)
+                {
+                    var credit = Math.Round(expenses.Where(e => e.CustomUserId == currentUserId).Sum(e => e.Amount / users.Count), 2);
+
+                    credits.Add(other.FirstName, credit);
+                }
+            }
+            return credits;
         }
 
         // GET: ExpenseController/Details/5
