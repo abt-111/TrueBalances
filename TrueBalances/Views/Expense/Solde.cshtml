@@ -1,0 +1,25 @@
+﻿@using TrueBalances.Areas.Identity.Data
+
+@model IEnumerable<TrueBalances.Models.Expense>
+
+@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/table.css" asp-append-version="true" />
+}
+
+@{
+    ViewData["Title"] = "Index";
+
+    var currentUserId = ViewBag.CurrentUserId;
+    var users = ViewBag.Users as List<CustomUser>;
+    var debtsOfEverybody = ViewBag.DebtsOfEverybody as List<UserDebtViewModel>;
+}
+
+@foreach(var userDebts in debtsOfEverybody)
+{
+    <p>@users.Find(u => u.Id == @userDebts.Id).FirstName doit :</p>
+
+    foreach (var debt in userDebts.Debts)
+    {
+        <p> @debt.Value € à @users.Find(u => u.Id == @debt.Key).FirstName</p>
+    }
+}
