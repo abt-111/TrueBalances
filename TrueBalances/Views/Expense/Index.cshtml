@@ -91,19 +91,24 @@
                                 <th>Nom</th>
                                 <th>Sommes dues</th>
                                 <th>Sommes attendues</th>
+                                <th>True Balance</th>
                             </tr>
                         </thead>
                         <tbody>
 
-                            @foreach (var userFisrtName in debts.Keys)
+                            @foreach (var userId in debts.Keys)
                             {
+                                var user = users.Find(u => u.Id == @userId);
                                 <tr class="custom-table-info">
-                                    <td>@userFisrtName</td>
+                                    <td>@user.FirstName</td>
                                     <td>
-                                        @debts.GetValueOrDefault(userFisrtName) € @* Penser à faire la version avec la condition dans le cas où il n'y a pas de dette à ce nom*@
+                                        @debts.GetValueOrDefault(userId) € @* Penser à faire la version avec la condition dans le cas où il n'y a pas de dette à ce nom*@
                                     </td>
                                     <td>
-                                        @credits.GetValueOrDefault(userFisrtName) € @* Idem mais pour les crédits + "L'itérateur" ne convient pas *@
+                                        @credits.GetValueOrDefault(userId) € @* Idem mais pour les crédits + "L'itérateur" ne convient pas *@
+                                    </td>
+                                    <td>
+                                        @(debts.GetValueOrDefault(userId) - credits.GetValueOrDefault(userId)) € @* Idem mais pour les crédits + "L'itérateur" ne convient pas *@
                                     </td>
                                 </tr>
                             }

@@ -34,9 +34,9 @@
                             <ul class="list-group list-group-flush">
                                 @foreach (var debt in userDebts.Debts)
                                 {
-                                    var debtor = users.Find(u => u.Id == @debt.Key);
+                                    var creditor = users.Find(u => u.Id == @debt.Key);
                                     <li class="list-group-item">
-                                        @debt.Value € à @debtor.FirstName
+                                        @debt.Value € à @creditor.FirstName
                                     </li>
                                 }
                             </ul>
