@@ -2,24 +2,49 @@
 
 @model IEnumerable<TrueBalances.Models.Expense>
 
-@section SpecificStylesheet {
-    <link rel="stylesheet" href="~/css/table.css" asp-append-version="true" />
-}
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Soldes";
 
     var currentUserId = ViewBag.CurrentUserId;
     var users = ViewBag.Users as List<CustomUser>;
     var debtsOfEverybody = ViewBag.DebtsOfEverybody as List<UserDebtViewModel>;
 }
 
-@foreach(var userDebts in debtsOfEverybody)
-{
-    <p>@users.Find(u => u.Id == @userDebts.Id).FirstName doit :</p>
 
-    foreach (var debt in userDebts.Debts)
-    {
-        <p> @debt.Value € à @users.Find(u => u.Id == @debt.Key).FirstName</p>
-    }
-}
+<div class="container">
+
+    <div class="row">
+        <div class="col-12 text-center mb-3">
+            <h1>Soldes</h1>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row">
+            @foreach (var userDebts in debtsOfEverybody)
+            {
+                var user = users.Find(u => u.Id == @userDebts.Id);
+
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>@user.FirstName :</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                @foreach (var debt in userDebts.Debts)
+                                {
+                                    var debtor = users.Find(u => u.Id == @debt.Key);
+                                    <li class="list-group-item">
+                                        @debt.Value € à @debtor.FirstName
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
