@@ -80,50 +80,42 @@
         <!-- Colonne pour le récapitulatif plus étroite -->
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header text-center custom-header">
-                    <h2 class="mb-0">Récapitulatif</h2>
+                <div class="card-header text-center">
+                    <h5 class="mb-0">Dette ou crédit ?</h5>
                 </div>
                 <div class="card-body">
-                    <table class="table table-striped">
-
-                        <thead>
-                            <tr>
-                                <th>Nom</th>
-                                <th>Sommes dues</th>
-                                <th>Sommes attendues</th>
-                                <th>True Balance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
+                    <ul class="list-group list-group-flush">
+                        @if (debts.Any(d => d.Value != 0))
+                        {
                             @foreach (var userId in debts.Keys)
                             {
-                                var user = users.Find(u => u.Id == @userId);
-                                <tr class="custom-table-info">
-                                    <td>@user.FirstName</td>
-                                    <td>
-                                        @debts.GetValueOrDefault(userId) € @* Penser à faire la version avec la condition dans le cas où il n'y a pas de dette à ce nom*@
-                                    </td>
-                                    <td>
-                                        @credits.GetValueOrDefault(userId) € @* Idem mais pour les crédits + "L'itérateur" ne convient pas *@
-                                    </td>
-                                    <td>
-                                        @(debts.GetValueOrDefault(userId) - credits.GetValueOrDefault(userId)) € @* Idem mais pour les crédits + "L'itérateur" ne convient pas *@
-                                    </td>
-                                </tr>
+                                var user = users.Find(u => u.Id == userId);
+                                var debt = debts.GetValueOrDefault(userId);
+
+                                @if (debt < 0)
+                                {
+                                    <li class="list-group-item">
+                                        @user.FirstName me doit @(-debt) €
+                                    </li>
+                                }
+                                else if (debt != 0)
+                                {
+                                    <li class="list-group-item">
+                                        Je dois @debt € à @user.FirstName
+                                    </li>
+                                }
                             }
-
-                        </tbody>
-
-                        <tfoot>
-                            <tr class="custom-table-info">
-                                <td></td>
-                                <td></td>
-                                <td><a asp-action="Solde" class="btn btn-primary">Tous les soldes</a></td>
-                            </tr>
-                        </tfoot>
-
-                    </table>
+                        }
+                        else
+                        {
+                            <li class="list-group-item">
+                                Je n'ai que de bons amis
+                            </li>
+                        }
+                        <li class="list-group-item">
+                            <a asp-action="Solde" style="color: #073b3a;">Tous les soldes</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

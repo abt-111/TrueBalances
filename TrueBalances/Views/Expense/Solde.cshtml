@@ -27,16 +27,35 @@
 
                 <div class="col-md-4">
                     <div class="card mb-4">
-                        <div class="card-header">
-                            <h5>@user.FirstName :</h5>
+                        <div class="card-header text-center">
+                            <h5>@user.FirstName</h5>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
-                                @foreach (var debt in userDebts.Debts)
+                                @if (userDebts.Debts.Any(d => d.Value != 0))
                                 {
-                                    var creditor = users.Find(u => u.Id == @debt.Key);
+                                    @foreach (var debt in userDebts.Debts)
+                                    {
+                                        var other = users.Find(u => u.Id == @debt.Key);
+
+                                        @if (debt.Value < 0)
+                                        {
+                                            <li class="list-group-item">
+                                                @other.FirstName lui doit @(-debt.Value) €
+                                            </li>
+                                        }
+                                        else if (debt.Value != 0)
+                                        {
+                                            <li class="list-group-item">
+                                                Doit @debt.Value € à @other.FirstName
+                                            </li>
+                                        }
+                                    }
+                                }
+                                else
+                                {
                                     <li class="list-group-item">
-                                        @debt.Value € à @creditor.FirstName
+                                        N'a que de bons amis
                                     </li>
                                 }
                             </ul>
@@ -47,4 +66,8 @@
         </div>
     </div>
 
+</div>
+
+<div>
+    <a asp-action="Index" class="action-link">Retour à la liste</a>
 </div>

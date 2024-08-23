@@ -25,7 +25,10 @@ namespace TrueBalances.Tools
                 foreach (var other in others)
                 {
                     var debt = GetDebtValue(expenses, other.Id, UserId);
-                    debts.Add(other.Id, debt);
+                    var credit = GetDebtValue(expenses, UserId, other.Id);
+                    var trueBalance = debt - credit;
+
+                    debts.Add(other.Id, trueBalance);
                 }
             }
             return debts;
