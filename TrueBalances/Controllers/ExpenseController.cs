@@ -84,6 +84,50 @@ namespace TrueBalances.Controllers
             return credits;
         }
 
+        public async Task<IActionResult> Solde()
+        {
+            var expenses = await _context.Expenses.Include(e => e.Category).Include(e => e.Participants).ToListAsync();
+
+            // Utilisation du ViewBag pour récupérer l'id de l'utilisateur courant dans la vue
+            ViewBag.CurrentUserId = _userManager.GetUserId(User);
+
+            // Utilisation du ViewBag pour récupérer la liste des utilisateurs dans la vue
+            ViewBag.Users = await _userManager.Users.ToListAsync();
+
+            ViewBag.DebtsOfEverybody = GetDebtsOfEverybody(expenses, ViewBag.Users);
+
+            return View(expenses);
+        }
+
+        public List<UserDebtViewModel> GetDebtsOfEverybody(List<Expense> expenses, List<CustomUser> users)
+        {
+            List<UserDebtViewModel> debtsOfEverybody = new List<UserDebtViewModel>();
+
+            foreach (var user in users)
+            {
+                var userDebt = new UserDebtViewModel(user.Id);
+
+                var others = users.FindAll(u => u.Id != user.Id);
+
+                if (others != null && others.Count > 0)
+                {
+                    foreach (var other in others)
+                    {
+                        var debt =
+                            Math.Round(
+                                expenses
+                                .Where(e => e.CustomUserId == other.Id && e.Participants.Any(p => p.Id == user.Id))
+                                .Sum(e => e.Participants.Count != 0 ? e.Amount / e.Participants.Count : 0)
+                            , 2);
+
+                        userDebt.Debts.Add(other.Id, debt);
+                    }
+                    debtsOfEverybody.Add(userDebt);
+                }
+            }
+            return debtsOfEverybody;
+        }
+
         // GET: ExpenseController/Details/5
         public async Task<IActionResult> Details(int id)
         {
