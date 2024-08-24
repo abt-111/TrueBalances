@@ -32,7 +32,7 @@
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
-                                @if (userDebts.Debts.Any(d => d.Value != 0))
+                                @if (userDebts.Debts.Any(d => d.Value > 0))
                                 {
                                     @foreach (var debt in userDebts.Debts)
                                     {
@@ -40,9 +40,9 @@
 
                                         @if (debt.Value < 0)
                                         {
-                                            <li class="list-group-item">
+                                            @* <li class="list-group-item">
                                                 @other.FirstName lui doit @(-debt.Value) €
-                                            </li>
+                                            </li> *@
                                         }
                                         else if (debt.Value != 0)
                                         {
@@ -51,6 +51,12 @@
                                             </li>
                                         }
                                     }
+                                }
+                                else if (userDebts.Debts.Any(d => d.Value < 0))
+                                {
+                                    <li class="list-group-item">
+                                        Est une bonne poire
+                                    </li>
                                 }
                                 else
                                 {
