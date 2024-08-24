@@ -34,7 +34,6 @@ namespace TrueBalances.Controllers
             ViewBag.Users = await _userManager.Users.ToListAsync();
 
             ViewBag.Debts = DebtOperator.GetSomeoneDebts(expenses, ViewBag.Users, ViewBag.CurrentUserId);
-            ViewBag.Credits = DebtOperator.GetCredits(expenses, ViewBag.Users, ViewBag.CurrentUserId);
 
             return View(expenses);
         }

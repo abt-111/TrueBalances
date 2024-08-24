@@ -12,7 +12,6 @@
     var currentUserId = ViewBag.CurrentUserId;
     var users = ViewBag.Users as List<CustomUser>;
     var debts = ViewBag.Debts as Dictionary<string, decimal>;
-    var credits = ViewBag.Credits as Dictionary<string, decimal>;
 }
 
 <div class="container">
@@ -80,7 +79,7 @@
         <!-- Colonne pour le récapitulatif plus étroite -->
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header text-center">
+                <div class="card-header">
                     <h5 class="mb-0">Dette ou crédit ?</h5>
                 </div>
                 <div class="card-body">
