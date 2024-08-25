@@ -1,6 +1,130 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
+﻿@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/home_privacy.css" asp-append-version="true" />
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+@{
+    ViewData["Title"] = "Conditions d'utilisation";
+}
+
+<body>
+    <header>
+        <h1>@ViewData["Title"]</h1>
+    </header>
+
+    <main>
+        <section>
+            @* <h2>Conditions d'utilisation de TrueBalances</h2> *@
+            <p>
+                TrueBalances est un registre partagé pour les amis, les collègues et la famille pour suivre les dépenses. Les factures, les reconnaissances de dettes, les dettes et les paiements enregistrés sur TrueBalances sont des enregistrements informels et non des contrats juridiquement contraignants. Nous proposons le service TrueBalances « tel quel » sans garantie. TrueBalances® est un travail en cours, de sorte que certaines fonctionnalités de notre site Web et de nos applications peuvent ne pas fonctionner exactement comme prévu. Nous pouvons cesser d'offrir ou restreindre certains services ou fonctionnalités à tout moment. Soyez patient avec nous et nous ferons toujours de notre mieux pour vous aider.
+            </p>
+            <p>
+                Nous modifierons périodiquement nos conditions d'utilisation et notre politique de confidentialité et publierons la version la plus récente sur cette page Web, <a href="https://www.truebalances.com/terms" target="_blank" style="color: #007BFF;">https://www.truebalances.com/terms</a>.
+            </p>
+        </section>
+
+        <section>
+            @* <h2>Conditions d'utilisation</h2> *@
+
+            <h3>Qui peut utiliser TrueBalances</h3>
+            <p>
+                Vous ne pouvez utiliser nos services que si vous acceptez les présentes Conditions d'utilisation et le traitement de vos informations tel que décrit dans notre Politique de confidentialité. Vous ne pouvez pas utiliser TrueBalances si vous n'êtes pas autorisé à recevoir des services en vertu des lois de la juridiction applicable, si nous avons précédemment banni votre compte pour violation des présentes conditions, ou si vous avez moins de 13 ans.
+            </p>
+
+            <h3>Description</h3>
+            <p>
+                TrueBalances® (le Service) est un service conçu pour vous aider à suivre les dettes, dépenses et factures informelles, en permettant aux utilisateurs de saisir des notes sur les personnes à qui ils doivent de l'argent, qui leur doit de l'argent et pourquoi. Le Service garde une trace des calculs de partage, fournit des conseils de partage informel et stocke ces données pour une utilisation ultérieure. Vous acceptez que ce service soit fourni « EN L'ÉTAT » et « TEL QUE DISPONIBLE ».
+            </p>
+
+            <h3>Dettes informelles</h3>
+            <p>
+                Le site Web permet aux utilisateurs qui partagent un groupe ou sont amis sur le service de publier des dettes et des paiements comme ils le souhaitent, en utilisant des règles de style wiki sans autorisation explicite. Ces dettes sont calculées par le Service pour déterminer les dettes. Vous reconnaissez comprendre que ces dettes ne sont pas juridiquement contraignantes et représentent un partage d'informations informel entre colocataires, amis ou membres de la famille. Vous reconnaissez que le Service ne peut pas garantir l'exactitude des informations saisies par les utilisateurs.
+            </p>
+
+            <h3>Conditions d'utilisation</h3>
+            <p>
+                Vous acceptez d'utiliser le Service conformément à l'usage prévu et dans le respect de toutes les lois et réglementations applicables : locales, étatiques, nationales et internationales, selon le cas. Vous acceptez de ne pas utiliser le service de manière frauduleuse, perturbatrice, agressive, manipulatrice, pour le blanchiment d'argent ou toute autre fin inappropriée. TrueBalances se réserve le droit, mais n'a aucune obligation, d'enquêter sur votre utilisation du service pour vérifier qu'elle est conforme à une utilisation appropriée et de mettre fin à votre accès au Service, ou afin de se conformer à la loi, à la réglementation, à une procédure judiciaire ou à une demande gouvernementale.
+            </p>
+
+            <h3>Ce que vous représentez</h3>
+            <p>
+                Vous acceptez de vous représenter honnêtement, que toutes les informations que vous fournissez sont vraies, correctes et à jour, au meilleur de vos connaissances, et que vous disposez des droits, du pouvoir, de l'autorité et de l'âge nécessaires pour accepter ces conditions et pour accomplir les actes requis de vous par l'accord.
+            </p>
+
+            <h3>Aucune garantie</h3>
+            <p>
+                TrueBalances Inc. ne garantit pas que le Service est exempt d'erreurs, complet ou fiable. LE SERVICE EST FOURNI « TEL QUEL » ET « TEL QUE DISPONIBLE » SANS AUCUNE GARANTIE D'AUCUNE SORTE ET VOUS UTILISEZ LE SERVICE À VOS PROPRES RISQUES. TRUEBALANCES INC. DÉCLINE TOUTE GARANTIE, IMPLICITE OU AUTRE, CONCERNANT LE SERVICE, Y COMPRIS LA GARANTIE DE QUALITÉ MARCHANDE, D'ADÉQUATION À UN USAGE PARTICULIER OU DE NON-CONTREFAÇON, Y COMPRIS POUR TRUEBALANCES PRO.
+            </p>
+
+            <h3>Résiliation et refus du service</h3>
+            <p>
+                Votre accès au service peut être résilié à tout moment, pour quelque raison que ce soit, à la seule discrétion de TrueBalances. Cela inclut le droit de bannir du service toute personne qui viole les normes de contenu de TrueBalances décrites ci-dessous.
+            </p>
+
+            <h3>Contenu publié par l'utilisateur</h3>
+            <p>
+                Lorsque vous utilisez les produits et services de TrueBalances, vous pouvez avoir la possibilité de publier du contenu (par exemple, des descriptions de paiement, des commentaires, des avatars de groupe/utilisateur, des reçus de dépenses). Vous êtes seul responsable de tout le contenu que vous fournissez, publiez, téléchargez ou soumettez. Nous ne sommes pas responsables de l'évaluation de l'exactitude, de la véracité, de l'utilité, de la légalité, de la sécurité, de la moralité ou de l'applicabilité de tout contenu publié par les utilisateurs sur TrueBalances. TrueBalances peut, à sa seule discrétion, rejeter ou supprimer tout contenu qui viole nos normes de contenu ou pour toute autre raison que nous jugeons le contenu inapproprié. TrueBalances n'a aucune obligation de surveiller le contenu publié, téléchargé ou soumis par un utilisateur, mais peut le faire à sa seule discrétion. TrueBalances n'est pas responsable de tout échec ou retard dans la suppression d'un tel contenu.
+            </p>
+
+            <h3>Normes de contenu TrueBalances</h3>
+            <p>Lorsque vous partagez du contenu sur TrueBalances, vous ne pouvez pas partager de contenu qui :</p>
+            <ul>
+                <li>Vous n'avez pas le droit de partager du contenu qui porte atteinte au droit à la vie privée ou au droit de publicité d'une autre personne. Vous ne pouvez pas partager de contenu qui inclut des informations personnelles destinées à harceler, faire chanter ou cibler de toute autre manière une autre personne.</li>
+                <li>Est faux, trompeur ou mensonger. Par exemple, vous ne pouvez pas modifier votre avatar d'utilisateur pour vous faire passer pour une autre personne de manière préjudiciable.</li>
+                <li>Est obscène, nuisible, abusif ou offensant. Nous n'autorisons pas la nudité sur TrueBalances.</li>
+                <li>Incite à la violence ou à la haine envers un individu ou un groupe d'individus pour quelque raison que ce soit, et en particulier si elle est fondée sur la race ou l'origine ethnique, la religion, la nationalité, le handicap, le sexe, l'âge, le statut d'ancien combattant ou l'orientation sexuelle/l'identité de genre. Nous ne tolérerons pas le contenu contenant des menaces crédibles ou des discours de haine.</li>
+                <li>Est illégal, comme une activité criminelle, le terrorisme, l’obscénité, la pornographie juvénile, l’exploitation humaine, les jeux de hasard, la consommation de drogue, les armes à feu ou les munitions et le piratage.</li>
+                <li>Est un spam, ou promeut ou participe à des systèmes pyramidaux, à du marketing de réseau et à des programmes de marketing de référence.</li>
+                <li>À la seule discrétion de TrueBalances, cause ou expose les utilisateurs ou TrueBalances à un préjudice ou à une responsabilité réels ou potentiels.</li>
+            </ul>
+
+            <h3>Confidentialité et sécurité</h3>
+            <p>
+                Afin de vous fournir les services, nous collectons certaines de vos informations personnelles. Nous décrivons notre collecte et notre utilisation des informations personnelles dans notre politique de confidentialité. Veuillez consulter cette politique. Vous devez accepter le traitement de vos données comme indiqué dans cette politique afin d'utiliser nos services. Vous acceptez que TrueBalances Inc. puisse divulguer les informations personnelles qui nous sont fournies, y compris le contenu des e-mails, des messages et des données saisies sur le site, si la loi ou une demande gouvernementale telle qu'un mandat l'exige, ou comme spécifié dans la politique de confidentialité. Vous devez avoir 13 ans ou plus pour utiliser ce service. Vous êtes responsable de la prévention de tout accès non autorisé à votre compte.
+            </p>
+
+            <h3>Aucune responsabilité</h3>
+            <p>
+                TRUEBALANCES INC. NE SERA EN AUCUN CAS RESPONSABLE ENVERS VOUS DE TOUT DOMMAGE INDIRECT, ACCESSOIRE, CONSÉCUTIF, SPÉCIAL OU EXEMPLAIRE (Y COMPRIS LA DÉTRESSE ÉMOTIONNELLE) DÉCOULANT DE OU EN RELATION AVEC VOTRE UTILISATION DU SERVICE, QUE VOUS AYEZ ÉTÉ OU NON INFORMÉ DE LA POSSIBILITÉ DE TELS DOMMAGES. TRUEBALANCES INC. NE SERA EN AUCUN CAS RESPONSABLE ENVERS VOUS DE TOUT MONTANT POUR LES SERVICES RENDUS CONFORMÉMENT AU PRÉSENT CONTRAT.
+            </p>
+
+            <h3>Abonnements payants</h3>
+            <p>
+                Certains utilisateurs peuvent avoir accès à l'achat de « TrueBalances Pro », un abonnement mensuel ou annuel payant qui peut inclure plusieurs fonctionnalités supplémentaires telles qu'un stockage cloud accru, la numérisation des reçus, des publicités réduites et d'autres fonctionnalités ou services supplémentaires. Les paiements pour TrueBalances Pro sont collectés par carte de crédit via le site Web TrueBalances.com, ou peuvent être gérés via iTunes ou Google Play Store. Ces abonnements seront automatiquement renouvelés à moins d'être annulés 24 heures avant la fin de la période de facturation en cours. Le prix auquel TrueBalances Pro est proposé peut varier en fonction de la date d'abonnement, du pays, des taxes et réglementations locales, des promotions, et TrueBalances se réserve le droit de modifier le prix et les avantages de l'abonnement à sa seule discrétion. Si vous rencontrez des problèmes avec notre abonnement TrueBalances® Pro ou si vous souhaitez demander un remboursement, veuillez envoyer un e-mail à <a href="mailto:support@truebalances.com" style="color: #007BFF;">support@truebalances.com</a> (nous nous réservons le droit d'offrir ou de refuser des remboursements à notre seule discrétion). L'accès à TrueBalances® Pro peut être suspendu en cas de retard de paiement. TrueBalances® se réserve le droit d'offrir ou de refuser des abonnements Pro pour quelque raison que ce soit à notre seule discrétion.
+            </p>
+
+            <h3>Indemnisation</h3>
+            <p>
+                Vous acceptez de tenir TrueBalances Inc., ses employés, agents et représentants indemnes et d'indemniser TrueBalances Inc. de toute réclamation de tiers découlant de ou liée de quelque manière que ce soit à votre utilisation du Service, y compris la responsabilité ou les dépenses découlant de toutes les réclamations, pertes, dommages (réels et consécutifs), poursuites, jugements, frais de litige et honoraires d'avocat, de toute sorte et de toute nature.
+            </p>
+
+            <h3>Modifications de l'accord</h3>
+            <p>
+                Vous acceptez que TrueBalances Inc. puisse modifier cet accord à tout moment, avec effet immédiat, en publiant un nouvel accord. Vous acceptez que même si vous n'avez pas personnellement visité le site Web avec les nouvelles conditions de cet accord, celles-ci peuvent entrer en vigueur immédiatement.
+            </p>
+
+            <h3>Divisibilité</h3>
+            <p>
+                Si une partie quelconque du présent accord est jugée invalide ou inapplicable, la disposition sera réputée être remplacée par une disposition applicable valide qui correspond étroitement à l'intention de l'accord d'origine, et toutes les autres parties de l'accord seront appliquées.
+            </p>
+
+            <h3>Exercice</h3>
+            <p>
+                Vous acceptez que le fait pour TrueBalances Inc. de ne pas exercer ou d'appliquer une partie quelconque du présent accord et des conditions ne constitue pas une renonciation aux droits des dispositions du présent accord.
+            </p>
+
+            <h3>Juridiction</h3>
+            <p>
+                Vous acceptez que l'intégralité de cet accord (y compris la politique de confidentialité) soit interprétée conformément aux lois de l'État du Massachusetts.
+            </p>
+
+            <h3>Intégralité de l'accord</h3>
+            <p>
+                Ces conditions constituent l'intégralité de l'accord entre vous et TrueBalances Inc. concernant l'objet ci-dessus.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 TrueBalances Inc. Tous droits réservés.</p>
+    </footer>
+</body>

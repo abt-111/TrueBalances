@@ -1,8 +1,50 @@
-﻿@{
+﻿@model UserViewModel
+
+@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/home_index.css" asp-append-version="true" />
+}
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center welcome-section">
+    <h1 class="display-4">
+        @if (User.Identity.IsAuthenticated)
+        {
+            @:Bienvenue @Model.FirstName @Model.LastName
+        }
+        else
+        {
+            @:Bienvenue
+        }
+    </h1>
+    <p class="tagline">Les bons comptes font les bons amis : TrueBalances vous permet de partager et de gérer vos dépenses collectives,</p>
+    <p class ="tagline"> pour que chaque instant passé ensemble soit un souvenir inoubliable.</p>
+    <img src="~/logoTrue.png" alt="Logo de l'application">
+
+    <div class="custom-buttons">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a class="custom-button" asp-controller="Expense" asp-action="Index">Gérer les dépenses</a>
+            <a class="custom-button" asp-controller="Category" asp-action="Index">Gérer les catégories</a>
+            <a class="custom-button" asp-controller="Group" asp-action="Index">Gérer les groupes</a>
+        }
+        else
+        {
+            <a class="custom-button" asp-area="Identity" asp-page="/Account/Register">S'inscrire</a>
+            <a class="custom-button" asp-area="Identity" asp-page="/Account/Login">Se connecter</a>
+        }
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.custom-button').forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.add('clicked');
+                setTimeout(() => button.classList.remove('clicked'), 200);
+            });
+        });
+    </script>
+}

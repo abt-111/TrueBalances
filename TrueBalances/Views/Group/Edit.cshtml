@@ -1,0 +1,42 @@
+﻿@model TrueBalances.Models.Group
+
+@{
+    ViewData["Title"] = "Modifier le groupe";
+}
+
+<h1 class="custom-header text-center">@ViewData["Title"]</h1>
+
+<hr />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <form asp-action="Edit">
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label">Nom</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                @*  <div class="form-group">
+                <label asp-for="ImageUrl" class="control-label">URL de l'image</label>
+                <input asp-for="ImageUrl" class="form-control" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                </div> *@
+                <div class="form-group">
+                    <input type="submit" value="Sauvegarder" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="action-link">Retour à la liste</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

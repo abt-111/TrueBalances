@@ -1,0 +1,55 @@
+﻿@model IEnumerable<TrueBalances.Models.Category>
+
+@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/category_index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/table.css" asp-append-version="true" />
+}
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center mb-3">
+            <h1>Gestion des catégories</h1>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-md-12 text-right">
+            <a class="btn btn-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter une catégorie</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped table-hover">
+                <thead class="custom-table-header">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.First().Name)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="custom-table-info">
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td class="text-right">
+                                <a class="action-icon" asp-action="Edit" asp-route-categorieId="@item.Id" title="Modifier"><i class="fas fa-edit"></i></a>
+                                <a class="action-icon" asp-action="Details" asp-route-id="@item.Id" title="Détails"><i class="fas fa-info-circle"></i></a>
+                                <a class="action-icon" asp-action="Delete" asp-route-id="@item.Id" title="Supprimer"><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div>
+        <a asp-controller="Home" asp-action="Index" style="color: #073b3a;">Retour à l'accueil</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+}

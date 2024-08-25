@@ -1,0 +1,71 @@
+﻿@model TrueBalances.Models.Category
+
+@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/category_details.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/container.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/table.css" asp-append-version="true" />
+}
+
+@{
+    ViewData["Title"] = "Détails";
+}
+
+<h1 class="custom-header">@ViewData["Title"]</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <!-- Section pour afficher les dépenses associées à cette catégorie -->
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h4>Dépenses associées</h4>
+            <hr />
+            @if (Model?.Expenses != null && Model.Expenses.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Titre</th>
+                            <th>Montant</th>
+                            <th>Date</th>
+                            <th>Auteur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var expense in Model.Expenses)
+                        {
+                            <tr>
+                                <td>@expense.Title</td>
+                                <td>@expense.Amount €</td>
+                                <td>@expense.Date.ToString("d")</td>
+                                <td>@expense.CustomUser.FirstName </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>Aucune dépense associée à cette catégorie.</p>
+            }
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-8 offset-md-2 text-right">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Modifier</a>
+            <a asp-action="Index" class="btn btn-primary">Retour à la liste</a>
+        </div>
+    </div>
+</div>
