@@ -31,6 +31,18 @@ body {
     object-fit: cover;
 }
 
+.card {
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #08a045;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+
 .custom-header {
     background-color: #08a045;
     color: white;

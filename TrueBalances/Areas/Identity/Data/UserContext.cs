@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 using TrueBalances.Areas.Identity.Data;
+using TrueBalances.Areas.Identity.Data.Configurations;
 using TrueBalances.Models;
 
 namespace TrueBalances.Data;
@@ -9,7 +9,7 @@ namespace TrueBalances.Data;
 public class UserContext : IdentityDbContext<CustomUser>
 {
     public UserContext(DbContextOptions<UserContext> options) : base(options)
-    {}
+    { }
 
     public DbSet<Category> Categories { get; set; }
     public DbSet<Expense> Expenses { get; set; }
@@ -76,22 +76,19 @@ public class UserContext : IdentityDbContext<CustomUser>
        .HasForeignKey(e => e.CategoryId)
        .OnDelete(DeleteBehavior.SetNull);
 
+        // Données par défaut
+
+        // Catégories
         builder.Entity<Category>().HasData(
-            new Category()
-            {
-                Id = 1,
-                Name = "Voyage",
-            },
-            new Category()
-            {
-                Id = 2,
-                Name = "Couple",
-            },
-            new Category()
-            {
-                Id = 3,
-                Name = "Co-voiturage",
-            }
+            new Category() { Id = 1, Name = "Voyage", },
+            new Category() { Id = 2, Name = "Couple", },
+            new Category() { Id = 3, Name = "Co-voiturage", }
         );
+
+        // Utilisateurs
+        builder.ApplyConfiguration(new UserEntityTypeConfiguration());
+
+        // Dépenses
+        builder.ApplyConfiguration(new ExpenseEntityTypeConfiguration());
     }
 }
