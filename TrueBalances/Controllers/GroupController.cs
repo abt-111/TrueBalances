@@ -78,39 +78,77 @@ namespace TrueBalances.Controllers
         }
 
         // Edit Group (GET)
-        [HttpGet]
+        //[HttpGet]
+        //public async Task<IActionResult> Edit(int id)
+        //{
+        //    var group = await _groupService.GetGroupAsync(id);
+        //    if (group is null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return View(group);
+        //}
+
+        //// Edit Group (Post)
+        //[HttpPost]
+        //public async Task<IActionResult> Edit(int id, Group group)
+        //{
+        //    if (id != group.Id)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            await _groupService.UpdateGroupAsync(group);
+        //            return RedirectToAction(actionName: "Index", controllerName: "Group");
+        //        }
+        //        catch (Exception)
+        //        {
+        //            ModelState.AddModelError("", "Une erreur s'est produite lors de la mise à jour du groupe.");
+        //        }
+        //    }
+        //    return View(group);
+        //}
+
+        // Group Details
         public async Task<IActionResult> Edit(int id)
         {
             var group = await _groupService.GetGroupAsync(id);
-            if (group is null)
+            if (group == null)
             {
                 return NotFound();
             }
-            return View(group);
+            var availableUsers = await _userService.GetAllUsersAsync();
+
+            var viewModel = new GroupDetailsViewModel
+            {
+                Group = group,
+                AvailableUsers = availableUsers
+            };
+
+
+            return View(viewModel);
         }
-
-        // Edit Group (Post)
-        [HttpPost]
-        public async Task<IActionResult> Edit(int id, Group group)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id != group.Id)
+            var group = await _groupService.GetGroupAsync(id);
+            if (group == null)
             {
                 return NotFound();
             }
+            var availableUsers = await _userService.GetAllUsersAsync();
 
-            if (ModelState.IsValid)
+            var viewModel = new GroupDetailsViewModel
             {
-                try
-                {
-                    await _groupService.UpdateGroupAsync(group);
-                    return RedirectToAction(actionName: "Index", controllerName: "Group");
-                }
-                catch (Exception)
-                {
-                    ModelState.AddModelError("", "Une erreur s'est produite lors de la mise à jour du groupe.");
-                }
-            }
-            return View(group);
+                Group = group,
+                AvailableUsers = availableUsers
+            };
+
+
+            return View(viewModel);
         }
 
         // Delete Group (GET)
@@ -164,26 +202,6 @@ namespace TrueBalances.Controllers
             return RedirectToAction(nameof(Details), new { id = groupId });
         }
 
-        // Group Details
-        public async Task<IActionResult> Details(int id)
-        {
-            var group = await _groupService.GetGroupAsync(id);
-            if (group == null)
-            {
-                return NotFound();
-            }
-            var availableUsers = await _userService.GetAllUsersAsync();
-
-            var viewModel = new GroupDetailsViewModel
-            {
-                Group = group,
-                AvailableUsers = availableUsers
-            };
-
-
-            return View(viewModel);
-        }
-
 
         private bool GroupExists(int id)
         {
@@ -192,3 +210,4 @@ namespace TrueBalances.Controllers
         }
     }
 }
+

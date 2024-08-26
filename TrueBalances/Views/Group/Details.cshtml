@@ -1,6 +1,6 @@
 ﻿@model TrueBalances.Models.GroupDetailsViewModel
 @{
-    ViewData["Title"] = "Group Details";
+    ViewData["Title"] = "Modifier le groupe";
 }
 
 <div class="container mt-5">
@@ -24,7 +24,7 @@
 
     <div class="row mt-5">
         <div class="col-md-6">
-            <h3>Members</h3>
+            <h3>Participant</h3>
             <ul class="list-group">
                 @foreach (var member in Model.Group.Members)
                 {
@@ -33,18 +33,18 @@
                         <form asp-action="RemoveMember" method="post" class="d-inline">
                             <input type="hidden" name="groupId" value="@Model.Group.Id" />
                             <input type="hidden" name="userId" value="@member.CustomUserId" />
-                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
                         </form>
                     </li>
                 }
             </ul>
         </div>
         <div class="col-md-6">
-            <h3>Add Members</h3>
+            <h3>Ajouter un ami</h3>
             <form asp-action="AddMembers" method="post" class="mt-3">
                 <input type="hidden" name="groupId" value="@Model.Group.Id" />
                 <div class="form-group">
-                    <label for="selectedUserIds">Select Users to Add:</label>
+                    <label for="selectedUserIds">Sélectionner un participant:</label>
                     <select id="selectedUserIds" name="selectedUserIds" class="form-control" multiple="multiple" size="10">
                         @foreach (var user in Model.AvailableUsers)
                         {
@@ -52,7 +52,7 @@
                         }
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Add Selected Members</button>
+                <button type="submit" class="btn btn-primary mt-3">Ajouter les participants</button>
             </form>
         </div>
     </div>
