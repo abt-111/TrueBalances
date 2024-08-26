@@ -1,4 +1,4 @@
-﻿@model TrueBalances.Models.Group
+﻿@* @model TrueBalances.Models.Group
 
 @{
     ViewData["Title"] = "Modifier le groupe";
@@ -18,11 +18,6 @@
                     <input asp-for="Name" class="form-control" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
-                @*  <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label">URL de l'image</label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-                </div> *@
                 <div class="form-group">
                     <input type="submit" value="Sauvegarder" class="btn btn-primary" />
                 </div>
@@ -40,3 +35,59 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+ *@
+
+                    @model TrueBalances.Models.GroupDetailsViewModel
+@{
+    ViewData["Title"] = "Modifier le groupe";
+}
+
+<div class="container mt-5">
+    <form asp-action="Edit" method="post">
+        <div class="form-group">
+            <label for="groupName">Nom du groupe:</label>
+            <input type="text" class="form-control" id="groupName" name="Group.Name" value="@Model.Group.Name" required />
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <h3>Participant</h3>
+                <ul class="list-group">
+                    @foreach (var member in Model.Group.Members)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            @member.CustomUser.UserName
+                            <form asp-action="RemoveMember" method="post" class="d-inline">
+                                <input type="hidden" name="groupId" value="@Model.Group.Id" />
+                                <input type="hidden" name="userId" value="@member.CustomUserId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                            </form>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h3>Ajouter un ami</h3>
+                <div class="form-group">
+                    <label for="selectedUserIds">Sélectionner un participant:</label>
+                    <select id="selectedUserIds" name="SelectedUserIds" class="form-control" multiple="multiple" size="10">
+                        @foreach (var user in Model.AvailableUsers)
+                        {
+                            <option value="@user.Id">@user.UserName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Sauvegarder" class="btn btn-primary" />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Enregistrer les modifications</button>
+    </form>
+</div>
+<div>
+    <a asp-action="Index">Retour à la liste</a>
+</div>
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">

@@ -111,6 +111,35 @@ namespace TrueBalances.Repositories.Services
             }
         }
 
-        
+        //méthode pour mettre à jour les membres du groupe selon la liste sélectionnée
+        public async Task UpdateGroupMembersAsync(int groupId, List<string> selectedUserIds)
+        {
+            var group = await GetGroupAsync(groupId);
+            if (group == null)
+            {
+                throw new Exception("Groupe introuvable.");
+            }
+
+            var currentMemberIds = group.Members.Select(m => m.CustomUserId).ToList();
+
+            // Supprimer les membres qui ne sont plus dans la liste sélectionnée
+            var membersToRemove = group.Members.Where(m => !selectedUserIds.Contains(m.CustomUserId)).ToList();
+            foreach (var member in membersToRemove)
+            {
+                group.Members.Remove(member);
+            }
+
+            // Ajouter les nouveaux membres sélectionnés
+            foreach (var userId in selectedUserIds)
+            {
+                if (!currentMemberIds.Contains(userId))
+                {
+                    group.Members.Add(new UserGroup { CustomUserId = userId, GroupId = groupId });
+                }
+            }
+
+            await _groupRepository.UpdateAsync(group);
+        }
+
     }
-    }
+}
