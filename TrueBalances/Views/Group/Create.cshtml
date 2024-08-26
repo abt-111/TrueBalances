@@ -16,6 +16,8 @@
 
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                <input type="hidden" asp-for="AvailableUsers" />
+
                 <div class="form-group">
                     <label asp-for="Group.Name" class="control-label">Nom du groupe</label>
                     <input asp-for="Group.Name" class="form-control" />
@@ -28,8 +30,8 @@
                     @foreach (var user in Model.AvailableUsers)
                     {
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="SelectedUserIds" value="@user.Id" id="user_@user.Id" />
-                            <label class="form-check-label" for="user_@user.Id">@user.UserName</label>
+                            <input class="form-check-input" type="checkbox" name="SelectedUserIds" value="@user.Id" />
+                            <label class="form-check-label">@user.FirstName @user.LastName</label>
                         </div>
                     }
                 </div>
