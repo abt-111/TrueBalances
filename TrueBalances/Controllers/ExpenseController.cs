@@ -115,7 +115,7 @@ namespace TrueBalances.Controllers
 
             var expense = await _context.Expenses
                 .Include(e => e.Category)
-                .Include(e => e.Participants)  // Inclure les participants
+                .Include(e => e.Participants) // Inclure les participants
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (expense == null)
@@ -123,13 +123,17 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
 
+            // Créer une SelectList avec Prénom + Nom
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
-
-            // Récupérer la liste des utilisateurs
-            ViewBag.Users = new SelectList(await _context.Users.ToListAsync(), "Id", "UserName");
+            ViewBag.Users = new SelectList(
+                _context.Users.Select(u => new { u.Id, FullName = u.FirstName + " " + u.LastName }),
+                "Id",
+                "FullName"
+            );
 
             return View(expense);
         }
+
 
 
         // POST: ExpenseController/Edit/5
@@ -201,23 +205,26 @@ public async Task<IActionResult> Edit(int id, Expense expense, string[] selected
 }
 
 
-        // GET: ExpenseController/Delete/5
-        public async Task<ActionResult> Delete(int? id)
-        
-        {
-            if (id == null )
-            {
-                return NotFound();
-            }
+// GET: ExpenseController/Delete/5
+public async Task<IActionResult> Delete(int? id)
+{
+    if (id == null)
+    {
+        return NotFound();
+    }
 
-            var expense = await _context.Expenses
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (id == null)
-            {
-                return NotFound();
-            }
-            return View(expense);
-        }
+    var expense = await _context.Expenses
+        .Include(e => e.Category) // Inclure la catégorie
+        .FirstOrDefaultAsync(e => e.Id == id);
+    
+    if (expense == null)
+    {
+        return NotFound();
+    }
+
+    return View(expense);
+}
+
 
         // POST: ExpenseController/Delete/5
         [HttpPost, ActionName("Delete")]

@@ -98,7 +98,7 @@
                             <div>
                                 <input type="checkbox" name="selectedUserIds" value="@user.Value"
                                     @(Model.Participants.Any(p => p.Id == user.Value) ? "checked" : "") />
-                                <label>@user.Text</label>
+                                <label>@user.Text</label> <!-- Le texte ici est maintenant le nom complet -->
                             </div>
                         }
                     </div>
