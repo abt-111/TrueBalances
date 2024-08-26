@@ -19,21 +19,21 @@ public class UserContext : IdentityDbContext<CustomUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
 
-        //builder.Entity<UserGroup>()
-        //    .HasKey(ug => new { ug.GroupId, ug.CustomUserId });
+        builder.Entity<UserGroup>()
+            .HasKey(ug => new { ug.GroupId, ug.CustomUserId });
 
-        //builder.Entity<UserGroup>()
-        //    .HasOne(ug => ug.Group)
-        //    .WithMany(g => g.Members)
-        //    .HasForeignKey(ug => ug.GroupId);
+        builder.Entity<UserGroup>()
+            .HasOne(ug => ug.Group)
+            .WithMany(g => g.Members)
+            .HasForeignKey(ug => ug.GroupId);
 
-        //builder.Entity<UserGroup>()
-        //    .HasOne(ug => ug.CustomUser)
-        //    .WithMany(u => u.UserGroups)
-        //    .HasForeignKey(ug => ug.CustomUserId);
+        builder.Entity<UserGroup>()
+            .HasOne(ug => ug.CustomUser)
+            .WithMany(u => u.UserGroups)
+            .HasForeignKey(ug => ug.CustomUserId);
 
-        //builder.Entity<UserGroup>()
-        //   .HasKey(ug => ug.Id);
+        builder.Entity<UserGroup>()
+           .HasKey(ug => ug.Id);
 
 
         base.OnModelCreating(builder);

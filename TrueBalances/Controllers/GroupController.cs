@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using TrueBalances.Areas.Identity.Data;
-using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
-using TrueBalances.Repositories.Services;
 
 namespace TrueBalances.Controllers
 {
@@ -34,7 +31,8 @@ namespace TrueBalances.Controllers
 
             var viewModel = new GroupDetailsViewModel
             {
-                AvailableUsers = availableUsers.Select(u => new CustomUser { Id = u.Id, UserName = u.UserName }).ToList(),
+                //AvailableUsers = availableUsers.Select(u => new CustomUser { Id = u.Id, FirstName = u.FirstName, LastName = u.LastName }).ToList(),
+                AvailableUsers = availableUsers.ToList(),
                 SelectedUserIds = new List<string>()
             };
 
@@ -46,9 +44,9 @@ namespace TrueBalances.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(GroupDetailsViewModel viewModel)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var group = new Group
+                var group = new Models.Group
                 {
                     Name = viewModel.Group.Name,
                     Members = viewModel.SelectedUserIds.Select(id => new UserGroup { CustomUserId = id }).ToList()
@@ -56,6 +54,7 @@ namespace TrueBalances.Controllers
 
                 // Ajouter l'utilisateur courant comme membre du groupe
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
                 if (!string.IsNullOrEmpty(userId))
                 {
                     group.Members.Add(new UserGroup { CustomUserId = userId });
@@ -65,6 +64,7 @@ namespace TrueBalances.Controllers
 
                 return RedirectToAction("Index");
             }
+
             viewModel.AvailableUsers = await _userService.GetAllUsersAsync();
             return View(viewModel);
 
