@@ -84,7 +84,7 @@ namespace TrueBalances.Controllers
                 CustomUserId = _userManager.GetUserId(User)
             };
 
-            ViewBag.Categories = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
+            ViewBag.Categories = new SelectList(await _context.Categories.Where(c => c.Id != 4).ToListAsync(), "Id", "Name");
             ViewBag.Users = await _userManager.Users.ToListAsync();
             return View(expense);
         }
@@ -105,7 +105,7 @@ namespace TrueBalances.Controllers
             }
 
             // Recharger les catégories et les utilisateurs en cas d'échec de validation
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
+            ViewBag.Categories = new SelectList(_context.Categories.Where(c => c.Id != 4), "Id", "Name", expense.CategoryId);
             ViewBag.Users = _context.Users.ToList();
             return View(expense);
         }
@@ -136,7 +136,7 @@ namespace TrueBalances.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
+            ViewBag.Categories = new SelectList(_context.Categories.Where(c => c.Id != 4), "Id", "Name", expense.CategoryId);
             ViewBag.Users = await _userManager.Users.ToListAsync();
             return View(expense);
         }
@@ -198,7 +198,7 @@ namespace TrueBalances.Controllers
                 }
             }
 
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
+            ViewBag.Categories = new SelectList(_context.Categories.Where(c => c.Id != 4), "Id", "Name", expense.CategoryId);
             ViewBag.Users = await _userManager.Users.ToListAsync();
             return View(expense);
         }

@@ -20,7 +20,7 @@ namespace TrueBalances.Repositories.DbRepositories
 
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories.Where(c => c.Id != 4).ToListAsync();
         }
 
         public async Task<int> AddAsync(Category entity)

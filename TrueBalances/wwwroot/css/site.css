@@ -120,3 +120,7 @@ body {
 .action-links a:hover {
     color: #0056b3;
 }
+
+.fa-exclamation-circle {
+    color: #08a045;
+}

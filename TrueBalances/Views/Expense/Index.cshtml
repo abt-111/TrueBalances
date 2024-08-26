@@ -46,7 +46,20 @@
                             <td>@Html.DisplayFor(modelItem => item.Title)</td>
                             <td>@Html.DisplayFor(modelItem => item.Amount) €</td>
                             <td>@Html.DisplayFor(modelItem => item.Date)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Category!.Name)</td>
+                            @if (item.CategoryId != 4)
+                            {
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Category!.Name)
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-center">
+                                    <a href="" title="Cette dépense doit-être recatégorisé">
+                                    <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            }
                             <td>@Html.DisplayFor(modelItem => item.CustomUser.FirstName)</td>
 
                             <td class="action-links text-center">
