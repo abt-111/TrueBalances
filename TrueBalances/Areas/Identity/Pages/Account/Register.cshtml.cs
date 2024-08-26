@@ -146,6 +146,9 @@ namespace TrueBalances.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
 
+                //Enregistrement du fichier de la photo de profil et stockage de l'Url dans la base de données
+                user.ProfilePhotoUrl = _profilePhotoService.RegisterProfilePhotoFile(Input.ProfilePhotoFile);
+
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -153,12 +156,6 @@ namespace TrueBalances.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-
-                    // Enregistrement de la photo de profil
-                    if (Input.ProfilePhotoFile != null)
-                    {
-                        _profilePhotoService.RegisterProfilePhotoFile(Input.ProfilePhotoFile, user.Id);
-                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

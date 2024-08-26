@@ -1,79 +1,12 @@
 @model TrueBalances.Models.Expense
 
+@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/details_container.css" asp-append-version="true" />
+}
+
 @{
     ViewData["Title"] = "Détails";
 }
-
-<style>
-    .custom-header {
-        background-color: #08a045;
-        color: white;
-        padding: 10px;
-        text-align: center;
-        border-radius: 0.25rem;
-    }
-
-    .form-control {
-        border-radius: 0.25rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: border-color 0.3s, box-shadow 0.3s;
-    }
-
-        .form-control:focus {
-            border-color: #08a045;
-            box-shadow: 0 0 0 0.2rem rgba(8, 160, 69, 0.25);
-        }
-
-    .btn-primary {
-        background-color: #08a045;
-        border-color: #08a045;
-        border-radius: 0.25rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s, box-shadow 0.3s;
-    }
-
-        .btn-primary:hover {
-            background-color: #06a03d;
-            border-color: #06a03d;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-    .text-danger {
-        color: #dc3545;
-    }
-
-    .action-link {
-        color: #073b3a;
-        font-size: 1rem; /* Taille du texte */
-        margin-top: 10px;
-        display: inline-block;
-    }
-
-        .action-link:hover {
-            color: #0056b3;
-        }
-
-    .details-container {
-        padding: 20px;
-        background-color: #f8f9fa;
-        border-radius: 0.25rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-        .details-container dl {
-            margin-bottom: 0;
-        }
-
-        .details-container dt {
-            font-weight: bold;
-            color: #073b3a;
-        }
-
-        .details-container dd {
-            margin-left: 0;
-            color: #333;
-        }
-</style>
 
 <h1 class="custom-header">@ViewData["Title"]</h1>
 

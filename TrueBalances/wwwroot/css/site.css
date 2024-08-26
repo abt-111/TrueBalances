@@ -1,3 +1,5 @@
+/* Feuille de style communes à toutes les vues */
+
 html {
     font-size: 14px;
 }
@@ -21,20 +23,100 @@ body {
     margin-bottom: 60px;
 }
 
-.custom-button {
-    background-color: white;
-    color: #0E205C;
-    border: 3px solid #FF9800;
-}
-
-    .custom-button:hover {
-        background-color: #0E205C;
-        color: white;
-    }
-
+/* Règles de style pour l'affichage de la photo de profile */
 .circle-img {
-    width: 50px;
-    height: 50px;
+    width: 5em;
+    height: 5em;
     border-radius: 50%;
     object-fit: cover;
+}
+
+.card {
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #08a045;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+
+.custom-header {
+    background-color: #08a045;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-radius: 0.25rem;
+    margin-bottom: 20px;
+}
+
+.form-control {
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+    .form-control:focus {
+        border-color: #08a045;
+        box-shadow: 0 0 0 0.2rem rgba(8, 160, 69, 0.25);
+    }
+
+.btn-primary {
+    background-color: #08a045;
+    border-color: #08a045;
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+    .btn-primary:hover {
+        background-color: #06a03d;
+        border-color: #06a03d;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+.btn-custom {
+    background-color: #08a045; /* Couleur de fond verte */
+    border-color: #08a045; /* Bordure verte */
+    border-radius: 0.25rem;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+    .btn-custom:hover {
+        background-color: #007d1e; /* Couleur de fond verte plus foncée au survol */
+        border-color: #007d1e; /* Bordure verte plus foncée au survol */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+.text-danger {
+    color: #dc3545;
+}
+
+.action-link {
+    color: #073b3a;
+    font-size: 1rem; /* Taille du texte */
+    margin-top: 10px;
+    display: inline-block;
+}
+
+    .action-link:hover {
+        color: #0056b3;
+    }
+
+.action-links a {
+    color: #073b3a;
+    font-size: 1.2rem;
+    margin: 0 5px;
+}
+
+.action-links i {
+    transition: color 0.3s;
+}
+
+.action-links a:hover {
+    color: #0056b3;
 }

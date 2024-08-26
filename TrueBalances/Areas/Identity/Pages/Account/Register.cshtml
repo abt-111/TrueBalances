@@ -1,14 +1,20 @@
 ﻿@page
 @model RegisterModel
 
+@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/login_register.css" asp-append-version="true" />
+}
+
 @{
     ViewData["Title"] = "Inscription";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="custom-header">
+    <h1>@ViewData["Title"]</h1>
+</div>
 
-<div class="row">
-    <div class="col-md-4">
+<div class="row justify-content-center">
+    <div class="col-md-6 form-container">
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
             <h2>Créer un nouveau compte.</h2>
             <hr />
@@ -51,7 +57,7 @@
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">S'inscrire</button>
         </form>
     </div>
-    <div class="col-md-6 col-md-offset-2">
+    @* <div class="col-md-6 form-container">
         <section>
             <h3>Utiliser un autre service pour s'inscrire.</h3>
             <hr />
@@ -82,7 +88,7 @@
                 }
             }
         </section>
-    </div>
+    </div> *@
 </div>
 
 @section Scripts {

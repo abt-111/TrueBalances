@@ -57,7 +57,47 @@ namespace TrueBalances.Repositories.DbRepositories
             return -1;
         }
 
-    }
+        public Task<Category?> GetCategoryWithExpensesByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
 
+        public async Task<Group> GetGroupByIdAsync(int groupId)
+        {
+            return await _context.Groups
+                .Include(g => g.Members)
+                .FirstOrDefaultAsync(g => g.Id == groupId);
+        }
+
+        public async Task AddUserToGroupAsync(int groupId, string userId)
+        {
+            var userGroup = new UserGroup
+            {
+                GroupId = groupId,
+                CustomUserId = userId
+            };
+            _context.UsersGroup.Add(userGroup);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveUserFromGroupAsync(int groupId, string userId)
+        {
+            var userGroup = await _context.UsersGroup
+                .FirstOrDefaultAsync(ug => ug.GroupId == groupId && ug.CustomUserId == userId);
+
+            if (userGroup != null)
+            {
+                _context.UsersGroup.Remove(userGroup);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateGroupAsync(Group group)
+        {
+            _context.Groups.Update(group);
+            await _context.SaveChangesAsync();
+        }
+    }
 }
+
 

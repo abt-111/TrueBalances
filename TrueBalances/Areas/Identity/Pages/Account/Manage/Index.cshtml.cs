@@ -83,7 +83,7 @@ namespace TrueBalances.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Numero de téléphone")]
             public string PhoneNumber { get; set; }
 
-            [Display(Name = "Profile Photo URL")]
+            //[Display(Name = "Profile Photo URL")]
             [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png" })]
             [MaxFileSize(2 * 1024 * 1024)]
             /*[Display(Name = "Photo de profil")]*/
@@ -154,9 +154,7 @@ namespace TrueBalances.Areas.Identity.Pages.Account.Manage
 
             if (Input.ProfilePhotoFile != null)
             {
-                var profilePhoto = await _profilePhotoService.GetProfilePhoto(user.Id);
-
-                _profilePhotoService.UpdateProfilePhotoFile(Input.ProfilePhotoFile, profilePhoto);
+                user.ProfilePhotoUrl = _profilePhotoService.UpdateProfilePhotoFile(Input.ProfilePhotoFile, user.ProfilePhotoUrl);
             }
 
             await _userManager.UpdateAsync(user);

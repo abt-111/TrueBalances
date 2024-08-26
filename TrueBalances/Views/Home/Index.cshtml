@@ -1,61 +1,14 @@
 ﻿@model UserViewModel
 
+@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/home_index.css" asp-append-version="true" />
+}
+
 @{
     ViewData["Title"] = "Home Page";
 }
 
-<style>
-    .custom-header {
-        color: #08a045;
-        padding: 20px;
-        text-align: center;
-        border-radius: 0.25rem;
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-        .custom-header h1 {
-            margin: 0;
-            font-size: 2rem;
-        }
-
-        .custom-header img {
-            height: 50px;
-        }
-
-    .custom-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 20px;
-    }
-
-    .custom-button {
-        background-color: #08a045;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 0.25rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s, box-shadow 0.3s;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-        .custom-button:hover {
-            background-color: #06a03d;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-</style>
-
-<div class="custom-header">
-    <h1>TrueBalances</h1>
-    <img src="~/logo7_29_101234.png" alt="Logo de l'application">
-</div>
-
-<div class="text-center">
+<div class="text-center welcome-section">
     <h1 class="display-4">
         @if (User.Identity.IsAuthenticated)
         {
@@ -63,57 +16,35 @@
         }
         else
         {
-            @:Bienvenue visiteur
+            @:Bienvenue
         }
     </h1>
+    <p class="tagline">Les bons comptes font les bons amis : TrueBalances vous permet de partager et de gérer vos dépenses collectives,</p>
+    <p class ="tagline"> pour que chaque instant passé ensemble soit un souvenir inoubliable.</p>
+    <img src="~/logoTrue.png" alt="Logo de l'application">
 
     <div class="custom-buttons">
         @if (User.Identity.IsAuthenticated)
         {
-            <a class="btn custom-button" asp-controller="Expense" asp-action="Index">Gérer les dépenses</a>
-            <a class="btn custom-button" asp-controller="Category" asp-action="Index">Gérer les catégories</a>
-            <a class="btn custom-button" asp-controller="Group" asp-action="Index">Gérer les groupes</a>
+            <a class="custom-button" asp-controller="Expense" asp-action="Index">Gérer les dépenses</a>
+            <a class="custom-button" asp-controller="Category" asp-action="Index">Gérer les catégories</a>
+            <a class="custom-button" asp-controller="Group" asp-action="Index">Gérer les groupes</a>
         }
         else
         {
-            <a class="btn custom-button" asp-area="Identity" asp-page="/Account/Register">S'inscrire</a>
-            <a class="btn custom-button" asp-area="Identity" asp-page="/Account/Login">Se connecter</a>
+            <a class="custom-button" asp-area="Identity" asp-page="/Account/Register">S'inscrire</a>
+            <a class="custom-button" asp-area="Identity" asp-page="/Account/Login">Se connecter</a>
         }
     </div>
 </div>
 
-@* @model UserViewModel
-
-@{
-    ViewData["Title"] = "Home Page";
+@section Scripts {
+    <script>
+        document.querySelectorAll('.custom-button').forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.add('clicked');
+                setTimeout(() => button.classList.remove('clicked'), 200);
+            });
+        });
+    </script>
 }
-
-<div class="text-center">
-    <h1 class="display-4">
-        @if (User.Identity.IsAuthenticated)
-        {
-            @:Bienvenue @Model.FirstName @Model.LastName
-        }
-        else
-        {
-            @:Bienvenue visiteur
-        }
-    </h1>
-
-    <form>
-        <div class="d-grid gap-2 col-6 mx-auto">
-            @if (User.Identity.IsAuthenticated)
-            {
-                <a class="btn custom-button" asp-controller="Expense" asp-action="Index">Gérer les dépenses</a>
-                <a class="btn custom-button" asp-controller="Category" asp-action="Index">Gérer les catégories</a>
-                <a class="btn custom-button">Gérer les groupes</a>
-            }
-            else
-            {
-                <a class="btn custom-button" asp-area="Identity" asp-page="/Account/Register">S'inscrire</a>
-                <a class="btn custom-button" asp-area="Identity" asp-page="/Account/Login">Se connecter</a>
-            }
-        </div>
-    </form>
-</div>
- *@

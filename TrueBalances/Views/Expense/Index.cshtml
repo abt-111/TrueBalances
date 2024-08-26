@@ -1,88 +1,28 @@
 @using TrueBalances.Areas.Identity.Data
+
 @model IEnumerable<TrueBalances.Models.Expense>
+
+@section SpecificStylesheet {
+    <link rel="stylesheet" href="~/css/table.css" asp-append-version="true" />
+}
 
 @{
     ViewData["Title"] = "Index";
 
-    // Valeur de ViewBag.customUsers est affectée dans l'action Index de ExpenseController
-    var users = ViewBag.customUsers as List<CustomUser>;
+    var currentUserId = ViewBag.CurrentUserId;
+    var users = ViewBag.Users as List<CustomUser>;
+    var debts = ViewBag.Debts as Dictionary<string, decimal>;
 }
 
-<style>
-    .custom-create-btn {
-        background-color: #08a045;
-        color: white;
-        border-color: #08a045;
-        border-radius: 0.25rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s, box-shadow 0.3s;
-    }
-
-        .custom-create-btn:hover {
-            background-color: #06a03d;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-    .custom-table-header {
-        background-color: #08a045;
-        color: white;
-        text-align: center;
-    }
-
-    .table {
-        border-radius: 0.25rem;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-        .table thead th {
-            background-color: #08a045;
-            color: white;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .table tbody tr:nth-child(even) {
-            background-color: white;
-        }
-
-        .table tbody tr:hover {
-            background-color: white;
-        }
-
-    .action-links a {
-        color: #073b3a;
-        font-size: 1.2rem; 
-        margin: 0 5px; 
-    }
-
-        .action-links a:hover {
-            color: #0056b3;
-        }
-
-    .action-links i {
-        transition: color 0.3s;
-    }
-
-    .custom-table-info td {
-        color: black;
-        font-weight: bold;
-    }
-
-    .custom-table-info {
-        background-color: white;
-    }
-</style>
-
 <div class="container">
+
     <div class="row">
         <div class="col-12 text-center mb-3">
             <h1>Gestion des Dépenses</h1>
         </div>
-            <p>
-                <a asp-action="Create" class="btn custom-create-btn">Ajouter une dépense</a>
-            </p>
-
+        <p>
+            <a asp-action="Create" class="btn btn-primary">Ajouter une dépense</a>
+        </p>
     </div>
 
     <div class="row">
@@ -108,16 +48,27 @@
                             <td>@Html.DisplayFor(modelItem => item.Date)</td>
                             <td>@Html.DisplayFor(modelItem => item.Category!.Name)</td>
                             <td>@Html.DisplayFor(modelItem => item.CustomUser.FirstName)</td>
+
                             <td class="action-links text-center">
-                                <a asp-action="Edit" asp-route-id="@item.Id" title="Modifier">
-                                    <i class="fas fa-edit"></i>
-                                </a>
+                                @* Affichage du bouton modifier si la dépense à été crée par l'utilisateur courant *@
+                                @if (currentUserId == item.CustomUserId)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                }
+
                                 <a asp-action="Details" asp-route-id="@item.Id" title="Détails">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" title="Supprimer">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
+
+                                @* Affichage du bouton supprimer si la dépense à été crée par l'utilisateur courant *@
+                                @if (currentUserId == item.CustomUserId)
+                                {
+                                    <a asp-action="Delete" asp-route-id="@item.Id" title="Supprimer">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                }
                             </td>
                         </tr>
                     }
@@ -128,36 +79,46 @@
         <!-- Colonne pour le récapitulatif plus étroite -->
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header text-center custom-header">
-                    <h2 class="mb-0">Récapitulatif</h2>
+                <div class="card-header">
+                    <h5 class="mb-0">Dette ou crédit ?</h5>
                 </div>
                 <div class="card-body">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Nom</th>
-                                <th>Sommes dues</th>
-                                <th>Sommes attendues</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var user in users)
+                    <ul class="list-group list-group-flush">
+                        @if (debts.Any(d => d.Value != 0))
+                        {
+                            @foreach (var userId in debts.Keys)
                             {
-                                <tr class="custom-table-info">
-                                    <td>@user.FirstName</td>
-                                    @{
-                                        var debt = Math.Round(Model.Where(e => e.CustomUserId != user.Id).Sum(e => e.Amount / users.Count), 2);
-                                        var credit = Math.Round(Model.Where(e => e.CustomUserId == user.Id).Sum(e => (e.Amount / users.Count) * (users.Count - 1)), 2);
-                                    }
-                                    <td>@debt €</td>
-                                    <td>@credit €</td>
-                                </tr>
+                                var user = users.Find(u => u.Id == userId);
+                                var debt = debts.GetValueOrDefault(userId);
+
+                                @if (debt < 0)
+                                {
+                                    <li class="list-group-item">
+                                        @user.FirstName me doit @(-debt) €
+                                    </li>
+                                }
+                                else if (debt != 0)
+                                {
+                                    <li class="list-group-item">
+                                        Je dois @debt € à @user.FirstName
+                                    </li>
+                                }
                             }
-                        </tbody>
-                    </table>
+                        }
+                        else
+                        {
+                            <li class="list-group-item">
+                                Je n'ai que de bons amis
+                            </li>
+                        }
+                        <li class="list-group-item">
+                            <a asp-action="Solde" style="color: #073b3a;">Tous les soldes</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
+
     </div>
 
     <div>

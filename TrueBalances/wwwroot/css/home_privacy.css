@@ -1,0 +1,55 @@
+﻿/* Feuille de style spécifique à la vue Privacy de Home */
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+header {
+    background: #f4f4f4;
+    padding: 10px 0;
+    text-align: center;
+}
+
+    header h1 {
+        margin: 0;
+        color: #104911;
+    }
+
+main {
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color: #08a045;
+}
+
+h3 {
+    color: #08a045;
+    margin-top: 20px;
+}
+
+p {
+    margin: 0;
+    padding: 10px 0;
+}
+
+ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+footer {
+    text-align: center;
+    padding: 10px 0;
+    background: #f4f4f4;
+    border-top: 1px solid #ddd;
+}
