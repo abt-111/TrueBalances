@@ -69,51 +69,78 @@ namespace TrueBalances.Controllers
             return View(viewModel);
         }
 
-        // Group Edit
+        // Group Edit(Get)
         public async Task<IActionResult> Edit(int id)
         {
-            var group = await _groupService.GetGroupAsync(id);
-            if (group == null)
-            {
-                return NotFound();
-            }
-            var availableUsers = await _userService.GetAllUsersAsync();
+ 
+                var group = await _groupService.GetGroupAsync(id);
+                if (group == null)
+                {
+                    return NotFound();
+                }
 
-            var viewModel = new GroupDetailsViewModel
-            {
-                Group = group,
-                AvailableUsers = availableUsers
-            };
+                var availableUsers = await _userService.GetAllUsersAsync();
 
+                var viewModel = new GroupDetailsViewModel
+                {
+                    Group = group,
+                    AvailableUsers = availableUsers
+                };
 
-            return View(viewModel);
+                ViewBag.AvailableUsers = availableUsers;
+
+                return View(viewModel);
+
         }
+
+        // Group Edit(Post)
+
         [HttpPost]
         public async Task<IActionResult> Edit(GroupDetailsViewModel viewModel)
         {
-
             if (!ModelState.IsValid)
             {
-                var availableUsers = await _userService.GetAllUsersAsync();
-                viewModel.AvailableUsers = availableUsers;
+                viewModel.AvailableUsers = await _userService.GetAllUsersAsync();
                 return View(viewModel);
             }
 
+            // Récupérer le groupe à mettre à jour
             var group = await _groupService.GetGroupAsync(viewModel.Group.Id);
             if (group == null)
             {
                 return NotFound();
             }
 
+            // Mettre à jour le nom du groupe
             group.Name = viewModel.Group.Name;
-
             await _groupService.UpdateGroupAsync(group);
 
-            // Gestion des membres (ajout et suppression)
-            await _groupService.UpdateGroupMembersAsync(group.Id, viewModel.SelectedUserIds);
+            // Ajouter les nouveaux membres
+            var selectedUserIds = viewModel.SelectedUserIds ?? new List<string>();
+            var currentMemberIds = group.Members.Select(m => m.CustomUserId).ToList();
+
+            // Membres à ajouter
+            var membersToAdd = selectedUserIds.Except(currentMemberIds).ToList();
+            if (membersToAdd.Any())
+            {
+                await _groupService.AddMembersAsync(group.Id, membersToAdd);
+            }
+
+            // Membres à supprimer
+            var membersToRemove = currentMemberIds.Except(selectedUserIds).ToList();
+            if (membersToRemove.Any())
+            {
+                foreach (var userId in membersToRemove)
+                {
+                    await _groupService.RemoveMemberAsync(group.Id, userId);
+                }
+            }
 
             return RedirectToAction("Index");
         }
+
+
+
 
 
         // Group Details
