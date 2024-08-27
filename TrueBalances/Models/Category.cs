@@ -11,10 +11,8 @@ public class Category
     [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Le nom doit contenir des lettres uniquement.")]
     [Display(Name = "Nom")]
     public string Name { get; set; } = string.Empty;
-
-    //Ajouter un constructeur pour lier la catégorie avec dépense
-
     public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
+
 }
 
 
