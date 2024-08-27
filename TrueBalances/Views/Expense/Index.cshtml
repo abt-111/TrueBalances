@@ -55,9 +55,12 @@
                             else
                             {
                                 <td class="text-center">
-                                    <a asp-action="Alert" asp-route-id="@item.Id" title="Cette dépense doit-être re-catégorisé">
-                                    <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-                                    </a>
+                                    @if (currentUserId == item.CustomUserId)
+                                    {
+                                        <a asp-action="Alert" asp-route-id="@item.Id" title="Cette dépense doit-être re-catégorisé">
+                                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                                        </a>
+                                    }
                                 </td>
                             }
                             <td>@Html.DisplayFor(modelItem => item.CustomUser.FirstName)</td>
