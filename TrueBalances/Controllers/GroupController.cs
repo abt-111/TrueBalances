@@ -1,10 +1,11 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
 using TrueBalances.Areas.Identity.Data;
+using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
-using TrueBalances.Repositories.Services;
 using TrueBalances.Tools;
 
 namespace TrueBalances.Controllers
@@ -23,7 +24,6 @@ namespace TrueBalances.Controllers
             _context = context;
             _userManager = userManager;
         }
-
         public async Task<IActionResult> Index()
         {
             var groups = await _groupService.GetAllGroups();
@@ -43,8 +43,8 @@ namespace TrueBalances.Controllers
             };
 
             return View(viewModel);
-
         }
+
         // Create Group (POST)
         [HttpPost]
         public async Task<IActionResult> Create(GroupDetailsViewModel viewModel)
@@ -99,7 +99,6 @@ namespace TrueBalances.Controllers
         }
 
         // Group Edit(Post)
-
         [HttpPost]
         public async Task<IActionResult> Edit(GroupDetailsViewModel viewModel)
         {
@@ -144,10 +143,6 @@ namespace TrueBalances.Controllers
             return RedirectToAction("Index");
         }
 
-
-
-
-
         // Group Details
         public async Task<IActionResult> Details(int id)
         {
@@ -159,7 +154,7 @@ namespace TrueBalances.Controllers
             // Récupérer le groupe avec les participants, la catégorie et les dépenses associées
             var group = await _context.Groups
                 .Include(g => g.Members)
-                    .ThenInclude(m => m.CustomUser)  // Inclure les utilisateurs associés aux membres
+                .ThenInclude(m => m.CustomUser)  // Inclure les utilisateurs associés aux membres
                 .Include(g => g.Category)  // Inclure la catégorie
                 .Include(g => g.Expenses)  // Inclure les dépenses associées
                 .FirstOrDefaultAsync(g => g.Id == id);
@@ -182,8 +177,6 @@ namespace TrueBalances.Controllers
 
             return View(viewModel);
         }
-
-
 
         // Delete Group (GET)
         [HttpGet]
@@ -218,7 +211,6 @@ namespace TrueBalances.Controllers
             return RedirectToAction(nameof(Details), new { id = groupId });
         }
 
-
         // Remove Member (POST)
         [HttpPost]
         public async Task<IActionResult> RemoveMember(int groupId, string userId)
@@ -226,7 +218,6 @@ namespace TrueBalances.Controllers
             await _groupService.RemoveMemberAsync(groupId, userId);
             return RedirectToAction(nameof(Details), new { id = groupId });
         }
-
 
         private bool GroupExists(int id)
         {
@@ -266,7 +257,5 @@ namespace TrueBalances.Controllers
 
             return RedirectToAction("Details", new { id = GroupId });
         }
-
     }
 }
-
