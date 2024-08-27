@@ -20,7 +20,7 @@ namespace TrueBalances.Repositories.DbRepositories
 
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories.Where(c => c.Id != 4).ToListAsync();
         }
 
         public async Task<int> AddAsync(Category entity)
@@ -40,6 +40,10 @@ namespace TrueBalances.Repositories.DbRepositories
             var category = await _context.Categories.FindAsync(id);
             if (category != null)
             {
+                // Mettre toute les valeurs CategoryId des Expense concernée à 4, qui est HasCategoryDeleted
+                var expensesToUpdate = _context.Expenses.Where(e => e.CategoryId == category.Id).ToList();
+                expensesToUpdate.ForEach(e => e.CategoryId = 4);
+
                 _context.Categories.Remove(category);
                 return await _context.SaveChangesAsync();
             }
