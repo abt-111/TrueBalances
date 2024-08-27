@@ -19,10 +19,10 @@
         <div class="col-12 text-center mb-3">
             <h1>Gestion des Dépenses</h1>
             <!-- Ajouter un bouton pour créer une nouvelle dépense -->
-            <p>
-                <a asp-action="Create" asp-route-groupId="@groupId" class="btn btn-primary">Ajouter une dépense</a>
-            </p>
         </div>
+        <p>
+            <a asp-action="DepenseCreate" asp-route-groupId="@groupId" class="btn btn-primary">Ajouter une dépense</a>
+        </p>
     </div>
 
     <div class="row">
@@ -117,6 +117,7 @@
     </div>
 
     <div>
-        <a asp-controller="Home" asp-action="Index" style="color: #073b3a;">Retour à l'accueil</a>
+        <a asp-action="Index" class="btn btn-secondary">Retour aux Groupes</a>
+        @* <a asp-controller="Home" asp-action="Index" style="color: #073b3a;">Retour à l'accueil</a> *@
     </div>
 </div>
