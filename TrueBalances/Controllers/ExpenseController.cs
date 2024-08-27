@@ -251,5 +251,37 @@ namespace TrueBalances.Controllers
         {
             return _context.Expenses.Any(e => e.Id == id);
         }
+
+        public async Task<IActionResult> Alert(int id)
+        {
+            if (id == 0)
+            {
+                return NotFound();
+            }
+
+            var expense = await _context.Expenses
+                .Include(e => e.Category)  // Inclure les catégories
+                .Include(e => e.Participants)  // Inclure les participants
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (expense == null)
+            {
+                return NotFound();
+            }
+
+            // Empêcher l'accès quand la dépenses n'appartient pas à l'utilisateur
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user.Id != expense.CustomUserId)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            expense.CategoryId = null;
+            _context.Update(expense);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
