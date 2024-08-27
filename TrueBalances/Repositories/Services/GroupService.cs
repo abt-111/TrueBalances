@@ -33,10 +33,10 @@ namespace TrueBalances.Repositories.Services
         //Methode pour creer un group
         public async Task CreateGroupAsync(Group group, string userId)
         {
-            group.Members = new List<UserGroup>
-                    {
-                        new UserGroup { CustomUserId = userId}
-                    };
+            //group.Members = new List<UserGroup>
+            //        {
+            //            new UserGroup { CustomUserId = userId}
+            //        };
 
             await _groupRepository.AddAsync(group);
 
