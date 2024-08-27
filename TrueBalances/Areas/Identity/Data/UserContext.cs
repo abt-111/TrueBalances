@@ -19,21 +19,21 @@ public class UserContext : IdentityDbContext<CustomUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
 
-        //builder.Entity<UserGroup>()
-        //    .HasKey(ug => new { ug.GroupId, ug.CustomUserId });
+        builder.Entity<UserGroup>()
+            .HasKey(ug => new { ug.GroupId, ug.CustomUserId });
 
-        //builder.Entity<UserGroup>()
-        //    .HasOne(ug => ug.Group)
-        //    .WithMany(g => g.Members)
-        //    .HasForeignKey(ug => ug.GroupId);
+        builder.Entity<UserGroup>()
+            .HasOne(ug => ug.Group)
+            .WithMany(g => g.Members)
+            .HasForeignKey(ug => ug.GroupId);
 
-        //builder.Entity<UserGroup>()
-        //    .HasOne(ug => ug.CustomUser)
-        //    .WithMany(u => u.UserGroups)
-        //    .HasForeignKey(ug => ug.CustomUserId);
+        builder.Entity<UserGroup>()
+            .HasOne(ug => ug.CustomUser)
+            .WithMany(u => u.UserGroups)
+            .HasForeignKey(ug => ug.CustomUserId);
 
-        //builder.Entity<UserGroup>()
-        //   .HasKey(ug => ug.Id);
+        builder.Entity<UserGroup>()
+           .HasKey(ug => ug.Id);
 
 
         base.OnModelCreating(builder);
@@ -70,11 +70,11 @@ public class UserContext : IdentityDbContext<CustomUser>
             .Property(e => e.Amount)
             .HasColumnType("decimal(18, 2)");
 
-        builder.Entity<Expense>()
-       .HasOne(e => e.Category)
-       .WithMany(c => c.Expenses)
-       .HasForeignKey(e => e.CategoryId)
-       .OnDelete(DeleteBehavior.SetNull);
+       // builder.Entity<Expense>()
+       //.HasOne(e => e.Category)
+       //.WithMany(c => c.Expenses)
+       //.HasForeignKey(e => e.CategoryId)
+       //.OnDelete(DeleteBehavior.SetNull);
 
         // Données par défaut
 
@@ -82,7 +82,8 @@ public class UserContext : IdentityDbContext<CustomUser>
         builder.Entity<Category>().HasData(
             new Category() { Id = 1, Name = "Voyage", },
             new Category() { Id = 2, Name = "Couple", },
-            new Category() { Id = 3, Name = "Co-voiturage", }
+            new Category() { Id = 3, Name = "Co-voiturage" },
+            new Category() { Id = 4, Name = "Catégorie supprimée", }
         );
 
         // Utilisateurs

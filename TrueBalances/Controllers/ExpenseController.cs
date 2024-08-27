@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
+using TrueBalances.Repositories.Interfaces;
 using TrueBalances.Tools;
 
 namespace TrueBalances.Controllers
@@ -14,11 +15,13 @@ namespace TrueBalances.Controllers
     public class ExpenseController : Controller
     {
         private readonly UserContext _context;
+        private readonly IGenericRepository<Category> _categoryRepository;
         private readonly UserManager<CustomUser> _userManager;
 
-        public ExpenseController(UserContext context, UserManager<CustomUser> userManager)
+        public ExpenseController(UserContext context, UserManager<CustomUser> userManager, IGenericRepository<Category> categoryRepository)
         {
             _context = context;
+            _categoryRepository = categoryRepository;
             _userManager = userManager;
         }
 
@@ -83,9 +86,9 @@ namespace TrueBalances.Controllers
                 // On passe assigne CustomUserId directement dans le contrôleur pour plus de simplicité
                 CustomUserId = _userManager.GetUserId(User)
             };
-
-            ViewBag.Categories = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
-            ViewBag.Users = await _userManager.Users.ToListAsync(); // Assurez-vous que cela retourne une liste valide
+            
+            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
+            ViewBag.Users = await _userManager.Users.ToListAsync();
             return View(expense);
         }
 
@@ -111,8 +114,8 @@ namespace TrueBalances.Controllers
             }
 
             // Recharger les catégories et les utilisateurs en cas d'échec de validation
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
-            ViewBag.Users = await _userManager.Users.ToListAsync(); 
+            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
+            ViewBag.Users = _context.Users.ToList();
             return View(expense);
         }
 
@@ -143,77 +146,72 @@ namespace TrueBalances.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
+            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
             ViewBag.Users = await _userManager.Users.ToListAsync();
             return View(expense);
         }
 
-        // POST: ExpenseController/Edit/5
-        [HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Edit(int id, Expense expense)
-{
-    if (id != expense.Id)
-    {
-        return NotFound();
-    }
+  // POST: ExpenseController/Edit/5
+  [HttpPost]
+  [ValidateAntiForgeryToken]
+  public async Task<IActionResult> Edit(int id, Expense expense)
+  {
+      if (id != expense.Id)
+      {
+          return NotFound();
+      }
 
-    if (expense.SelectedUserIds == null || !expense.SelectedUserIds.Any())
-    {
-        ModelState.AddModelError(string.Empty, "Veuillez sélectionner au moins un participant.");
-    }
+      if (ModelState.IsValid)
+      {
+          try
+          {
+              var existingExpense = await _context.Expenses
+                  .Include(e => e.Participants)
+                  .FirstOrDefaultAsync(e => e.Id == id);
 
-    if (ModelState.IsValid)
-    {
-        try
-        {
-            var existingExpense = await _context.Expenses
-                .Include(e => e.Participants)
-                .FirstOrDefaultAsync(e => e.Id == id);
+              if (existingExpense == null)
+              {
+                  return NotFound();
+              }
 
-            if (existingExpense == null)
-            {
-                return NotFound();
-            }
+              // Mettre à jour les propriétés de l'expense
+              existingExpense.Title = expense.Title;
+              existingExpense.Amount = expense.Amount;
+              existingExpense.Date = expense.Date;
+              existingExpense.CategoryId = expense.CategoryId;
+              existingExpense.CustomUserId = expense.CustomUserId;
 
-            // Mettre à jour les propriétés de l'expense
-            existingExpense.Title = expense.Title;
-            existingExpense.Amount = expense.Amount;
-            existingExpense.Date = expense.Date;
-            existingExpense.CategoryId = expense.CategoryId;
-            existingExpense.CustomUserId = expense.CustomUserId;
+              // Mettre à jour la liste des participants
+              existingExpense.Participants.Clear();
 
-            // Mettre à jour la liste des participants
-            existingExpense.Participants.Clear();
+              if (expense.SelectedUserIds != null && expense.SelectedUserIds.Count > 0)
+              {
+                  expense.Participants = await _context.Users.Where(u => expense.SelectedUserIds.Contains(u.Id)).ToListAsync();
+                  existingExpense.Participants = expense.Participants;
+              }
 
-            if (expense.SelectedUserIds != null && expense.SelectedUserIds.Count > 0)
-            {
-                expense.Participants = await _context.Users.Where(u => expense.SelectedUserIds.Contains(u.Id)).ToListAsync();
-                existingExpense.Participants = expense.Participants;
-            }
+              _context.Update(existingExpense);
+              await _context.SaveChangesAsync();
 
-            _context.Update(existingExpense);
-            await _context.SaveChangesAsync();
+              return RedirectToAction(nameof(Index));
+          }
+          catch (DbUpdateConcurrencyException)
+          {
+              if (!ExpenseExists(expense.Id))
+              {
+                  return NotFound();
+              }
+              else
+              {
+                  throw;
+              }
+          }
+      }
 
-            return RedirectToAction(nameof(Index));
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!ExpenseExists(expense.Id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-    }
-
-    ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", expense.CategoryId);
-    ViewBag.Users = await _userManager.Users.ToListAsync();
-    return View(expense);
-}
+      ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
+      ViewBag.Users = await _userManager.Users.ToListAsync();
+      return View(expense);
+  }
 
 
         // GET: ExpenseController/Delete/5
@@ -262,6 +260,38 @@ public async Task<IActionResult> Edit(int id, Expense expense)
         private bool ExpenseExists(int id) // Vérifie si une dépense avec l'ID spécifié existe dans la base de données.// 
         {
             return _context.Expenses.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> Alert(int id)
+        {
+            if (id == 0)
+            {
+                return NotFound();
+            }
+
+            var expense = await _context.Expenses
+                .Include(e => e.Category)  // Inclure les catégories
+                .Include(e => e.Participants)  // Inclure les participants
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (expense == null)
+            {
+                return NotFound();
+            }
+
+            // Empêcher l'accès quand la dépenses n'appartient pas à l'utilisateur
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user.Id != expense.CustomUserId)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            expense.CategoryId = null;
+            _context.Update(expense);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

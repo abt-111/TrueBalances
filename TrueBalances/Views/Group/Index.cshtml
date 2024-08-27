@@ -1,13 +1,68 @@
 ﻿@model IEnumerable<TrueBalances.Models.Group>
 
-@section SpecificStylesheet {
-    <link rel="stylesheet" href="~/css/table.css" asp-append-version="true" />
-}
-
 @{
     ViewData["Title"] = "Liste des groupes";
+}
+@{
     var groups = Model ?? new List<TrueBalances.Models.Group>();
 }
+
+<style>
+    .custom-create-btn {
+        background-color: #08a045;
+        color: white;
+        border-color: #08a045;
+        border-radius: 0.25rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+        .custom-create-btn:hover {
+            background-color: #06a03d;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .custom-table-header {
+        background-color: #9ece9a;
+        color: white;
+        text-align: center;
+    }
+
+    .table {
+        border-radius: 0.25rem;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .table thead th {
+            background-color: #74a57f;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: white;
+        }
+
+        .table tbody tr:hover {
+            background-color: white;
+        }
+
+    .action-links a {
+        color: #073b3a;
+        font-size: 1.2rem;
+        margin: 0 5px;
+    }
+
+        .action-links a:hover {
+            color: #0056b3;
+        }
+
+    .action-links i {
+        transition: color 0.3s;
+    }
+</style>
 
 <div class="container">
     <div class="row">
@@ -15,7 +70,7 @@
             <h1>Liste des groupes</h1>
         </div>
         <p>
-            <a asp-action="Create" class="btn btn-primary">Ajouter un groupe</a>
+            <a asp-action="Create" class="btn custom-create-btn">Ajouter un groupe</a>
         </p>
     </div>
 
