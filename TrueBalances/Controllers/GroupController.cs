@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
+using TrueBalances.Repositories.DbRepositories;
 using TrueBalances.Repositories.Interfaces;
 using TrueBalances.Repositories.Services;
 using TrueBalances.Tools;
@@ -18,13 +20,15 @@ namespace TrueBalances.Controllers
         private readonly IUserService _userService;
         private readonly UserContext _context;
         private readonly UserManager<CustomUser> _userManager;
+        private readonly IGenericRepository<Category> _categoryRepository;
 
-        public GroupController(UserContext context, IGroupService groupService, IUserService userService, UserManager<CustomUser> userManager)
+        public GroupController(UserContext context, IGroupService groupService, IUserService userService, UserManager<CustomUser> userManager, IGenericRepository<Category> categoryRepository)
         {
             _groupService = groupService;
             _userService = userService;
             _context = context;
             _userManager = userManager;
+            _categoryRepository = categoryRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -240,7 +244,11 @@ namespace TrueBalances.Controllers
         //Methode affichant les récapitulatifs
         public async Task<IActionResult> DepenseIndex(int id)
         {
-            var expenses = await _context.Expenses.Where(e => e.GroupId == id).Include(e => e.Category).Include(e => e.Participants).ToListAsync();
+            var expenses = await _context.Expenses
+                .Where(e => e.GroupId == id)
+                .Include(e => e.Category)
+                .Include(e => e.Participants)
+                .ToListAsync();
 
             // Utilisation du ViewBag pour récupérer l'id de l'utilisateur courant dans la vue
             ViewBag.CurrentUserId = _userManager.GetUserId(User);
@@ -270,6 +278,49 @@ namespace TrueBalances.Controllers
             return RedirectToAction("Details", new { id = GroupId });
         }
 
+        //methode pour creer une dépense à partir du group
+        public async Task<IActionResult> DepenseCreate(int groupId)
+        {
+            var expense = new Expense
+            {
+                Date = DateTime.Now,
+                CustomUserId = _userManager.GetUserId(User),
+                GroupId = groupId
+            };
+
+            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
+            ViewBag.Users = await _userManager.Users.ToListAsync();
+            return View(expense);
+        }
+
+        [HttpPost]
+        //[Route("Expense/Create")]
+        public async Task<IActionResult> DepenseCreate(Expense expense)
+        {
+            if (ModelState.IsValid)
+            {
+                if (expense.SelectedUserIds != null && expense.SelectedUserIds.Count > 0)
+                {
+                    expense.Participants = await _context.Users.Where(u => expense.SelectedUserIds.Contains(u.Id)).ToListAsync();
+                }
+
+                _context.Expenses.Add(expense);
+                await _context.SaveChangesAsync();
+
+                // Rediriger vers la page de gestion des dépenses pour le groupe
+                return RedirectToAction("DepenseIndex", new { id = expense.GroupId });
+            }
+
+            // Recharger les catégories et les utilisateurs en cas d'échec de validation
+            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
+            ViewBag.Users = _context.Users.ToList();
+            return View(expense);
+        }
+
     }
+
+   
+
+    
 }
 

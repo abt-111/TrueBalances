@@ -1,0 +1,75 @@
+﻿@model TrueBalances.Models.Expense
+@using TrueBalances.Areas.Identity.Data
+
+
+@{
+    ViewData["Title"] = "Ajouter une dépense";
+    var users = ViewBag.Users as List<CustomUser>;
+}
+
+<h1 class="text-center">@ViewData["Title"]</h1>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <form asp-action="DepenseCreate" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <input type="hidden" asp-for="CustomUserId" />
+                <input type="hidden" asp-for="GroupId" />
+
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label">Titre</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Amount" class="control-label">Montant</label>
+                    <input asp-for="Amount" class="form-control" />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Date" class="control-label">Date</label>
+                    <input asp-for="Date" class="form-control" type="date" />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="control-label">Catégorie</label>
+                    <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories">
+                        <option value="">Sélectionnez une catégorie</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <!-- Section pour les participants -->
+                <div class="form-group">
+                    <label>Participants</label>
+                    @foreach (var user in users)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="SelectedUserIds" value="@user.Id" />
+                            <label class="form-check-label">@user.FirstName @user.LastName</label>
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Créer" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="DepenseIndex" asp-route-id="@Model.GroupId" class="btn btn-secondary mt-3">Retour à la gestion des dépenses</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
