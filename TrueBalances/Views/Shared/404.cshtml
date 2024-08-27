@@ -1,0 +1,60 @@
+@{
+    Layout = null; // Désactive le layout par défaut pour éviter la barre de navigation
+    ViewData["Title"] = "Page non trouvée";
+}
+<style>
+    /* Corps de la page */
+    body {
+        display: flex;
+        justify-content: center; /* Centre horizontalement */
+        align-items: center; /* Centre verticalement */
+        min-height: 100vh; /* Hauteur minimale de la page égale à la hauteur de la fenêtre */
+        margin: 0; /* Supprime les marges par défaut */
+        background-color: #f8f9fa; /* Couleur de fond légère */
+    }
+
+    .error-container {
+        text-align: center;
+        max-width: 800px; /* Largeur du conteneur */
+        padding: 50px; /* Padding pour l'espace interne */
+        background-color: white;
+        border-radius: 0.5rem; /* Coins arrondis */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Ombrage */
+    }
+
+    .error-container h1 {
+        font-size: 100px; /* Taille du texte */
+        color: #08a045;
+        margin-bottom: 30px; /* Espace sous le titre */
+    }
+
+    .error-container p {
+        font-size: 24px; /* Taille du texte */
+        color: #333;
+        margin-bottom: 40px; /* Espace sous le texte */
+    }
+
+    .error-container a {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 15px 30px; /* Taille du bouton */
+        font-size: 22px; /* Taille du texte du bouton */
+        background-color: #08a045;
+        color: white;
+        border-radius: 0.5rem; /* Coins arrondis */
+        text-decoration: none;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .error-container a:hover {
+        background-color: #06a03d;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+</style>
+<body>
+<div class="error-container">
+    <h1>404</h1>
+    <p>Désolé, la page que vous recherchez n'existe pas.</p>
+    <a href="@Url.Action("Index", "Home")">Retour à la page d'accueil</a>
+</div>
+</body>

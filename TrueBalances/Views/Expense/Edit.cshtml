@@ -1,10 +1,8 @@
 @using TrueBalances.Areas.Identity.Data
-
 @model TrueBalances.Models.Expense
 
 @{
     ViewData["Title"] = "Modifier une dépense";
-
     var users = ViewBag.Users as List<CustomUser>;
 }
 
@@ -16,6 +14,7 @@
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <form asp-action="Edit">
+                <!-- Affichage des messages d'erreur -->
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <input type="hidden" asp-for="Id" />
@@ -47,6 +46,7 @@
                     <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
 
+                <!-- Section pour les participants -->
                 <div class="form-group">
                     <label>Participants</label>
                     <div>
@@ -57,10 +57,20 @@
                                 <label class="form-check-label">@user.FirstName @user.LastName</label>
                             </div>
                         }
+                        <!-- Affichage du message d'erreur pour les participants -->
+                        @if (ViewData.ModelState[""]?.Errors.Count > 0)
+                        {
+                            <span class="text-danger">@ViewData.ModelState[""].Errors[0].ErrorMessage</span>
+                        }
                     </div>
                 </div>
 
-                <div class="form-group">
+                <!-- Section pour les boutons -->
+                <div class="form-group d-flex justify-content-between">
+                    <!-- Bouton pour sélectionner tous les membres -->
+                    <button type="button" id="selectAllBtn" class="btn btn-primary" onclick="toggleSelectAll()">Sélectionner tous les membres</button>
+
+                    <!-- Bouton de modification -->
                     <input type="submit" value="Modifier" class="btn btn-primary" />
                 </div>
             </form>
@@ -76,4 +86,15 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        function toggleSelectAll() {
+            var checkboxes = document.querySelectorAll('input[name="SelectedUserIds"]');
+            var allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+            
+            checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
+            
+            // Changer le texte du bouton en fonction de l'état
+            document.getElementById('selectAllBtn').innerText = allChecked ? 'Sélectionner tous les membres' : 'Désélectionner tous les membres';
+        }
+    </script>
 }
