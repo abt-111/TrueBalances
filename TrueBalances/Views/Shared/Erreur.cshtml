@@ -1,0 +1,40 @@
+@{
+ViewData["Title"] = "Erreur";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <title>Erreur</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+            padding: 50px;
+        }
+        h1 {
+            font-size: 50px;
+            color: #08a045;
+        }
+        p {
+            font-size: 18px;
+            color: #333;
+        }
+        a {
+            color: #08a045;
+            text-decoration: none;
+            font-size: 20px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<h1>Une erreur est survenue</h1>
+<p>Nous sommes désolés, mais une erreur inattendue s'est produite.</p>
+<a href="@Url.Action("Index", "Home")">Retour à la page d'accueil</a>
+</body>
+</html>

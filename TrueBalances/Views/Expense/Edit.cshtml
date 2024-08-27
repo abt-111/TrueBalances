@@ -82,7 +82,20 @@
     <a asp-action="Index" class="action-link">Retour à la liste</a>
 </div>
 
+
 @section Scripts {
+
+@{
+await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var dateInput = document.querySelector('input[name="Date"]');
+        var today = new Date().toISOString().split('T')[0];  // Obtenir la date d'aujourd'hui au format YYYY-MM-DD
+        dateInput.setAttribute('max', today);  // Définir la date maximale autorisée sur aujourd'hui
+    });
+</script>
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
