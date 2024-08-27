@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
+using TrueBalances.Repositories.Services;
+using TrueBalances.Tools;
 
 namespace TrueBalances.Controllers
 {
@@ -11,11 +13,15 @@ namespace TrueBalances.Controllers
     {
         private readonly IGroupService _groupService;
         private readonly IUserService _userService;
+        private readonly UserContext _context;
+        private readonly UserManager<CustomUser> _userManager;
 
-        public GroupController(IGroupService groupService, IUserService userService)
+        public GroupController(UserContext context, IGroupService groupService, IUserService userService, UserManager<CustomUser> userManager)
         {
             _groupService = groupService;
             _userService = userService;
+            _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -41,7 +47,6 @@ namespace TrueBalances.Controllers
         }
         // Create Group (POST)
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(GroupDetailsViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -67,89 +72,118 @@ namespace TrueBalances.Controllers
 
             viewModel.AvailableUsers = await _userService.GetAllUsersAsync();
             return View(viewModel);
-
-            //if (ModelState.IsValid)
-            //{
-            //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //    await _groupService.CreateGroupAsync(group, userId);
-            //    return RedirectToAction(actionName: "Index", controllerName: "Group");
-            //}
-            //return View(group);
         }
 
-        // Edit Group (GET)
-        //[HttpGet]
-        //public async Task<IActionResult> Edit(int id)
-        //{
-        //    var group = await _groupService.GetGroupAsync(id);
-        //    if (group is null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(group);
-        //}
-
-        //// Edit Group (Post)
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(int id, Group group)
-        //{
-        //    if (id != group.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            await _groupService.UpdateGroupAsync(group);
-        //            return RedirectToAction(actionName: "Index", controllerName: "Group");
-        //        }
-        //        catch (Exception)
-        //        {
-        //            ModelState.AddModelError("", "Une erreur s'est produite lors de la mise à jour du groupe.");
-        //        }
-        //    }
-        //    return View(group);
-        //}
-
-        // Group Details
+        // Group Edit(Get)
         public async Task<IActionResult> Edit(int id)
         {
-            var group = await _groupService.GetGroupAsync(id);
+ 
+                var group = await _groupService.GetGroupAsync(id);
+                if (group == null)
+                {
+                    return NotFound();
+                }
+
+                var availableUsers = await _userService.GetAllUsersAsync();
+
+                var viewModel = new GroupDetailsViewModel
+                {
+                    Group = group,
+                    AvailableUsers = availableUsers
+                };
+
+                ViewBag.AvailableUsers = availableUsers;
+
+                return View(viewModel);
+
+        }
+
+        // Group Edit(Post)
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(GroupDetailsViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                viewModel.AvailableUsers = await _userService.GetAllUsersAsync();
+                return View(viewModel);
+            }
+
+            // Récupérer le groupe à mettre à jour
+            var group = await _groupService.GetGroupAsync(viewModel.Group.Id);
             if (group == null)
             {
                 return NotFound();
             }
-            var availableUsers = await _userService.GetAllUsersAsync();
 
-            var viewModel = new GroupDetailsViewModel
+            // Mettre à jour le nom du groupe
+            group.Name = viewModel.Group.Name;
+            await _groupService.UpdateGroupAsync(group);
+
+            // Ajouter les nouveaux membres
+            var selectedUserIds = viewModel.SelectedUserIds ?? new List<string>();
+            var currentMemberIds = group.Members.Select(m => m.CustomUserId).ToList();
+
+            // Membres à ajouter
+            var membersToAdd = selectedUserIds.Except(currentMemberIds).ToList();
+            if (membersToAdd.Any())
             {
-                Group = group,
-                AvailableUsers = availableUsers
-            };
+                await _groupService.AddMembersAsync(group.Id, membersToAdd);
+            }
 
+            // Membres à supprimer
+            var membersToRemove = currentMemberIds.Except(selectedUserIds).ToList();
+            if (membersToRemove.Any())
+            {
+                foreach (var userId in membersToRemove)
+                {
+                    await _groupService.RemoveMemberAsync(group.Id, userId);
+                }
+            }
 
-            return View(viewModel);
+            return RedirectToAction("Index");
         }
+
+
+
+
+
+        // Group Details
         public async Task<IActionResult> Details(int id)
         {
-            var group = await _groupService.GetGroupAsync(id);
+            if (id == 0)
+            {
+                return NotFound();
+            }
+
+            // Récupérer le groupe avec les participants, la catégorie et les dépenses associées
+            var group = await _context.Groups
+                .Include(g => g.Members)
+                    .ThenInclude(m => m.CustomUser)  // Inclure les utilisateurs associés aux membres
+                .Include(g => g.Category)  // Inclure la catégorie
+                .Include(g => g.Expenses)  // Inclure les dépenses associées
+                .FirstOrDefaultAsync(g => g.Id == id);
+
             if (group == null)
             {
                 return NotFound();
             }
-            var availableUsers = await _userService.GetAllUsersAsync();
+            // Charger les catégories disponibles dans ViewBag
+            //ViewBag.Categories = new SelectList(await _categoryService.GetAllCategoriesAsync(), "Id", "Name");
 
+            // Initialiser le viewModel avec des vérifications pour éviter les nulls
             var viewModel = new GroupDetailsViewModel
             {
                 Group = group,
-                AvailableUsers = availableUsers
+                AvailableUsers = await _userService.GetAllUsersAsync(), // Si nécessaire pour d'autres fonctionnalités
+                SelectedUserIds = group.Members?.Select(m => m.CustomUserId).ToList() ?? new List<string>(),
+                CategoryId = group.CategoryId
             };
-
 
             return View(viewModel);
         }
+
+
 
         // Delete Group (GET)
         [HttpGet]
@@ -165,7 +199,6 @@ namespace TrueBalances.Controllers
 
         // Delete Group (POST)
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _groupService.DeleteGroupAsync(id);
@@ -174,7 +207,6 @@ namespace TrueBalances.Controllers
 
         // Add Member (POST)
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddMembers(int groupId, List<string> selectedUserIds)
         {
             var errors = await _groupService.AddMembersAsync(groupId, selectedUserIds);
@@ -184,18 +216,11 @@ namespace TrueBalances.Controllers
             }
 
             return RedirectToAction(nameof(Details), new { id = groupId });
-            //foreach (var userId in selectedUserIds)
-            //{
-            //    await _groupService.AddMemberAsync(groupId, userId);
-            //}
-
-            //return RedirectToAction(nameof(Details), new { id = groupId });
         }
 
 
         // Remove Member (POST)
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveMember(int groupId, string userId)
         {
             await _groupService.RemoveMemberAsync(groupId, userId);
@@ -208,6 +233,40 @@ namespace TrueBalances.Controllers
             var group = _groupService.GetGroupAsync(id).Result;
             return group != null;
         }
+
+        //Methode affichant les récapitulatifs
+        public async Task<IActionResult> DepenseIndex(int id)
+        {
+            var expenses = await _context.Expenses.Where(e => e.GroupId == id).Include(e => e.Category).Include(e => e.Participants).ToListAsync();
+
+            // Utilisation du ViewBag pour récupérer l'id de l'utilisateur courant dans la vue
+            ViewBag.CurrentUserId = _userManager.GetUserId(User);
+
+            // Utilisation du ViewBag pour récupérer la liste des utilisateurs dans la vue
+            ViewBag.Users = await _userManager.Users.ToListAsync();
+
+            ViewBag.Debts = DebtOperator.GetSomeoneDebts(expenses, ViewBag.Users, ViewBag.CurrentUserId);
+
+            ViewBag.GroupId = id;
+
+            return View(expenses);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateCategory(int GroupId, int? CategoryId)
+        {
+            var group = await _groupService.GetGroupAsync(GroupId);
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            group.CategoryId = CategoryId;
+            await _groupService.UpdateGroupAsync(group);
+
+            return RedirectToAction("Details", new { id = GroupId });
+        }
+
     }
 }
 
