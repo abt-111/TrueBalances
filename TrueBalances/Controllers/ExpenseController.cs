@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
+using TrueBalances.Repositories.Interfaces;
 using TrueBalances.Tools;
 
 namespace TrueBalances.Controllers
@@ -14,11 +15,13 @@ namespace TrueBalances.Controllers
     public class ExpenseController : Controller
     {
         private readonly UserContext _context;
+        private readonly IGenericRepository<Category> _categoryRepository;
         private readonly UserManager<CustomUser> _userManager;
 
-        public ExpenseController(UserContext context, UserManager<CustomUser> userManager)
+        public ExpenseController(UserContext context, UserManager<CustomUser> userManager, IGenericRepository<Category> categoryRepository)
         {
             _context = context;
+            _categoryRepository = categoryRepository;
             _userManager = userManager;
         }
 
@@ -84,7 +87,7 @@ namespace TrueBalances.Controllers
                 CustomUserId = _userManager.GetUserId(User)
             };
 
-            ViewBag.Categories = new SelectList(await _context.Categories.Where(c => c.Id != 4).ToListAsync(), "Id", "Name");
+            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
             ViewBag.Users = await _userManager.Users.ToListAsync();
             return View(expense);
         }
@@ -105,7 +108,7 @@ namespace TrueBalances.Controllers
             }
 
             // Recharger les catégories et les utilisateurs en cas d'échec de validation
-            ViewBag.Categories = new SelectList(_context.Categories.Where(c => c.Id != 4), "Id", "Name", expense.CategoryId);
+            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
             ViewBag.Users = _context.Users.ToList();
             return View(expense);
         }
@@ -136,7 +139,7 @@ namespace TrueBalances.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Categories = new SelectList(_context.Categories.Where(c => c.Id != 4), "Id", "Name", expense.CategoryId);
+            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
             ViewBag.Users = await _userManager.Users.ToListAsync();
             return View(expense);
         }
@@ -198,7 +201,7 @@ namespace TrueBalances.Controllers
                 }
             }
 
-            ViewBag.Categories = new SelectList(_context.Categories.Where(c => c.Id != 4), "Id", "Name", expense.CategoryId);
+            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
             ViewBag.Users = await _userManager.Users.ToListAsync();
             return View(expense);
         }
