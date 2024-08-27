@@ -23,11 +23,14 @@ namespace TrueBalances.Models
 
         // Clés étrangères
         public int? CategoryId { get; set; }
+        public int? GroupId { get; set; }
         public string CustomUserId { get; set; }
 
         // Propriétés de navigation
         [Display(Name = "Catégorie")]
         public Category? Category { get; set; }
+        [Display (Name = "Groupe")]
+        public Group? Group { get; set; }
 
         [Display(Name = "Auteur")]
         public CustomUser? CustomUser { get; set; }
