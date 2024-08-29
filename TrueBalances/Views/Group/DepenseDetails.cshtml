@@ -67,5 +67,6 @@
 </div>
 
 <div>
-    <a asp-action="Index" class="action-link">Retourner à la liste</a>
+    <a href="@Url.Action("DepenseIndex", new { id = Model.GroupId })" class="btn btn-secondary">Retour à la gestion des dépenses</a>
+    @* <a asp-action="Index" class="action-link">Retourner à la liste</a> *@
 </div>

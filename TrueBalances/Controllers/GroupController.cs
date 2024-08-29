@@ -449,6 +449,71 @@ namespace TrueBalances.Controllers
         }
 
         //methode pour supprimer une dépense à partir du group
+        public async Task<IActionResult> DepenseDelete(int id)
+        {
+            // Vérifier si l'id est valide
+            if (id <= 0)
+            {
+                return NotFound();
+            }
+
+            // Récupérer l'objet Expense à supprimer
+            var expense = await _context.Expenses
+                .Include(e => e.Group)  // Inclure le groupe si nécessaire
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            // Vérifier si l'objet Expense a été trouvé
+            if (expense == null)
+            {
+                return NotFound();
+            }
+
+            var groupId = expense.GroupId; // Assurez-vous que GroupId est défini
+
+            ViewBag.GroupId = groupId;
+
+            // Empêcher l'accès quand la dépense n'appartient pas à l'utilisateur
+            var user = await _userManager.GetUserAsync(User);
+            if (user.Id != expense.CustomUserId)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Passer l'objet Expense à la vue pour confirmation
+            return View(expense);
+        }
+
+        // POST: ExpenseController/Delete/5
+        [HttpPost, ActionName("DepenseDelete")]
+        public async Task<IActionResult> DepenseDeleteConfirmed(int id)
+        {
+            // Récupérer l'objet Expense à supprimer
+            var expense = await _context.Expenses
+                .Include(e => e.Group)  // Inclure le groupe si nécessaire
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            // Vérifier si l'objet Expense a été trouvé
+            if (expense == null)
+            {
+                return NotFound();
+            }
+
+            // Empêcher l'accès quand la dépense n'appartient pas à l'utilisateur
+            var user = await _userManager.GetUserAsync(User);
+            if (user.Id != expense.CustomUserId)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Supprimer l'objet Expense de la base de données
+            _context.Expenses.Remove(expense);
+
+            // Enregistrer les modifications dans la base de données
+            await _context.SaveChangesAsync();
+
+            // Rediriger vers la vue de gestion des dépenses du groupe
+            return RedirectToAction("DepenseIndex", new { id = expense.GroupId });
+        }
 
 
     }

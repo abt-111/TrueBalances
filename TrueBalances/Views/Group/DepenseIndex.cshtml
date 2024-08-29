@@ -59,11 +59,11 @@
                                     </a>
                                 }
                                 <a asp-action="DepenseDetails" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Détails">
-                                    <i class="fas fa-info-circle"></i>
+                                    <i class="fas fa-info-circle"></i> 
                                 </a>
                                 @if (currentUserId == item.CustomUserId)
                                 {
-                                    <a asp-action="Delete" asp-route-id="@item.Id" title="Supprimer">
+                                    <a asp-action="DepenseDelete" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Supprimer">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                 }
