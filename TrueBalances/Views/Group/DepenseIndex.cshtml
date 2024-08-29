@@ -10,7 +10,7 @@
     var currentUserId = ViewBag.CurrentUserId;
     var users = ViewBag.Users as List<CustomUser>;
     var debts = ViewBag.Debts as Dictionary<string, decimal>;
-    var groupId = ViewBag.GroupId; // Assurez-vous que ViewBag.GroupId est défini dans le contrôleur
+    var groupId = ViewBag.GroupId;
 }
 
 <div class="container">
@@ -52,7 +52,9 @@
                                 @* Affichage des boutons d'action *@
                                 @if (currentUserId == item.CustomUserId)
                                 {
-                                    <a asp-action="Edit" asp-route-id="@item.Id" title="Modifier">
+                                    //<a asp-action="DepenseEdit" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" class="btn btn-primary">Modifier</a>
+
+                                    <a asp-action="DepenseEdit" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Modifier">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 }
@@ -121,3 +123,4 @@
         @* <a asp-controller="Home" asp-action="Index" style="color: #073b3a;">Retour à l'accueil</a> *@
     </div>
 </div>
+

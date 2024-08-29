@@ -1,0 +1,106 @@
+﻿@using TrueBalances.Areas.Identity.Data
+@model TrueBalances.Models.Expense
+
+@{
+    ViewData["Title"] = "Modifier une dépense";
+    var currentUserId = ViewBag.CurrentUserId;
+    var users = ViewBag.Users as List<CustomUser>;
+    var debts = ViewBag.Debts as Dictionary<string, decimal>;
+    var groupId = ViewBag.GroupId;
+}
+
+<h1 class="custom-header text-center">@ViewData["Title"]</h1>
+
+<hr />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <form asp-action="DepenseEdit" method="post">
+                <!-- Affichage des messages d'erreur -->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="CustomUserId" />
+                <!-- Ajout d'un champ caché pour GroupId -->
+                <input type="hidden" name="GroupId" value="@groupId" />
+
+
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label">Titre</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Amount" class="control-label">Montant</label>
+                    <input asp-for="Amount" class="form-control" type="number" />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Date" class="control-label">Date</label>
+                    <input asp-for="Date" class="form-control" type="date" />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="control-label">Catégorie</label>
+                    <select asp-for="CategoryId" class="form-control" asp-items="@(ViewBag.Categories)">
+                        <option value=""> </option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <!-- Section pour les participants -->
+                <div class="form-group">
+                    <label>Participants</label>
+                    <div>
+                        @foreach (var user in users)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="SelectedUserIds" value="@user.Id" @(Model.Participants.Any(p => p.Id == user.Id) ? "checked" : "") />
+                                <label class="form-check-label">@user.FirstName @user.LastName</label>
+                            </div>
+                        }
+                        <!-- Affichage du message d'erreur pour les participants -->
+                        @if (ViewData.ModelState[""]?.Errors.Count > 0)
+                        {
+                            <span class="text-danger">@ViewData.ModelState[""].Errors[0].ErrorMessage</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Section pour les boutons -->
+                <div class="form-group d-flex justify-content-between">
+                    <!-- Bouton pour sélectionner tous les membres -->
+                    <button type="button" id="selectAllBtn" class="btn btn-primary" onclick="toggleSelectAll()">Sélectionner tous les membres</button>
+
+                    <!-- Bouton de modification -->
+                    <input type="submit" value="Modifier" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="action-link">Retour à la liste</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function toggleSelectAll() {
+            var checkboxes = document.querySelectorAll('input[name="SelectedUserIds"]');
+            var allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+
+            checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
+
+            // Changer le texte du bouton en fonction de l'état
+            document.getElementById('selectAllBtn').innerText = allChecked ? 'Sélectionner tous les membres' : 'Désélectionner tous les membres';
+        }
+    </script>
+}
