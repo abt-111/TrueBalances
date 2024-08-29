@@ -424,6 +424,29 @@ namespace TrueBalances.Controllers
         }
 
         //methode pour voir les détails d'une dépense à partir du group
+        public async Task<IActionResult> DepenseDetails(int id)
+        {
+            if (id == 0)
+            {
+                return NotFound();
+            }
+
+            var expense = await _context.Expenses
+                .Include(e => e.Category) // Inclure la catégorie
+                .Include(e => e.Participants) // Inclure les participants
+                .Include(e => e.Group) // Inclure le groupe associé
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (expense == null)
+            {
+                return NotFound();
+            }
+
+            // Passer l'ID du groupe à la vue via ViewBag (optionnel, selon vos besoins)
+            ViewBag.GroupId = expense.Group?.Id;
+
+            return View(expense);
+        }
 
         //methode pour supprimer une dépense à partir du group
 

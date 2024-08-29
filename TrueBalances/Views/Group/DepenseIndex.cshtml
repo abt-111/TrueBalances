@@ -58,7 +58,7 @@
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 }
-                                <a asp-action="Details" asp-route-id="@item.Id" title="Détails">
+                                <a asp-action="DepenseDetails" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Détails">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
                                 @if (currentUserId == item.CustomUserId)
