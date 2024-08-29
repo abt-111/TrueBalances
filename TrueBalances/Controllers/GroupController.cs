@@ -305,6 +305,133 @@ namespace TrueBalances.Controllers
             return View(expense);
         }
 
+        //methode pour modifier une dépense à partir du group
+        public async Task<IActionResult> DepenseEdit(int id, int groupId)
+        {
+            // Vérification des paramètres
+            if (id == 0 || groupId == 0)
+            {
+                return NotFound();
+            }
+
+            // Recherche de la dépense par son ID
+            var expense = await _context.Expenses
+                .Include(e => e.Category)     // Inclure les catégories
+                .Include(e => e.Participants) // Inclure les participants
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            // Vérification de l'existence de la dépense
+            if (expense == null)
+            {
+                return NotFound();
+            }
+
+            // Vérifie si la dépense appartient bien au groupe spécifié
+            if (expense.GroupId != groupId)
+            {
+                return View("404");
+            }
+
+            // Vérification si l'utilisateur connecté est bien le propriétaire de la dépense
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || user.Id != expense.CustomUserId)
+            {
+                return View("404");
+            }
+
+            // Préparation des données pour la vue
+            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
+            ViewBag.Users = await _userManager.Users.ToListAsync();
+
+            // Passer le groupId à la vue, si nécessaire pour les formulaires ou autres
+            ViewBag.GroupId = groupId;
+
+            // Affichage de la vue de modification de la dépense
+            return View(expense);
+        }
+
+
+        //methode pour Vérifier si une dépense avec l'ID spécifié existe dans la base de données.
+
+        private bool ExpenseExists(int id)
+        {
+            return _context.Expenses.Any(e => e.Id == id);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DepenseEdit(int id, Expense expense)
+        {
+            if (id != expense.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var existingExpense = await _context.Expenses
+                        .Include(e => e.Participants)
+                        .FirstOrDefaultAsync(e => e.Id == id);
+
+                    if (existingExpense == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Vérifiez que la dépense appartient toujours au bon groupe
+                    if (existingExpense.GroupId != expense.GroupId)
+                    {
+                        return NotFound(); // Ou gérer l'erreur selon vos besoins
+                    }
+
+                    // Mettre à jour les propriétés de l'expense
+                    existingExpense.Title = expense.Title;
+                    existingExpense.Amount = expense.Amount;
+                    existingExpense.Date = expense.Date;
+                    existingExpense.CategoryId = expense.CategoryId;
+
+                    // Mettre à jour la liste des participants
+                    existingExpense.Participants.Clear();
+
+                    if (expense.SelectedUserIds != null && expense.SelectedUserIds.Count > 0)
+                    {
+                        expense.Participants = await _context.Users.Where(u => expense.SelectedUserIds.Contains(u.Id)).ToListAsync();
+                        existingExpense.Participants = expense.Participants;
+                    }
+
+                    _context.Update(existingExpense);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction("DepenseIndex", new { id = expense.GroupId });
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ExpenseExists(expense.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
+            ViewBag.Users = await _userManager.Users.ToListAsync();
+            return View(expense);
+        }
+
+        //methode pour voir les détails d'une dépense à partir du group
+
+        //methode pour supprimer une dépense à partir du group
+
+
     }
-    
+
 }
+
+
+    
+    
