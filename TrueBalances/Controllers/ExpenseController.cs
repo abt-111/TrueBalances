@@ -83,23 +83,21 @@ namespace TrueBalances.Controllers
             return View(expense);
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int groupId)
         {
             var expense = new Expense
             {
-                // Valeur par défaut de la date dans le formulaire
                 Date = DateTime.Now,
-                // On passe assigne CustomUserId directement dans le contrôleur pour plus de simplicité
-                CustomUserId = _userManager.GetUserId(User)
+                CustomUserId = _userManager.GetUserId(User),
+                GroupId = groupId
             };
-            
+
             ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
             ViewBag.Users = await _userManager.Users.ToListAsync();
             return View(expense);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Expense expense)
         {
             if (expense.SelectedUserIds == null || !expense.SelectedUserIds.Any())
@@ -116,7 +114,9 @@ namespace TrueBalances.Controllers
 
                 _context.Expenses.Add(expense);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                // Rediriger vers la page de gestion des dépenses pour le groupe
+                return RedirectToAction("Index", new { groupId = expense.GroupId });
             }
 
             // Recharger les catégories et les utilisateurs en cas d'échec de validation

@@ -230,28 +230,6 @@ namespace TrueBalances.Controllers
             return group != null;
         }
 
-        //Methode affichant les récapitulatifs
-        public async Task<IActionResult> DepenseIndex(int id)
-        {
-            var expenses = await _context.Expenses
-                .Where(e => e.GroupId == id)
-                .Include(e => e.Category)
-                .Include(e => e.Participants)
-                .ToListAsync();
-
-            // Utilisation du ViewBag pour récupérer l'id de l'utilisateur courant dans la vue
-            ViewBag.CurrentUserId = _userManager.GetUserId(User);
-
-            // Utilisation du ViewBag pour récupérer la liste des utilisateurs dans la vue
-            ViewBag.Users = await _userManager.Users.ToListAsync();
-
-            ViewBag.Debts = DebtOperator.GetSomeoneDebts(expenses, ViewBag.Users, ViewBag.CurrentUserId);
-
-            ViewBag.GroupId = id;
-
-            return View(expenses);
-        }
-
         [HttpPost]
         public async Task<IActionResult> UpdateCategory(int GroupId, int? CategoryId)
         {
@@ -265,45 +243,6 @@ namespace TrueBalances.Controllers
             await _groupService.UpdateGroupAsync(group);
 
             return RedirectToAction("Details", new { id = GroupId });
-        }
-
-        //methode pour creer une dépense à partir du group
-        public async Task<IActionResult> DepenseCreate(int groupId)
-        {
-            var expense = new Expense
-            {
-                Date = DateTime.Now,
-                CustomUserId = _userManager.GetUserId(User),
-                GroupId = groupId
-            };
-
-            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
-            ViewBag.Users = await _userManager.Users.ToListAsync();
-            return View(expense);
-        }
-
-        [HttpPost]
-        //[Route("Expense/Create")]
-        public async Task<IActionResult> DepenseCreate(Expense expense)
-        {
-            if (ModelState.IsValid)
-            {
-                if (expense.SelectedUserIds != null && expense.SelectedUserIds.Count > 0)
-                {
-                    expense.Participants = await _context.Users.Where(u => expense.SelectedUserIds.Contains(u.Id)).ToListAsync();
-                }
-
-                _context.Expenses.Add(expense);
-                await _context.SaveChangesAsync();
-
-                // Rediriger vers la page de gestion des dépenses pour le groupe
-                return RedirectToAction("DepenseIndex", new { id = expense.GroupId });
-            }
-
-            // Recharger les catégories et les utilisateurs en cas d'échec de validation
-            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
-            ViewBag.Users = _context.Users.ToList();
-            return View(expense);
         }
 
         //methode pour modifier une dépense à partir du group
