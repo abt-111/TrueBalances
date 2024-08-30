@@ -38,11 +38,12 @@ namespace TrueBalances.Controllers
         public async Task<IActionResult> Create()
         {
             var availableUsers = await _userService.GetAllUsersAsync();
+            var currentUserId = _userManager.GetUserId(User);
 
             var viewModel = new GroupDetailsViewModel
             {
                 //AvailableUsers = availableUsers.Select(u => new CustomUser { Id = u.Id, FirstName = u.FirstName, LastName = u.LastName }).ToList(),
-                AvailableUsers = availableUsers.ToList(),
+                AvailableUsers = availableUsers.Where(u => u.Id != currentUserId).ToList(),
                 SelectedUserIds = new List<string>()
             };
 
