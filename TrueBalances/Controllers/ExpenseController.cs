@@ -62,7 +62,6 @@ namespace TrueBalances.Controllers
             return View(expenses);
         }
 
-        // GET: ExpenseController/Details/5
         public async Task<IActionResult> Details(int id)
         {
             if (id == 0)
@@ -73,12 +72,16 @@ namespace TrueBalances.Controllers
             var expense = await _context.Expenses
                 .Include(e => e.Category) // Inclure la catégorie
                 .Include(e => e.Participants) // Inclure les participants
+                .Include(e => e.Group) // Inclure le groupe associé
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (expense == null)
             {
                 return NotFound();
             }
+
+            // Passer l'ID du groupe à la vue via ViewBag (optionnel, selon vos besoins)
+            ViewBag.GroupId = expense.Group?.Id;
 
             return View(expense);
         }
