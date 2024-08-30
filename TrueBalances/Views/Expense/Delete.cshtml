@@ -40,9 +40,12 @@
         </dd>
     </dl>
 
-    <form asp-action="Delete">
+    <form asp-action="Delete" method="post">
+        <!-- Les champs cachés nécessaires -->
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Supprimer" class="btn btn-custom" />
-        <button type="button" class="btn btn-custom" onclick="window.location.href='@Url.Action("Index")'">Retour à la liste</button>
+        <input type="hidden" name="GroupId" value="@Model.GroupId" /> <!-- Assurez-vous que GroupId est passé pour redirection -->
+
+        <button type="submit" class="btn btn-danger">Supprimer</button>
+        <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary mt-3">Retour à la gestion des dépenses</a>
     </form>
 </div>

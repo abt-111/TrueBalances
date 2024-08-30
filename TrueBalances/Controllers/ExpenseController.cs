@@ -251,40 +251,60 @@ namespace TrueBalances.Controllers
             return View(expense);
         }
 
-
-        // GET: ExpenseController/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
+            // Vérifier si l'id est valide
+            if (id <= 0)
             {
                 return NotFound();
             }
 
+            // Récupérer l'objet Expense à supprimer
             var expense = await _context.Expenses
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (id == null)
+                .Include(e => e.Group)  // Inclure le groupe si nécessaire
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            // Vérifier si l'objet Expense a été trouvé
+            if (expense == null)
             {
                 return NotFound();
             }
 
-            // Empêcher l'accès quand la dépenses n'appartient pas à l'utilisateur
-            var user = await _userManager.GetUserAsync(User);
+            var groupId = expense.GroupId; // Assurez-vous que GroupId est défini
 
+            ViewBag.GroupId = groupId;
+
+            // Empêcher l'accès quand la dépense n'appartient pas à l'utilisateur
+            var user = await _userManager.GetUserAsync(User);
+            if (user.Id != expense.CustomUserId)
+            {
+                return NotFound();
+            }
+
+            // Passer l'objet Expense à la vue pour confirmation
+            return View(expense);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DepenseDeleteConfirmed(int id)
+        {
+            // Récupérer l'objet Expense à supprimer
+            var expense = await _context.Expenses
+                .Include(e => e.Group)  // Inclure le groupe si nécessaire
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            // Vérifier si l'objet Expense a été trouvé
+            if (expense == null)
+            {
+                return NotFound();
+            }
+
+            // Empêcher l'accès quand la dépense n'appartient pas à l'utilisateur
+            var user = await _userManager.GetUserAsync(User);
             if (user.Id != expense.CustomUserId)
             {
                 return RedirectToAction(nameof(Index));
             }
-
-            return View(expense);
-        }
-
-        // POST: ExpenseController/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            // Attendre la tâche asynchrone pour obtenir l'objet Expense
-            var expense = await _context.Expenses.FindAsync(id);
 
             // Supprimer l'objet Expense de la base de données
             _context.Expenses.Remove(expense);
@@ -292,7 +312,8 @@ namespace TrueBalances.Controllers
             // Enregistrer les modifications dans la base de données
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            // Rediriger vers la vue de gestion des dépenses du groupe
+            return RedirectToAction("Index", new { groupId = expense.GroupId });
         }
 
         private bool ExpenseExists(int id) // Vérifie si une dépense avec l'ID spécifié existe dans la base de données.// 
