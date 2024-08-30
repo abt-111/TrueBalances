@@ -68,7 +68,7 @@
                                     {
                                         <p>Aucune dépense associée</p>
                                     }
-                                    <a asp-action="DepenseIndex" asp-route-id="@Model.Group.Id" class="btn btn-secondary">Gérer les dépenses</a>
+                                    <a asp-controller="Expense" asp-action="Index" asp-route-groupId="@Model.Group.Id" class="btn btn-secondary">Gérer les dépenses</a>
                                 </div>
                             </div>
                         </div>

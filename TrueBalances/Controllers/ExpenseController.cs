@@ -26,9 +26,14 @@ namespace TrueBalances.Controllers
         }
 
         // GET: ExpenseController
-        public async Task<IActionResult> Index()
+        //Methode affichant les récapitulatifs
+        public async Task<IActionResult> Index(int groupId)
         {
-            var expenses = await _context.Expenses.Include(e => e.Category).Include(e => e.Participants).ToListAsync();
+            var expenses = await _context.Expenses
+                .Where(e => e.GroupId == groupId)
+                .Include(e => e.Category)
+                .Include(e => e.Participants)
+                .ToListAsync();
 
             // Utilisation du ViewBag pour récupérer l'id de l'utilisateur courant dans la vue
             ViewBag.CurrentUserId = _userManager.GetUserId(User);
@@ -38,9 +43,10 @@ namespace TrueBalances.Controllers
 
             ViewBag.Debts = DebtOperator.GetSomeoneDebts(expenses, ViewBag.Users, ViewBag.CurrentUserId);
 
+            ViewBag.GroupId = groupId;
+
             return View(expenses);
         }
-
         public async Task<IActionResult> Solde()
         {
             var expenses = await _context.Expenses.Include(e => e.Category).Include(e => e.Participants).ToListAsync();

@@ -1,5 +1,4 @@
 @using TrueBalances.Areas.Identity.Data
-
 @model IEnumerable<TrueBalances.Models.Expense>
 
 @section SpecificStylesheet {
@@ -7,11 +6,11 @@
 }
 
 @{
-    ViewData["Title"] = "Index";
-
+    ViewData["Title"] = "Gestion des Dépenses";
     var currentUserId = ViewBag.CurrentUserId;
     var users = ViewBag.Users as List<CustomUser>;
     var debts = ViewBag.Debts as Dictionary<string, decimal>;
+    var groupId = ViewBag.GroupId;
 }
 
 <div class="container">
@@ -19,9 +18,10 @@
     <div class="row">
         <div class="col-12 text-center mb-3">
             <h1>Gestion des Dépenses</h1>
+            <!-- Ajouter un bouton pour créer une nouvelle dépense -->
         </div>
         <p>
-            <a asp-action="Create" class="btn btn-primary">Ajouter une dépense</a>
+            <a asp-action="Create" asp-route-groupId="@groupId" class="btn btn-primary">Ajouter une dépense</a>
         </p>
     </div>
 
@@ -64,24 +64,22 @@
                                 </td>
                             }
                             <td>@Html.DisplayFor(modelItem => item.CustomUser.FirstName)</td>
-
                             <td class="action-links text-center">
-                                @* Affichage du bouton modifier si la dépense à été crée par l'utilisateur courant *@
+                                @* Affichage des boutons d'action *@
                                 @if (currentUserId == item.CustomUserId)
                                 {
-                                    <a asp-action="Edit" asp-route-id="@item.Id" title="Modifier">
+                                    //<a asp-action="DepenseEdit" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" class="btn btn-primary">Modifier</a>
+
+                                    <a asp-action="Edit" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Modifier">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 }
-
-                                <a asp-action="Details" asp-route-id="@item.Id" title="Détails">
+                                <a asp-action="Details" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Détails">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
-
-                                @* Affichage du bouton supprimer si la dépense à été crée par l'utilisateur courant *@
                                 @if (currentUserId == item.CustomUserId)
                                 {
-                                    <a asp-action="Delete" asp-route-id="@item.Id" title="Supprimer">
+                                    <a asp-action="Delete" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Supprimer">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                 }
@@ -128,16 +126,17 @@
                             </li>
                         }
                         <li class="list-group-item">
-                            <a asp-action="Solde" style="color: #073b3a;">Tous les soldes</a>
+                            <a asp-action="Solde" asp-route-groupId="@groupId" style="color: #073b3a;">Tous les soldes</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-
     </div>
 
     <div>
-        <a asp-controller="Home" asp-action="Index" style="color: #073b3a;">Retour à l'accueil</a>
+        <a asp-controller="Group" asp-action="Index" class="btn btn-secondary">Retour aux Groupes</a>
+        @* <a asp-controller="Home" asp-action="Index" style="color: #073b3a;">Retour à l'accueil</a> *@
     </div>
 </div>
+
