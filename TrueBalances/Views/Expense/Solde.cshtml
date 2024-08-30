@@ -8,6 +8,7 @@
     var currentUserId = ViewBag.CurrentUserId;
     var users = ViewBag.Users as List<CustomUser>;
     var debtsOfEverybody = ViewBag.DebtsOfEverybody as List<UserDebtViewModel>;
+    var groupId = ViewBag.GroupId;
 }
 
 
@@ -41,8 +42,8 @@
                                         @if (debt.Value < 0)
                                         {
                                             @* <li class="list-group-item">
-                                                @other.FirstName lui doit @(-debt.Value) €
-                                            </li> *@
+                            @other.FirstName lui doit @(-debt.Value) €
+                            </li> *@
                                         }
                                         else if (debt.Value != 0)
                                         {
@@ -75,5 +76,5 @@
 </div>
 
 <div>
-    <a asp-action="Index" class="action-link">Retour à la liste</a>
+    <a asp-action="Index" asp-route-groupId="@groupId" class="btn btn-secondary mt-3">Retour à la gestion des dépenses</a>
 </div>

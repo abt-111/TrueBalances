@@ -47,17 +47,31 @@ namespace TrueBalances.Controllers
 
             return View(expenses);
         }
-        public async Task<IActionResult> Solde()
-        {
-            var expenses = await _context.Expenses.Include(e => e.Category).Include(e => e.Participants).ToListAsync();
 
-            // Utilisation du ViewBag pour récupérer l'id de l'utilisateur courant dans la vue
+        public async Task<IActionResult> Solde(int groupId)
+        {
+            if (groupId <= 0)
+            {
+                return NotFound(); // Vérifie si l'ID du groupe est valide
+            }
+
+            // Récupérer les dépenses associées au groupe spécifié
+            var expenses = await _context.Expenses
+                .Where(e => e.GroupId == groupId) // Filtrer par ID du groupe
+                .Include(e => e.Category)
+                .Include(e => e.Participants)
+                .ToListAsync();
+
+            // Utiliser ViewBag pour récupérer l'ID de l'utilisateur courant dans la vue
             ViewBag.CurrentUserId = _userManager.GetUserId(User);
 
-            // Utilisation du ViewBag pour récupérer la liste des utilisateurs dans la vue
+            // Utiliser ViewBag pour récupérer la liste des utilisateurs dans la vue
             ViewBag.Users = await _userManager.Users.ToListAsync();
 
+            // Calculer les soldes
             ViewBag.DebtsOfEverybody = DebtOperator.GetDebtsOfEverybody(expenses, ViewBag.Users);
+            // Passer l'ID du groupe à la vue
+            ViewBag.GroupId = groupId;
 
             return View(expenses);
         }
