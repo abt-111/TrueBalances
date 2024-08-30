@@ -538,7 +538,6 @@ namespace TrueBalances.Controllers
 
             // Calculer les soldes
             ViewBag.DebtsOfEverybody = DebtOperator.GetDebtsOfEverybody(expenses, ViewBag.Users);
-
             // Passer l'ID du groupe à la vue
             ViewBag.GroupId = groupId;
 
