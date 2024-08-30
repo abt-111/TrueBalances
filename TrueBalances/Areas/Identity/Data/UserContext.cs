@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Areas.Identity.Data.Configurations;
 using TrueBalances.Models;
@@ -70,20 +71,33 @@ public class UserContext : IdentityDbContext<CustomUser>
             .Property(e => e.Amount)
             .HasColumnType("decimal(18, 2)");
 
-       // builder.Entity<Expense>()
-       //.HasOne(e => e.Category)
-       //.WithMany(c => c.Expenses)
-       //.HasForeignKey(e => e.CategoryId)
-       //.OnDelete(DeleteBehavior.SetNull);
+        // builder.Entity<Expense>()
+        //.HasOne(e => e.Category)
+        //.WithMany(c => c.Expenses)
+        //.HasForeignKey(e => e.CategoryId)
+        //.OnDelete(DeleteBehavior.SetNull);
+
+        //configuration la relation Many-to-one entre category et group
+       builder.Entity<Group>()
+       .HasMany(g => g.Category)
+       .WithOne(c => c.Group)
+       .HasForeignKey(c => c.GroupId);
+
+        // clé primaire pour Category
+        builder.Entity<Category>()
+        .HasKey(c => c.Id);
+
+        // Configurer si la clé primaire est générée par la base de données
+        builder.Entity<Category>()
+            .Property(c => c.Id)
+            .ValueGeneratedOnAdd();
 
         // Données par défaut
-
         // Catégories
         builder.Entity<Category>().HasData(
             new Category() { Id = 1, Name = "Voyage", },
             new Category() { Id = 2, Name = "Couple", },
-            new Category() { Id = 3, Name = "Co-voiturage" },
-            new Category() { Id = 4, Name = "Catégorie supprimée", }
+            new Category() { Id = 3, Name = "Co-voiturage" }
         );
 
         // Utilisateurs

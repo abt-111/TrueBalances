@@ -13,11 +13,11 @@ namespace TrueBalances.Models
         public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 
         // Clés étrangères
-        public int? CategoryId { get; set; }
+        public int? CategoryId { get; set; }//a verifier pour supprimer
 
         // Propriétés de navigation
         [Display(Name = "Catégorie")]
-        public Category? Category { get; set; }
+        public ICollection<Category>? Category { get; set; }
 
     }
 }

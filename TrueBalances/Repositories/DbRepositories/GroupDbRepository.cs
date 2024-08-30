@@ -97,6 +97,19 @@ namespace TrueBalances.Repositories.DbRepositories
             _context.Groups.Update(group);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<Category>> GetCategoriesByGroupIdAsync(int groupId)
+        {
+            return await _context.Categories
+                .Include(c => c.Expenses)
+                .Where(c => c.Expenses.Any(e => e.GroupId == groupId)) 
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Category>> GetAllByGroupIdAsync(int groupId)
+        {
+            return await _context.Categories.Where(c => c.GroupId == groupId).ToListAsync();
+        }
     }
 }
 

@@ -12,12 +12,14 @@
                     <h2>Ajouter une catégorie</h2>
                 </div>
                 <div class="card-body">
-                    <form asp-action="Create">
+                    <form asp-action="Create" method="post">
                         <div class="form-group">
                             <label asp-for="Name" class="control-label font-weight-bold">Nom de la catégorie</label>
                             <input asp-for="Name" class="form-control" placeholder="Entrez le nom de la catégorie" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
+                        <input type="hidden" asp-for="GroupId" value="@Model.GroupId" />
+
                         <div class="form-group text-center">
                             <input type="submit" value="Ajouter" class="btn btn-success" />
                             <a asp-action="Index" class="btn btn-secondary ml-2">Retour à la liste</a>
@@ -34,4 +36,3 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-

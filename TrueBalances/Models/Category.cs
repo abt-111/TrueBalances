@@ -13,6 +13,10 @@ public class Category
     public string Name { get; set; } = string.Empty;
     public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 
+    // Relation avec le groupe
+    public int? GroupId { get; set; }
+    [Display(Name = "Groupe")]
+    public Group? Group { get; set; }
 }
 
 

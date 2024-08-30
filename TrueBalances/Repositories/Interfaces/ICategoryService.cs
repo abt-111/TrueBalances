@@ -12,5 +12,8 @@ namespace TrueBalances.Repositories.Interfaces
         Task<bool> CategoryExistsAsync(int id);
 
         Task<Category?> GetCategoryWithExpensesByIdAsync(int id);
+
+        Task<IEnumerable<Category>> GetAllByGroupIdAsync(int groupId);
+
     }
 }

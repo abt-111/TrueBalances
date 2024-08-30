@@ -22,30 +22,45 @@ namespace TrueBalances.Controllers
         }
 
         // Read
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int groupId)
         {
-            return View(await _context.GetAllCategoriesAsync());
+            var categories = await _context.GetAllCategoriesAsync();
+            ViewBag.GroupId = groupId;
+            return View(categories);
         }
 
         // Create (GET)
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(int groupId)
         {
-            return View();
+            var model = new Category
+            {
+                GroupId = groupId
+            };
+
+            return View(model);
         }
 
         // Create (Post)
         [HttpPost]
-        public async Task<IActionResult> Create(Category category)
+        public async Task<IActionResult> Create(Category category, int groupId)
         {
             if (!ModelState.IsValid) return View(category);
-            
-                await _context.AddCategoryAsync(category);
-                return RedirectToAction(actionName: "Index", controllerName: "Category");
-            
-            
 
+            // Associer la catégorie au groupe
+            category.GroupId = groupId;
+            try
+            {
+                await _context.AddCategoryAsync(category);
+                return RedirectToAction(actionName: "Index");
+            }
+            catch (DbUpdateException ex)
+            {
+                ModelState.AddModelError("", "Une erreur est survenue lors de l'enregistrement de la catégorie.");
+                return View(category);
+            }
         }
+    
 
         //Edit(GET)
         [HttpGet]
@@ -99,13 +114,6 @@ namespace TrueBalances.Controllers
             {
                 return NotFound();
             }
-
-            //Réinitialiser les identifiants de catégorie des dépenses associées
-            //var expenses = _context.Expenses.Where(e => e.CategoryId == id).ToList();
-            //foreach (var expense in expenses)
-            //{
-            //    expense.CategoryId = null;
-            //}
 
             await _context.DeleteCategoryAsync(id);
             return RedirectToAction(actionName: "Index", controllerName: "Category");

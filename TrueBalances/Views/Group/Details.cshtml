@@ -19,8 +19,9 @@
                             <div class="card bg-light mb-4">
                                 <div class="card-body">
                                     <h5 class="card-title"><i class="bi bi-folder-fill"></i> Catégorie</h5>
-                                    <p class="card-text">@Model.Group.Category?.Name ?? "Aucune catégorie"</p>
+                                    @* <p class="card-text">@Model.Group.Category?.Name ?? "Aucune catégorie"</p> *@
                                 </div>
+                                <a asp-controller="Category" asp-action="Index" class="btn btn-secondary">Gérer les catégories</a>
                             </div>
                         </div>
 

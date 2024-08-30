@@ -81,7 +81,6 @@ namespace TrueBalances.Controllers
         // Group Edit(Get)
         public async Task<IActionResult> Edit(int id)
         {
- 
                 var group = await _groupService.GetGroupAsync(id);
                 if (group == null)
                 {
@@ -99,7 +98,6 @@ namespace TrueBalances.Controllers
                 ViewBag.AvailableUsers = availableUsers;
 
                 return View(viewModel);
-
         }
 
         // Group Edit(Post)
@@ -167,8 +165,6 @@ namespace TrueBalances.Controllers
             {
                 return NotFound();
             }
-            // Charger les catégories disponibles dans ViewBag
-            //ViewBag.Categories = new SelectList(await _categoryService.GetAllCategoriesAsync(), "Id", "Name");
 
             // Initialiser le viewModel avec des vérifications pour éviter les nulls
             var viewModel = new GroupDetailsViewModel
@@ -176,7 +172,7 @@ namespace TrueBalances.Controllers
                 Group = group,
                 AvailableUsers = await _userService.GetAllUsersAsync(), // Si nécessaire pour d'autres fonctionnalités
                 SelectedUserIds = group.Members?.Select(m => m.CustomUserId).ToList() ?? new List<string>(),
-                CategoryId = group.CategoryId
+                CategoryId = group.CategoryId,
             };
 
             return View(viewModel);
@@ -228,9 +224,7 @@ namespace TrueBalances.Controllers
             var group = _groupService.GetGroupAsync(id).Result;
             return group != null;
         }
-
-        //Methode affichant les récapitulatifs
-        public async Task<IActionResult> DepenseIndex(int id)
+            public async Task<IActionResult> DepenseIndex(int id)
         {
             var expenses = await _context.Expenses
                 .Where(e => e.GroupId == id)
@@ -251,21 +245,6 @@ namespace TrueBalances.Controllers
             return View(expenses);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateCategory(int GroupId, int? CategoryId)
-        {
-            var group = await _groupService.GetGroupAsync(GroupId);
-            if (group == null)
-            {
-                return NotFound();
-            }
-
-            group.CategoryId = CategoryId;
-            await _groupService.UpdateGroupAsync(group);
-
-            return RedirectToAction("Details", new { id = GroupId });
-        }
-
         //methode pour creer une dépense à partir du group
         public async Task<IActionResult> DepenseCreate(int groupId)
         {
@@ -282,7 +261,6 @@ namespace TrueBalances.Controllers
         }
 
         [HttpPost]
-        //[Route("Expense/Create")]
         public async Task<IActionResult> DepenseCreate(Expense expense)
         {
             if (ModelState.IsValid)
@@ -349,15 +327,13 @@ namespace TrueBalances.Controllers
             // Affichage de la vue de modification de la dépense
             return View(expense);
         }
-
-
         //methode pour Vérifier si une dépense avec l'ID spécifié existe dans la base de données.
-
         private bool ExpenseExists(int id)
         {
             return _context.Expenses.Any(e => e.Id == id);
         }
 
+        //modifier un dépense à parti d'un group
         [HttpPost]
         public async Task<IActionResult> DepenseEdit(int id, Expense expense)
         {
@@ -543,11 +519,7 @@ namespace TrueBalances.Controllers
 
             return View(expenses);
         }
-
-
-
     }
-
 }
 
 

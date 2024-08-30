@@ -51,6 +51,11 @@ namespace TrueBalances.Repositories.Services
             var categoryRepository = _categoryrepository as ICategoryService;
             return categoryRepository != null && await categoryRepository.CategoryExistsAsync(id);
         }
+        public async Task<IEnumerable<Category>> GetAllByGroupIdAsync(int groupId)
+        {
+            return await _categoryrepository.GetAllByGroupIdAsync(groupId);
+        }
+
     }
 
 }
