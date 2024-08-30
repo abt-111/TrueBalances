@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
@@ -16,13 +17,15 @@ namespace TrueBalances.Controllers
     {
         private readonly UserContext _context;
         private readonly IGenericRepository<Category> _categoryRepository;
+        private readonly IUserService _userService;
         private readonly UserManager<CustomUser> _userManager;
 
-        public ExpenseController(UserContext context, UserManager<CustomUser> userManager, IGenericRepository<Category> categoryRepository)
+        public ExpenseController(UserContext context, UserManager<CustomUser> userManager, IGenericRepository<Category> categoryRepository, IUserService userService)
         {
             _context = context;
             _categoryRepository = categoryRepository;
             _userManager = userManager;
+            _userService = userService;
         }
 
         // GET: ExpenseController
@@ -39,7 +42,7 @@ namespace TrueBalances.Controllers
             ViewBag.CurrentUserId = _userManager.GetUserId(User);
 
             // Utilisation du ViewBag pour récupérer la liste des utilisateurs dans la vue
-            ViewBag.Users = await _userManager.Users.ToListAsync();
+            ViewBag.Users = await _userService.GetAllUsersAsync(groupId);
 
             ViewBag.Debts = DebtOperator.GetSomeoneDebts(expenses, ViewBag.Users, ViewBag.CurrentUserId);
 
@@ -66,7 +69,7 @@ namespace TrueBalances.Controllers
             ViewBag.CurrentUserId = _userManager.GetUserId(User);
 
             // Utiliser ViewBag pour récupérer la liste des utilisateurs dans la vue
-            ViewBag.Users = await _userManager.Users.ToListAsync();
+            ViewBag.Users = await _userService.GetAllUsersAsync(groupId);
 
             // Calculer les soldes
             ViewBag.DebtsOfEverybody = DebtOperator.GetDebtsOfEverybody(expenses, ViewBag.Users);
@@ -110,7 +113,10 @@ namespace TrueBalances.Controllers
             };
 
             ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
-            ViewBag.Users = await _userManager.Users.ToListAsync();
+            ViewBag.Users = await _userService.GetAllUsersAsync(groupId);
+
+            Console.WriteLine();
+
             return View(expense);
         }
 
@@ -138,7 +144,7 @@ namespace TrueBalances.Controllers
 
             // Recharger les catégories et les utilisateurs en cas d'échec de validation
             ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
-            ViewBag.Users = _context.Users.ToList();
+            ViewBag.Users = await _userService.GetAllUsersAsync(expense.GroupId);
             return View(expense);
         }
 
@@ -177,7 +183,7 @@ namespace TrueBalances.Controllers
 
             // Préparation des données pour la vue
             ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
-            ViewBag.Users = await _userManager.Users.ToListAsync();
+            ViewBag.Users = await _userService.GetAllUsersAsync(expense.GroupId);
 
             // Passer le groupId à la vue, si nécessaire pour les formulaires ou autres
             ViewBag.GroupId = groupId;
@@ -247,7 +253,7 @@ namespace TrueBalances.Controllers
             }
 
             ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
-            ViewBag.Users = await _userManager.Users.ToListAsync();
+            ViewBag.Users = await _userService.GetAllUsersAsync(expense.GroupId);
             return View(expense);
         }
 
