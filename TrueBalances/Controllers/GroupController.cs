@@ -251,7 +251,7 @@ namespace TrueBalances.Controllers
             // Vérification des paramètres
             if (id == 0 || groupId == 0)
             {
-                return NotFound();
+                return View("404");
             }
 
             // Recherche de la dépense par son ID
@@ -263,7 +263,7 @@ namespace TrueBalances.Controllers
             // Vérification de l'existence de la dépense
             if (expense == null)
             {
-                return NotFound();
+                return View("404");
             }
 
             // Vérifie si la dépense appartient bien au groupe spécifié
