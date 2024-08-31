@@ -19,18 +19,21 @@ namespace TrueBalances.Controllers
         private readonly UserContext _context;
         private readonly UserManager<CustomUser> _userManager;
         private readonly IGenericRepository<Category> _categoryRepository;
+        private readonly IUserGroupService _userGroupService;
 
-        public GroupController(UserContext context, IGroupService groupService, IUserService userService, UserManager<CustomUser> userManager, IGenericRepository<Category> categoryRepository)
+        public GroupController(UserContext context, IGroupService groupService, IUserService userService, UserManager<CustomUser> userManager, IGenericRepository<Category> categoryRepository, IUserGroupService userGroupService)
         {
             _groupService = groupService;
             _userService = userService;
             _context = context;
             _userManager = userManager;
             _categoryRepository = categoryRepository;
+            _userGroupService = userGroupService;
         }
         public async Task<IActionResult> Index()
         {
-            var groups = await _groupService.GetAllGroups();
+            var currentUserId = _userManager.GetUserId(User);
+            var groups = await _userGroupService.GetGroupsByUserIdAsync(currentUserId);
             return View(groups);
         }
 
@@ -82,25 +85,31 @@ namespace TrueBalances.Controllers
         // Group Edit(Get)
         public async Task<IActionResult> Edit(int id)
         {
- 
-                var group = await _groupService.GetGroupAsync(id);
-                if (group == null)
-                {
-                    return NotFound();
-                }
+            // Empêche l'accès au non-membre du groupe
+            var currentUserId = _userManager.GetUserId(User);
 
-                var availableUsers = await _userService.GetAllUsersAsync();
+            if (!_userGroupService.UserIsInGroup(currentUserId, id))
+            {
+                return NotFound();
+            }
 
-                var viewModel = new GroupDetailsViewModel
-                {
-                    Group = group,
-                    AvailableUsers = availableUsers
-                };
+            var group = await _groupService.GetGroupAsync(id);
+            if (group == null)
+            {
+                return NotFound();
+            }
 
-                ViewBag.AvailableUsers = availableUsers;
+            var availableUsers = await _userService.GetAllUsersAsync();
 
-                return View(viewModel);
+            var viewModel = new GroupDetailsViewModel
+            {
+                Group = group,
+                AvailableUsers = availableUsers
+            };
 
+            ViewBag.AvailableUsers = availableUsers;
+
+            return View(viewModel);
         }
 
         // Group Edit(Post)
@@ -156,6 +165,14 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
 
+            // Empêche l'accès au non-membre du groupe
+            var currentUserId = _userManager.GetUserId(User);
+
+            if (!_userGroupService.UserIsInGroup(currentUserId, id))
+            {
+                return NotFound();
+            }
+
             // Récupérer le groupe avec les participants, la catégorie et les dépenses associées
             var group = await _context.Groups
                 .Include(g => g.Members)
@@ -187,6 +204,14 @@ namespace TrueBalances.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            // Empêche l'accès au non-membre du groupe
+            var currentUserId = _userManager.GetUserId(User);
+
+            if (!_userGroupService.UserIsInGroup(currentUserId, id))
+            {
+                return NotFound();
+            }
+
             var group = await _groupService.GetGroupAsync(id);
             if (group == null)
             {
