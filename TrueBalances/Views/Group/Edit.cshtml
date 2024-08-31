@@ -32,9 +32,14 @@
                         {
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="SelectedUserIds" value="@user.Id"
-                                @(Model.Group.Members.Any(m => m.CustomUserId == user.Id) ? "checked" : "") />
+                                @(Model.Group.Members.Any(m => m.CustomUserId == user.Id) ? "checked" : "")
+                                @(Model.AvailableUsers.Any(u => u.Id == user.Id) ? "" : "disabled") />
                                 <label class="form-check-label">
                                     @user.UserName
+                                    @if (!Model.AvailableUsers.Any(u => u.Id == user.Id))
+                                    {
+                                        <span class="text-muted">(Participant lié à une dépense, non modifiable)</span>
+                                    }
                                 </label>
                             </div>
                         }

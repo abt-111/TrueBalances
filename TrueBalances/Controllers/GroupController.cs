@@ -81,23 +81,43 @@ namespace TrueBalances.Controllers
         // Group Edit(Get)
         public async Task<IActionResult> Edit(int id)
         {
-                var group = await _groupService.GetGroupAsync(id);
-                if (group == null)
-                {
-                    return NotFound();
-                }
+            if (id == 0)
+            {
+                return NotFound();
+            }
 
-                var availableUsers = await _userService.GetAllUsersAsync();
+            var group = await _context.Groups
+                .Include(g => g.Members)
+                    .ThenInclude(m => m.CustomUser)
+                .Include(g => g.Expenses)
+                    .ThenInclude(e => e.Participants)
+                .FirstOrDefaultAsync(g => g.Id == id);
 
-                var viewModel = new GroupDetailsViewModel
-                {
-                    Group = group,
-                    AvailableUsers = availableUsers
-                };
+            if (group == null)
+            {
+                return NotFound();
+            }
 
-                ViewBag.AvailableUsers = availableUsers;
+            // Obtenez les IDs des utilisateurs qui sont déjà participants dans les dépenses
+            var lockedUserIds = group.Expenses
+                .SelectMany(e => e.Participants)
+                .Select(p => p.Id)
+                .Distinct()
+                .ToList();
 
-                return View(viewModel);
+            var availableUsers = await _userService.GetAllUsersAsync();
+
+            // Filtrez les utilisateurs modifiables (ceux qui ne sont pas déjà participants dans des dépenses)
+            var editableUsers = availableUsers.Where(u => !lockedUserIds.Contains(u.Id)).ToList();
+
+            var viewModel = new GroupDetailsViewModel
+            {
+                Group = group,
+                AvailableUsers = editableUsers,
+                SelectedUserIds = group.Members?.Select(m => m.CustomUserId).ToList() ?? new List<string>(),
+            };
+
+            return View(viewModel);
         }
 
         // Group Edit(Post)
@@ -121,6 +141,13 @@ namespace TrueBalances.Controllers
             group.Name = viewModel.Group.Name;
             await _groupService.UpdateGroupAsync(group);
 
+            // Obtenez les IDs des utilisateurs qui sont déjà participants dans des dépenses
+            var lockedUserIds = group.Expenses
+                .SelectMany(e => e.Participants)
+                .Select(p => p.Id)
+                .Distinct()
+                .ToList();
+
             // Ajouter les nouveaux membres
             var selectedUserIds = viewModel.SelectedUserIds ?? new List<string>();
             var currentMemberIds = group.Members.Select(m => m.CustomUserId).ToList();
@@ -132,8 +159,8 @@ namespace TrueBalances.Controllers
                 await _groupService.AddMembersAsync(group.Id, membersToAdd);
             }
 
-            // Membres à supprimer
-            var membersToRemove = currentMemberIds.Except(selectedUserIds).ToList();
+            // Membres à supprimer (uniquement ceux qui ne sont pas verrouillés)
+            var membersToRemove = currentMemberIds.Except(selectedUserIds).Except(lockedUserIds).ToList();
             if (membersToRemove.Any())
             {
                 foreach (var userId in membersToRemove)
@@ -145,6 +172,7 @@ namespace TrueBalances.Controllers
             return RedirectToAction("Details", new { id = viewModel.Group.Id });
         }
 
+
         // Group Details
         public async Task<IActionResult> Details(int id)
         {
@@ -153,16 +181,11 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
 
-            // Récupérer le groupe avec les participants, la catégorie et les dépenses associées
-            //var group = await _context.Groups
-            //    .Include(g => g.Members)
-            //    .ThenInclude(m => m.CustomUser)  // Inclure les utilisateurs associés aux membres
-            //    .Include(g => g.Category)  // Inclure la catégorie
-            //    .Include(g => g.Expenses)  // Inclure les dépenses associées
-            //    .FirstOrDefaultAsync(g => g.Id == id);
             var group = await _context.Groups
        .Include(g => g.Expenses)
            .ThenInclude(e => e.Category) // Charger les catégories associées aux dépenses
+                .Include(g => g.Expenses)
+            .ThenInclude(e => e.Participants) // Charger les participants associés aux dépenses
        .Include(g => g.Members)
            .ThenInclude(m => m.CustomUser)
        .FirstOrDefaultAsync(g => g.Id == id);
@@ -253,15 +276,26 @@ namespace TrueBalances.Controllers
         //methode pour creer une dépense à partir du group
         public async Task<IActionResult> DepenseCreate(int groupId)
         {
+            var group = await _context.Groups
+        .Include(g => g.Members)
+        .ThenInclude(m => m.CustomUser)
+        .FirstOrDefaultAsync(g => g.Id == groupId);
+
+            if (group == null)
+            {
+                return NotFound();
+            }
+
             var expense = new Expense
             {
                 Date = DateTime.Now,
                 CustomUserId = _userManager.GetUserId(User),
-                GroupId = groupId
+                GroupId = groupId,
+                Participants = group.Members.Select(m => m.CustomUser).ToList() // Pré-remplir les participants avec les membres du groupe
             };
 
             ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
-            ViewBag.Users = await _userManager.Users.ToListAsync();
+            ViewBag.Users = new SelectList(group.Members.Select(m => m.CustomUser), "Id", "UserName"); // Liste des utilisateurs pour le formulaire
             return View(expense);
         }
 
@@ -272,19 +306,24 @@ namespace TrueBalances.Controllers
             {
                 if (expense.SelectedUserIds != null && expense.SelectedUserIds.Count > 0)
                 {
-                    expense.Participants = await _context.Users.Where(u => expense.SelectedUserIds.Contains(u.Id)).ToListAsync();
+                    expense.Participants = await _context.Users
+                        .Where(u => expense.SelectedUserIds.Contains(u.Id))
+                        .ToListAsync();
                 }
 
                 _context.Expenses.Add(expense);
                 await _context.SaveChangesAsync();
 
-                // Rediriger vers la page de gestion des dépenses pour le groupe
                 return RedirectToAction("DepenseIndex", new { id = expense.GroupId });
             }
 
-            // Recharger les catégories et les utilisateurs en cas d'échec de validation
+            var group = await _context.Groups
+                .Include(g => g.Members)
+                .ThenInclude(m => m.CustomUser)
+                .FirstOrDefaultAsync(g => g.Id == expense.GroupId);
+
             ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
-            ViewBag.Users = _context.Users.ToList();
+            ViewBag.Users = new SelectList(group.Members.Select(m => m.CustomUser), "Id", "UserName"); // Recharger la liste des utilisateurs
             return View(expense);
         }
 

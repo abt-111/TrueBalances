@@ -45,20 +45,31 @@
                             <div class="card bg-light mb-4">
                                 <div class="card-body">
                                     <h5 class="card-title"><i class="bi bi-people-fill"></i> Participants</h5>
-                                    @if (Model.Group.Members != null && Model.Group.Members.Any())
+                                    @if (Model.Group.Expenses != null && Model.Group.Expenses.Any())
                                     {
-                                        <ul class="list-group list-group-flush">
-                                            @foreach (var member in Model.Group.Members)
+                                        @foreach (var expense in Model.Group.Expenses)
+                                        {
+                                            <h6>@expense.Title</h6>
+                                            @if (expense.Participants != null && expense.Participants.Any())
                                             {
-                                                <li class="list-group-item">
-                                                    <i class="bi bi-person-fill"></i> @member.CustomUser.UserName
-                                                </li>
+                                                <ul class="list-group list-group-flush">
+                                                    @foreach (var participant in expense.Participants)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <i class="bi bi-person-fill"></i> @participant.UserName
+                                                        </li>
+                                                    }
+                                                </ul>
                                             }
-                                        </ul>
+                                            else
+                                            {
+                                                <p>Aucun participant pour cette dépense</p>
+                                            }
+                                        }
                                     }
                                     else
                                     {
-                                        <p>Aucun participant</p>
+                                        <p>Aucune dépense associée</p>
                                     }
                                 </div>
                                 <a asp-action="Edit" asp-route-id="@Model.Group.Id" class="btn btn-secondary">Gérer les participants</a>

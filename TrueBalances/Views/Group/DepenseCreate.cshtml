@@ -47,11 +47,11 @@
                 <!-- Section pour les participants -->
                 <div class="form-group">
                     <label>Participants</label>
-                    @foreach (var user in users)
+                    @foreach (var user in ViewBag.Users as SelectList)
                     {
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="SelectedUserIds" value="@user.Id" />
-                            <label class="form-check-label">@user.FirstName @user.LastName</label>
+                            <input type="checkbox" class="form-check-input" name="SelectedUserIds" value="@user.Value" />
+                            <label class="form-check-label">@user.Text</label>
                         </div>
                     }
                 </div>
