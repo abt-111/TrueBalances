@@ -142,7 +142,7 @@ namespace TrueBalances.Controllers
                 }
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", new { id = viewModel.Group.Id });
         }
 
         // Group Details
@@ -154,13 +154,18 @@ namespace TrueBalances.Controllers
             }
 
             // Récupérer le groupe avec les participants, la catégorie et les dépenses associées
+            //var group = await _context.Groups
+            //    .Include(g => g.Members)
+            //    .ThenInclude(m => m.CustomUser)  // Inclure les utilisateurs associés aux membres
+            //    .Include(g => g.Category)  // Inclure la catégorie
+            //    .Include(g => g.Expenses)  // Inclure les dépenses associées
+            //    .FirstOrDefaultAsync(g => g.Id == id);
             var group = await _context.Groups
-                .Include(g => g.Members)
-                .ThenInclude(m => m.CustomUser)  // Inclure les utilisateurs associés aux membres
-                .Include(g => g.Category)  // Inclure la catégorie
-                .Include(g => g.Expenses)  // Inclure les dépenses associées
-                .FirstOrDefaultAsync(g => g.Id == id);
-
+       .Include(g => g.Expenses)
+           .ThenInclude(e => e.Category) // Charger les catégories associées aux dépenses
+       .Include(g => g.Members)
+           .ThenInclude(m => m.CustomUser)
+       .FirstOrDefaultAsync(g => g.Id == id);
             if (group == null)
             {
                 return NotFound();

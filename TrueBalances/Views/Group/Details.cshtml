@@ -19,7 +19,22 @@
                             <div class="card bg-light mb-4">
                                 <div class="card-body">
                                     <h5 class="card-title"><i class="bi bi-folder-fill"></i> Catégorie</h5>
-                                    @* <p class="card-text">@Model.Group.Category?.Name ?? "Aucune catégorie"</p> *@
+                                    @if (Model.Group.Expenses != null && Model.Group.Expenses.Any())
+                                    {
+                                        <ul class="list-group list-group-flush">
+                                            @foreach (var expense in Model.Group.Expenses)
+                                            {
+                                                <li class="list-group-item">
+                                                    @* <strong>@expense.Title:</strong> @expense.Amount €<br /> *@
+                                                    <em>Catégorie actuelle:</em> @expense.Category.Name
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <p>Aucune dépense associée</p>
+                                    }
                                 </div>
                                 <a asp-controller="Category" asp-action="Index" class="btn btn-secondary">Gérer les catégories</a>
                             </div>
