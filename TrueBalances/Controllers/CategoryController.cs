@@ -22,8 +22,9 @@ namespace TrueBalances.Controllers
         }
 
         // Read
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int groupId)
         {
+            ViewBag.GroupId = groupId;
             return View(await _context.GetAllCategoriesAsync());
         }
 

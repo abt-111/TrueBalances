@@ -1,14 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
-using TrueBalances.Repositories.DbRepositories;
 using TrueBalances.Repositories.Interfaces;
-using TrueBalances.Tools;
 
 namespace TrueBalances.Controllers
 {
@@ -32,9 +30,15 @@ namespace TrueBalances.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var currentUserId = _userManager.GetUserId(User);
-            var groups = await _userGroupService.GetGroupsByUserIdAsync(currentUserId);
-            return View(groups);
+            var currentUser = await _userManager.GetUserAsync(User);
+            if(currentUser != null)
+            {
+                var groups = await _userGroupService.GetGroupsByUserIdAsync(currentUser.Id);
+                ViewBag.currentUser = currentUser;
+                return View(groups);
+            }
+
+            return View();
         }
 
         // Create Group (GET)
@@ -154,7 +158,7 @@ namespace TrueBalances.Controllers
                 }
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", new { id = viewModel.Group.Id });
         }
 
         // Group Details
@@ -225,7 +229,7 @@ namespace TrueBalances.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _groupService.DeleteGroupAsync(id);
-            return RedirectToAction(actionName: "Index", controllerName: "Group");
+            return RedirectToAction("Index");
         }
 
         // Add Member (POST)

@@ -19,6 +19,7 @@ namespace TrueBalances.Controllers
 
         public async Task<IActionResult> Index()
         {
+            return RedirectToAction(actionName: "Index", controllerName: "Group");
             UserViewModel model = new UserViewModel();
 
             if (User.Identity.IsAuthenticated)
