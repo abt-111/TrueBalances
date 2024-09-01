@@ -349,6 +349,7 @@ namespace TrueBalances.Controllers
 
             if (user.Id != expense.CustomUserId)
             {
+                return RedirectToAction("Index", new { groupId = expense.GroupId });
                 return RedirectToAction(nameof(Index));
             }
 
@@ -356,6 +357,7 @@ namespace TrueBalances.Controllers
             _context.Update(expense);
             await _context.SaveChangesAsync();
 
+            return RedirectToAction("Index", new { groupId = expense.GroupId });
             return RedirectToAction(nameof(Index));
         }
     }
