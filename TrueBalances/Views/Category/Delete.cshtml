@@ -26,8 +26,10 @@
             </dl>
             <form asp-action="Delete" method="post">
                 <input type="hidden" asp-for="Id" />
+                <input type="hidden" name="groupId" value="@ViewBag.GroupId" />
                 <input type="submit" value="Supprimer" class="btn btn-danger" /> |
-                <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+                <a asp-action="Index" asp-route-groupId="@ViewBag.GroupId" class="btn btn-secondary">Retour</a>
+                @* <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a> *@
             </form>
         </div>
     </div>

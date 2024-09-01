@@ -80,20 +80,20 @@ namespace TrueBalances.Controllers
 
         //Delete (GET)
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, int groupId)
         {
             var category = await _context.GetCategoryByIdAsync(id);
             if (category is null)
             {
                 return NotFound();
             }
-
+            ViewBag.GroupId = groupId;
             return View(category);
         }
 
         //Delete (POST)
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int groupId)
         {
             var category = await _context.GetCategoryByIdAsync(id);
             if (category is null)
@@ -109,6 +109,7 @@ namespace TrueBalances.Controllers
             //}
 
             await _context.DeleteCategoryAsync(id);
+            return RedirectToAction("Index", new { groupId = groupId });
             return RedirectToAction(actionName: "Index", controllerName: "Category");
         }
 
