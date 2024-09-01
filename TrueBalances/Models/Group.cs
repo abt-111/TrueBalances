@@ -18,6 +18,5 @@ namespace TrueBalances.Models
         // Propriétés de navigation
         [Display(Name = "Catégorie")]
         public Category? Category { get; set; }
-
     }
 }

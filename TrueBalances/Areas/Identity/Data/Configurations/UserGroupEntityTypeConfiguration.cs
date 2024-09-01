@@ -8,6 +8,19 @@ namespace TrueBalances.Areas.Identity.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<UserGroup> builder)
         {
+            builder
+           .HasKey(ug => ug.Id);
+
+            builder
+                .HasOne(ug => ug.Group)
+                .WithMany(g => g.Members)
+                .HasForeignKey(ug => ug.GroupId);
+
+            builder
+                .HasOne(ug => ug.CustomUser)
+                .WithMany(u => u.UserGroups)
+                .HasForeignKey(ug => ug.CustomUserId);
+
             // Utilisation de HasData pour insérer les données initiales
             builder.HasData(
                 new UserGroup { Id = 1, CustomUserId = "4593d2ab-7651-457a-ab7b-0de95e853529", GroupId = 1 },
