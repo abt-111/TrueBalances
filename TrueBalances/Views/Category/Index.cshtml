@@ -36,7 +36,7 @@
                             <td>@Html.DisplayFor(modelItem => item.Name)</td>
                             <td class="text-right">
                                 <a class="action-icon" asp-action="Edit" asp-route-categorieId="@item.Id" title="Modifier"><i class="fas fa-edit"></i></a>
-                                <a class="action-icon" asp-action="Details" asp-route-id="@item.Id" title="Détails"><i class="fas fa-info-circle"></i></a>
+                                <a class="action-icon" asp-action="Details" asp-route-id="@item.Id" asp-route-groupId="@ViewBag.GroupId" title="Détails"><i class="fas fa-info-circle"></i></a>
                                 <a class="action-icon" asp-action="Delete" asp-route-id="@item.Id" title="Supprimer"><i class="fas fa-trash-alt"></i></a>
                             </td>
                         </tr>

@@ -56,10 +56,10 @@ namespace TrueBalances.Repositories.DbRepositories
             return await _context.Categories.AnyAsync(e => e.Id == id);
         }
 
-        public async Task<Category?> GetCategoryWithExpensesByIdAsync(int id)
+        public async Task<Category?> GetCategoryWithExpensesByIdAsync(int id, int groupId)
         {
             return await _context.Categories
-            .Include(c => c.Expenses)
+            .Include(c => c.Expenses.Where(e => e.GroupId == groupId))
             .ThenInclude(e => e.CustomUser)
             .FirstOrDefaultAsync(c => c.Id == id);
         }

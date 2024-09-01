@@ -11,6 +11,6 @@ namespace TrueBalances.Repositories.Interfaces
         Task<int> DeleteCategoryAsync(int id);
         Task<bool> CategoryExistsAsync(int id);
 
-        Task<Category?> GetCategoryWithExpensesByIdAsync(int id);
+        Task<Category?> GetCategoryWithExpensesByIdAsync(int id, int groupId);
     }
 }

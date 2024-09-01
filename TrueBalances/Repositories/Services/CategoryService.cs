@@ -26,9 +26,9 @@ namespace TrueBalances.Repositories.Services
             return await _categoryrepository.GetByIdAsync(id);
         }
 
-        public async Task<Category?> GetCategoryWithExpensesByIdAsync(int id)
+        public async Task<Category?> GetCategoryWithExpensesByIdAsync(int id, int groupId)
         {
-            return await _categoryrepository.GetCategoryWithExpensesByIdAsync(id);
+            return await _categoryrepository.GetCategoryWithExpensesByIdAsync(id, groupId);
         }
         public async Task<int> AddCategoryAsync(Category category)
         {

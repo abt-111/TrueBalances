@@ -120,13 +120,14 @@ namespace TrueBalances.Controllers
 
 
         //Détails 
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id, int groupId)
         {
-            var category = await _context.GetCategoryWithExpensesByIdAsync(id);
+            var category = await _context.GetCategoryWithExpensesByIdAsync(id, groupId);
             if (category == null)
             {
                 return NotFound();
             }
+            ViewBag.GroupId = groupId;
             return View(category);
         }
 
