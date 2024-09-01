@@ -21,6 +21,7 @@ builder.Services.AddScoped<IGenericRepository<Group>, GroupDbRepository>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IProfilePhotoService, ProfilePhotoService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserGroupService, UserGroupRepository>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

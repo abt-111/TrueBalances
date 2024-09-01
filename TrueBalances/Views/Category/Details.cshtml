@@ -64,8 +64,9 @@
 
     <div class="row mt-4">
         <div class="col-md-8 offset-md-2 text-right">
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Modifier</a>
-            <a asp-action="Index" class="btn btn-primary">Retour à la liste</a>
+            <a asp-action="Index" asp-route-groupId="@ViewBag.GroupId" class="btn btn-secondary">Retour</a>
+            @* <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Modifier</a> *@
+            @* <a asp-action="Index" class="btn btn-primary">Retour à la liste</a> *@
         </div>
     </div>
 </div>

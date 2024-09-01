@@ -70,26 +70,16 @@ public class UserContext : IdentityDbContext<CustomUser>
             .Property(e => e.Amount)
             .HasColumnType("decimal(18, 2)");
 
-       // builder.Entity<Expense>()
-       //.HasOne(e => e.Category)
-       //.WithMany(c => c.Expenses)
-       //.HasForeignKey(e => e.CategoryId)
-       //.OnDelete(DeleteBehavior.SetNull);
-
-        // Données par défaut
-
-        // Catégories
-        builder.Entity<Category>().HasData(
-            new Category() { Id = 1, Name = "Voyage", },
-            new Category() { Id = 2, Name = "Couple", },
-            new Category() { Id = 3, Name = "Co-voiturage" },
-            new Category() { Id = 4, Name = "Catégorie supprimée", }
-        );
-
-        // Utilisateurs
+        // Données par défaut :
+        // - Catégories
+        builder.ApplyConfiguration(new CategoryEntityTypeConfiguration());
+        // - Utilisateurs
         builder.ApplyConfiguration(new UserEntityTypeConfiguration());
-
-        // Dépenses
+        // - Groupes
+        builder.ApplyConfiguration(new GroupEntityTypeConfiguration());
+        // - Association Utilisateurs et Groupes
+        builder.ApplyConfiguration(new UserGroupEntityTypeConfiguration());
+        // - Dépenses
         builder.ApplyConfiguration(new ExpenseEntityTypeConfiguration());
     }
 }

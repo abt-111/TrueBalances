@@ -22,34 +22,33 @@ namespace TrueBalances.Controllers
         }
 
         // Read
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int groupId)
         {
+            ViewBag.GroupId = groupId;
             return View(await _context.GetAllCategoriesAsync());
         }
 
         // Create (GET)
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(int groupId)
         {
+            ViewBag.GroupId = groupId;
             return View();
         }
 
         // Create (Post)
         [HttpPost]
-        public async Task<IActionResult> Create(Category category)
+        public async Task<IActionResult> Create(Category category, int groupId)
         {
             if (!ModelState.IsValid) return View(category);
             
                 await _context.AddCategoryAsync(category);
-                return RedirectToAction(actionName: "Index", controllerName: "Category");
-            
-            
-
+                return RedirectToAction("Index", new { groupId = groupId });
         }
 
         //Edit(GET)
         [HttpGet]
-        public async Task<IActionResult> Edit(int? categorieId)
+        public async Task<IActionResult> Edit(int? categorieId, int groupId)
         {
             if (categorieId is null)
             {
@@ -60,6 +59,7 @@ namespace TrueBalances.Controllers
             {
                 return RedirectToAction(actionName: "Index", controllerName: "Category");
             }
+            ViewBag.GroupId = groupId;
             return View(category);
         }
 
@@ -67,9 +67,10 @@ namespace TrueBalances.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> Edit(int id, Category category)
+        public async Task<IActionResult> Edit(int id, Category category, int groupId)
         {
             if (id == category.Id) await _context.UpdateCategoryAsync(category);
+            return RedirectToAction("Index", new { groupId = groupId });
             return RedirectToAction(actionName: "Index", controllerName: "Category");
             
             //return View(category);
@@ -79,20 +80,20 @@ namespace TrueBalances.Controllers
 
         //Delete (GET)
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, int groupId)
         {
             var category = await _context.GetCategoryByIdAsync(id);
             if (category is null)
             {
                 return NotFound();
             }
-
+            ViewBag.GroupId = groupId;
             return View(category);
         }
 
         //Delete (POST)
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int groupId)
         {
             var category = await _context.GetCategoryByIdAsync(id);
             if (category is null)
@@ -108,6 +109,7 @@ namespace TrueBalances.Controllers
             //}
 
             await _context.DeleteCategoryAsync(id);
+            return RedirectToAction("Index", new { groupId = groupId });
             return RedirectToAction(actionName: "Index", controllerName: "Category");
         }
 
@@ -119,13 +121,14 @@ namespace TrueBalances.Controllers
 
 
         //Détails 
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id, int groupId)
         {
-            var category = await _context.GetCategoryWithExpensesByIdAsync(id);
+            var category = await _context.GetCategoryWithExpensesByIdAsync(id, groupId);
             if (category == null)
             {
                 return NotFound();
             }
+            ViewBag.GroupId = groupId;
             return View(category);
         }
 

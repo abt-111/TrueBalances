@@ -9,6 +9,6 @@ namespace TrueBalances.Repositories.Interfaces
         Task<int> AddAsync(T entity);
         Task<int> UpdateAsync(T entity);
         Task<int> DeleteAsync(int id);
-        Task<Category?> GetCategoryWithExpensesByIdAsync(int id);
+        Task<Category?> GetCategoryWithExpensesByIdAsync(int id, int groupId);
     }
 }

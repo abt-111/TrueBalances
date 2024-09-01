@@ -14,12 +14,16 @@ namespace TrueBalances.Repositories.DbRepositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Group>> GetGroupsByUserIdAsync(int userId)
+        public async Task<IEnumerable<Group>> GetGroupsByUserIdAsync(string userId)
         {
-            return await _context.UsersGroup
-                .Where(ug => ug.Id == userId)
-                .Select(ug => ug.Group)
-                .ToListAsync();
+            return await _context.Groups.Include(g => g.Members).Where(g => g.Members.Any(m => m.CustomUserId == userId)).ToListAsync();
+        }
+
+        public bool UserIsInGroup(string userId, int groupId)
+        {
+            return _context.UsersGroup
+                .Where(ug => ug.CustomUserId == userId)
+                .Select(ug => ug.Group).Any(g => g.Id == groupId);
         }
 
         public async Task AddMembersToGroupAsync(int groupId, List<int> memberIds)

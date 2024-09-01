@@ -9,9 +9,16 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card shadow-sm">
+
                 <div class="card-header bg-primary text-white">
-                    <h2 class="card-title mb-0">@Model.Group.Name</h2>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="card-title mb-0 text-center flex-grow-1">@Model.Group.Name</h2>
+                        <a asp-action="Delete" asp-route-id="@Model.Group.Id" title="Supprimer" class="text-white">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
                 </div>
+
                 <div class="card-body">
                     <div class="row">
                         <!-- Catégorie -->
@@ -20,15 +27,16 @@
                                 <div class="card-body">
                                     <h5 class="card-title"><i class="bi bi-folder-fill"></i> Catégorie</h5>
                                     <p class="card-text">@Model.Group.Category?.Name ?? "Aucune catégorie"</p>
+                                    <a asp-controller="Category" asp-action="Index" asp-route-groupId="@Model.Group.Id" class="btn btn-secondary">Gérer les catégories</a>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Participants -->
+                        <!-- Membres -->
                         <div class="col-md-4">
                             <div class="card bg-light mb-4">
                                 <div class="card-body">
-                                    <h5 class="card-title"><i class="bi bi-people-fill"></i> Participants</h5>
+                                    <h5 class="card-title"><i class="bi bi-people-fill"></i>Membres</h5>
                                     @if (Model.Group.Members != null && Model.Group.Members.Any())
                                     {
                                         <ul class="list-group list-group-flush">
@@ -44,6 +52,7 @@
                                     {
                                         <p>Aucun participant</p>
                                     }
+                                    <a asp-action="Edit" asp-route-id="@Model.Group.Id" class="btn btn-secondary">Gérer les membres</a>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +77,7 @@
                                     {
                                         <p>Aucune dépense associée</p>
                                     }
-                                    <a asp-action="DepenseIndex" asp-route-id="@Model.Group.Id" class="btn btn-secondary">Gérer les dépenses</a>
+                                    <a asp-controller="Expense" asp-action="Index" asp-route-groupId="@Model.Group.Id" class="btn btn-secondary">Gérer les dépenses</a>
                                 </div>
                             </div>
                         </div>

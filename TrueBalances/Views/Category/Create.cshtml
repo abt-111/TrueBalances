@@ -13,6 +13,7 @@
                 </div>
                 <div class="card-body">
                     <form asp-action="Create">
+                        <input type="hidden" name="groupId" value="@ViewBag.GroupId" />
                         <div class="form-group">
                             <label asp-for="Name" class="control-label font-weight-bold">Nom de la catégorie</label>
                             <input asp-for="Name" class="form-control" placeholder="Entrez le nom de la catégorie" />
@@ -20,7 +21,8 @@
                         </div>
                         <div class="form-group text-center">
                             <input type="submit" value="Ajouter" class="btn btn-success" />
-                            <a asp-action="Index" class="btn btn-secondary ml-2">Retour à la liste</a>
+                            <a asp-action="Index" asp-route-groupId="@ViewBag.GroupId" class="btn btn-secondary">Retour</a>
+                            @* <a asp-action="Index" class="btn btn-secondary ml-2">Retour à la liste</a> *@
                         </div>
                     </form>
                 </div>

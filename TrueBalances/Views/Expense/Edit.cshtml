@@ -3,7 +3,10 @@
 
 @{
     ViewData["Title"] = "Modifier une dépense";
+    var currentUserId = ViewBag.CurrentUserId;
     var users = ViewBag.Users as List<CustomUser>;
+    var debts = ViewBag.Debts as Dictionary<string, decimal>;
+    var groupId = ViewBag.GroupId;
 }
 
 <h1 class="custom-header text-center">@ViewData["Title"]</h1>
@@ -13,12 +16,15 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <form asp-action="Edit">
+            <form asp-action="Edit" method="post">
                 <!-- Affichage des messages d'erreur -->
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="CustomUserId" />
+                <!-- Ajout d'un champ caché pour GroupId -->
+                <input type="hidden" name="GroupId" value="@groupId" />
+
 
                 <div class="form-group">
                     <label asp-for="Title" class="control-label">Titre</label>
@@ -79,7 +85,7 @@
 </div>
 
 <div>
-    <a asp-action="Index" class="action-link">Retour à la liste</a>
+    <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary mt-3">Retour à la gestion des dépenses</a>
 </div>
 
 @section Scripts {
@@ -90,9 +96,9 @@
         function toggleSelectAll() {
             var checkboxes = document.querySelectorAll('input[name="SelectedUserIds"]');
             var allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-            
+
             checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
-            
+
             // Changer le texte du bouton en fonction de l'état
             document.getElementById('selectAllBtn').innerText = allChecked ? 'Sélectionner tous les membres' : 'Désélectionner tous les membres';
         }
