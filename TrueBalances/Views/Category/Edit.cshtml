@@ -17,6 +17,7 @@
         <div class="col-md-4">
             <form asp-action="Edit">
                 <input type="hidden" asp-for="Id" />
+                <input type="hidden" name="groupId" value="@ViewBag.GroupId" />
 
                 <div class="form-group">
                     <label asp-for="Name" class="control-label">Nom</label>
@@ -26,15 +27,16 @@
 
                 <div class="form-group">
                     <input type="submit" value="Modifier" class="btn btn-primary" />
+                    <a asp-action="Index" asp-route-groupId="@ViewBag.GroupId" class="btn btn-secondary">Retour</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<div>
+@* <div>
     <a asp-action="Index" class="action-link">Retour à la liste</a>
-</div>
+</div> *@
 
 @section Scripts {
     @{

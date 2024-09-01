@@ -48,7 +48,7 @@ namespace TrueBalances.Controllers
 
         //Edit(GET)
         [HttpGet]
-        public async Task<IActionResult> Edit(int? categorieId)
+        public async Task<IActionResult> Edit(int? categorieId, int groupId)
         {
             if (categorieId is null)
             {
@@ -59,6 +59,7 @@ namespace TrueBalances.Controllers
             {
                 return RedirectToAction(actionName: "Index", controllerName: "Category");
             }
+            ViewBag.GroupId = groupId;
             return View(category);
         }
 
@@ -66,9 +67,10 @@ namespace TrueBalances.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> Edit(int id, Category category)
+        public async Task<IActionResult> Edit(int id, Category category, int groupId)
         {
             if (id == category.Id) await _context.UpdateCategoryAsync(category);
+            return RedirectToAction("Index", new { groupId = groupId });
             return RedirectToAction(actionName: "Index", controllerName: "Category");
             
             //return View(category);
