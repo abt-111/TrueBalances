@@ -76,18 +76,18 @@ namespace TrueBalances.Repositories.DbRepositories
                 GroupId = groupId,
                 CustomUserId = userId
             };
-            _context.UsersGroup.Add(userGroup);
+            _context.UserGroups.Add(userGroup);
             await _context.SaveChangesAsync();
         }
 
         public async Task RemoveUserFromGroupAsync(int groupId, string userId)
         {
-            var userGroup = await _context.UsersGroup
+            var userGroup = await _context.UserGroups
                 .FirstOrDefaultAsync(ug => ug.GroupId == groupId && ug.CustomUserId == userId);
 
             if (userGroup != null)
             {
-                _context.UsersGroup.Remove(userGroup);
+                _context.UserGroups.Remove(userGroup);
                 await _context.SaveChangesAsync();
             }
         }

@@ -21,7 +21,7 @@ namespace TrueBalances.Repositories.DbRepositories
 
         public bool UserIsInGroup(string userId, int groupId)
         {
-            return _context.UsersGroup
+            return _context.UserGroups
                 .Where(ug => ug.CustomUserId == userId)
                 .Select(ug => ug.Group).Any(g => g.Id == groupId);
         }
@@ -30,22 +30,22 @@ namespace TrueBalances.Repositories.DbRepositories
         {
             foreach (var memberId in memberIds)
             {
-                _context.UsersGroup.Add(new UserGroup { GroupId = groupId, Id = memberId });
+                _context.UserGroups.Add(new UserGroup { GroupId = groupId, Id = memberId });
             }
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateMembersInGroupAsync(int groupId, List<int> memberIds)
         {
-            var existingMembers = _context.UsersGroup.Where(ug => ug.GroupId == groupId);
-            _context.UsersGroup.RemoveRange(existingMembers);
+            var existingMembers = _context.UserGroups.Where(ug => ug.GroupId == groupId);
+            _context.UserGroups.RemoveRange(existingMembers);
             await AddMembersToGroupAsync(groupId, memberIds);
         }
 
         public async Task RemoveGroupAsync(int groupId)
         {
-            var userGroups = _context.UsersGroup.Where(ug => ug.GroupId == groupId);
-            _context.UsersGroup.RemoveRange(userGroups);
+            var userGroups = _context.UserGroups.Where(ug => ug.GroupId == groupId);
+            _context.UserGroups.RemoveRange(userGroups);
             await _context.SaveChangesAsync();
         }
     }

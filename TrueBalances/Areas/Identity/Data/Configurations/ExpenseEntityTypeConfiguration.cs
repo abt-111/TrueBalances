@@ -9,6 +9,45 @@ namespace TrueBalances.Areas.Identity.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Expense> builder)
         {
+            builder
+                .Property(e => e.Amount)
+                .HasColumnType("decimal(18, 2)");
+
+            // Configuration de la relation one-to-many entre Expense et CustomUser (en tant que créateur)
+            builder
+                .HasOne(e => e.CustomUser)
+                .WithMany(u => u.CreatedExpenses)
+                .HasForeignKey(e => e.CustomUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configuration de la relation many-to-many entre Expense et CustomUser (en tant que participant)
+            builder
+                .HasMany(e => e.Participants)
+                .WithMany(u => u.ParticipatingExpenses)
+                .UsingEntity<Dictionary<string, object>>(
+                    "ExpenseParticipant",
+                    j => j.HasOne<CustomUser>()
+                        .WithMany()
+                        .HasForeignKey("CustomUserId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j => j.HasOne<Expense>()
+                        .WithMany()
+                        .HasForeignKey("ExpenseId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j =>
+                    {
+                        j.HasKey("ExpenseId", "CustomUserId");
+                        j.ToTable("ExpenseParticipants");
+                    }
+                );
+
+            // Configuration de la relation entre Group et Expense pour la suppression en cascade
+            builder
+                .HasOne(e => e.Group)
+                .WithMany(g => g.Expenses)
+                .HasForeignKey(e => e.GroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Groupe 1
             builder.HasData(
                 new Expense { Id = 1, Title = "Déjeuner", Amount = 58.60m, Date = new DateTime(2024, 9, 1), CategoryId = 1, GroupId = 1, CustomUserId = "4593d2ab-7651-457a-ab7b-0de95e853529" },
