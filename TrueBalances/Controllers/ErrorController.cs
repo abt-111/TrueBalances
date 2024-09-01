@@ -12,6 +12,7 @@ public class ErrorController : Controller
             case 404:
                 return View("404");
             default:
+                return View("404");
                 return View("Error");
         }
     }

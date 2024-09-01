@@ -30,22 +30,20 @@ namespace TrueBalances.Controllers
 
         // Create (GET)
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(int groupId)
         {
+            ViewBag.GroupId = groupId;
             return View();
         }
 
         // Create (Post)
         [HttpPost]
-        public async Task<IActionResult> Create(Category category)
+        public async Task<IActionResult> Create(Category category, int groupId)
         {
             if (!ModelState.IsValid) return View(category);
             
                 await _context.AddCategoryAsync(category);
-                return RedirectToAction(actionName: "Index", controllerName: "Category");
-            
-            
-
+                return RedirectToAction("Index", new { groupId = groupId });
         }
 
         //Edit(GET)
