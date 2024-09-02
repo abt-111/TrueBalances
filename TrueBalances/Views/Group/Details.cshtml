@@ -7,7 +7,7 @@
 
     @foreach (var expense in Model.Group.Expenses)
     {
-        if (!categoriesChoosed.Contains(expense.Category.Name))
+        if (expense.Category!=null && !categoriesChoosed.Contains(expense.Category.Name))
         {
             categoriesChoosed.Add(expense.Category.Name);
         }
