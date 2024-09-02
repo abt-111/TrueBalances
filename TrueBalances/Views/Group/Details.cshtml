@@ -3,6 +3,15 @@
 @{
     ViewData["Title"] = "Détails du groupe";
     var groupId = Model.Group.Id;
+    List<string> categoriesChoosed = new List<string>();
+
+    @foreach (var expense in Model.Group.Expenses)
+    {
+        if (!categoriesChoosed.Contains(expense.Category.Name))
+        {
+            categoriesChoosed.Add(expense.Category.Name);
+        }
+    }
 }
 
 <div class="container mt-5">
@@ -25,8 +34,22 @@
                         <div class="col-md-4">
                             <div class="card bg-light mb-4">
                                 <div class="card-body">
-                                    <h5 class="card-title"><i class="bi bi-folder-fill"></i> Catégorie</h5>
-                                    <p class="card-text">@Model.Group.Category?.Name ?? "Aucune catégorie"</p>
+                                    <h5 class="card-title"><i class="bi bi-folder-fill"></i> Catégories choisies </h5>
+                                    @if (Model.Group.Expenses != null && Model.Group.Expenses.Any())
+                                    {
+                                        <ul class="list-group list-group-flush">
+                                            @foreach (var categoryChoosed in categoriesChoosed)
+                                            {
+                                                <li class="list-group-item">
+                                                    @categoryChoosed
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <p>Aucune dépense associée</p>
+                                    }
                                     <a asp-controller="Category" asp-action="Index" asp-route-groupId="@Model.Group.Id" class="btn btn-secondary">Gérer les catégories</a>
                                 </div>
                             </div>

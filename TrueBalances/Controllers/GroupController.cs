@@ -179,9 +179,11 @@ namespace TrueBalances.Controllers
 
             // Récupérer le groupe avec les participants, la catégorie et les dépenses associées
             var group = await _context.Groups
+                  .Include(g => g.Expenses)
+            .ThenInclude(e => e.Category)
                 .Include(g => g.Members)
                 .ThenInclude(m => m.CustomUser)  // Inclure les utilisateurs associés aux membres
-                .Include(g => g.Category)  // Inclure la catégorie
+                //.Include(g => g.Category)  // Inclure la catégorie
                 .Include(g => g.Expenses)  // Inclure les dépenses associées
                 .FirstOrDefaultAsync(g => g.Id == id);
 
