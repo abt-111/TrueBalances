@@ -16,104 +16,164 @@
 
 <div class="container mt-5">
     <div class="row">
+        <!-- Titre du groupe avec une bannière -->
         <div class="col-md-12">
-            <div class="card shadow-sm">
-
-                <div class="card-header bg-primary text-white">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="card-title mb-0 text-center flex-grow-1">@Model.Group.Name</h2>
-                        <a asp-action="Delete" asp-route-id="@Model.Group.Id" title="Supprimer" class="text-white">
-                            <i class="fas fa-trash-alt"></i>
-                        </a>
-                    </div>
+            <div class="card shadow-lg mb-4">
+                <div class="card-header text-white text-center" style="background-color: #3da35d;">
+                    <!-- Bleu foncé -->
+                    <h2 class="card-title mb-0">@Model.Group.Name</h2>
                 </div>
+            </div>
+        </div>
 
-                <div class="card-body">
-                    <div class="row">
-                        <!-- Catégorie -->
-                        <div class="col-md-4">
-                            <div class="card bg-light mb-4">
-                                <div class="card-body">
-                                    <h5 class="card-title"><i class="bi bi-folder-fill"></i> Catégories choisies </h5>
-                                    @if (Model.Group.Expenses != null && Model.Group.Expenses.Any())
-                                    {
-                                        <ul class="list-group list-group-flush">
-                                            @foreach (var categoryChoosed in categoriesChoosed)
-                                            {
-                                                <li class="list-group-item">
-                                                    @categoryChoosed
-                                                </li>
-                                            }
-                                        </ul>
-                                    }
-                                    else
-                                    {
-                                        <p>Aucune dépense associée</p>
-                                    }
-                                    <a asp-controller="Category" asp-action="Index" asp-route-groupId="@Model.Group.Id" class="btn btn-secondary">Gérer les catégories</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Membres -->
-                        <div class="col-md-4">
-                            <div class="card bg-light mb-4">
-                                <div class="card-body">
-                                    <h5 class="card-title"><i class="bi bi-people-fill"></i>Membres</h5>
-                                    @if (Model.Group.Members != null && Model.Group.Members.Any())
-                                    {
-                                        <ul class="list-group list-group-flush">
-                                            @foreach (var member in Model.Group.Members)
-                                            {
-                                                <li class="list-group-item">
-                                                    <i class="bi bi-person-fill"></i> @member.CustomUser.UserName
-                                                </li>
-                                            }
-                                        </ul>
-                                    }
-                                    else
-                                    {
-                                        <p>Aucun participant</p>
-                                    }
-                                    <a asp-action="Edit" asp-route-id="@Model.Group.Id" class="btn btn-secondary">Gérer les membres</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Dépenses associées -->
-                        <div class="col-md-4">
-                            <div class="card bg-light mb-4">
-                                <div class="card-body">
-                                    <h5 class="card-title"><i class="bi bi-currency-dollar"></i> Dépenses associées</h5>
-                                    @if (Model.Group.Expenses != null && Model.Group.Expenses.Any())
-                                    {
-                                        <ul class="list-group list-group-flush">
-                                            @foreach (var expense in Model.Group.Expenses)
-                                            {
-                                                <li class="list-group-item">
-                                                    <strong>@expense.Title:</strong> @expense.Amount €
-                                                </li>
-                                            }
-                                        </ul>
-                                    }
-                                    else
-                                    {
-                                        <p>Aucune dépense associée</p>
-                                    }
-                                    <a asp-controller="Expense" asp-action="Index" asp-route-groupId="@Model.Group.Id" class="btn btn-secondary">Gérer les dépenses</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Cartes de statistiques -->
+        <div class="col-md-4">
+            <div class="card text-white mb-4 shadow" style="background-color: #137547;">
+                <!-- Bleu clair -->
+                <div class="card-body d-flex flex-column align-items-center">
+                    <h5 class="card-title"><i class="bi bi-folder-fill"></i> Catégories</h5>
+                    <p class="display-4 font-weight-bold">@categoriesChoosed.Count</p>
+                    <p class="mb-0">Catégorie(s) choisie(s)</p>
                 </div>
                 <div class="card-footer text-center">
-                    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+                    <a asp-controller="Category" asp-action="Index" asp-route-groupId="@Model.Group.Id" class="btn btn-light text-dark">Gérer les catégories</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white mb-4 shadow" style="background-color: #e67e22;">
+                <!-- Orange -->
+                <div class="card-body d-flex flex-column align-items-center">
+                    <h5 class="card-title"><i class="bi bi-people-fill"></i> Membres</h5>
+                    <p class="display-4 font-weight-bold">@Model.Group.Members.Count()</p>
+                    <p class="mb-0">Participants</p>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-action="Edit" asp-route-id="@Model.Group.Id" class="btn btn-light text-dark">Gérer les membres</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white mb-4 shadow" style="background-color: #137547;">
+                <!-- Violet -->
+                <div class="card-body d-flex flex-column align-items-center">
+                    <h5 class="card-title"><i class="bi bi-currency-dollar"></i> Dépenses</h5>
+                    <p class="display-4 font-weight-bold">@Model.Group.Expenses.Sum(e => e.Amount) €</p>
+                    <p class="mb-0">Total des dépenses</p>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-controller="Expense" asp-action="Index" asp-route-groupId="@Model.Group.Id" class="btn btn-light text-dark">Gérer les dépenses</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+
+    <!-- Liste détaillée avec un affichage en accordéon -->
+   @*  <div class="row">
+        <div class="col-md-12">
+            <div class="accordion" id="detailsAccordion">
+                <!-- Catégories -->
+                <div class="card mb-3">
+                    <div class="card-header" id="headingCategories" style="background-color: #08a045; color: white;">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link text-white" type="button" data-toggle="collapse" data-target="#collapseCategories" aria-expanded="true" aria-controls="collapseCategories">
+                                <i class="bi bi-folder-fill"></i> Détails des Catégories
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapseCategories" class="collapse show" aria-labelledby="headingCategories" data-parent="#detailsAccordion">
+                        <div class="card-body">
+                            @if (categoriesChoosed.Any())
+                            {
+                                <ul class="list-group">
+                                    @foreach (var category in categoriesChoosed)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            @category
+                                            <span class="badge badge-primary badge-pill">
+                                                @Model.Group.Expenses.Count(e => e.Category.Name == category)
+                                            </span>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p class="text-muted">Aucune catégorie associée</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Membres -->
+                <div class="card mb-3">
+                    <div class="card-header" id="headingMembers" style="background-color: #08a045; color: white;">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link text-white" type="button" data-toggle="collapse" data-target="#collapseMembers" aria-expanded="true" aria-controls="collapseMembers">
+                                <i class="bi bi-people-fill"></i> Détails des Membres
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapseMembers" class="collapse" aria-labelledby="headingMembers" data-parent="#detailsAccordion">
+                        <div class="card-body">
+                            @if (Model.Group.Members != null && Model.Group.Members.Any())
+                            {
+                                <ul class="list-group">
+                                    @foreach (var member in Model.Group.Members)
+                                    {
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <i class="bi bi-person-fill mr-2"></i> @member.CustomUser.UserName
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p class="text-muted">Aucun membre</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dépenses -->
+                <div class="card mb-3">
+                    <div class="card-header" id="headingExpenses" style="background-color: #08a045; color: white;">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link text-white" type="button" data-toggle="collapse" data-target="#collapseExpenses" aria-expanded="true" aria-controls="collapseExpenses">
+                                <i class="bi bi-currency-dollar"></i> Détails des Dépenses
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapseExpenses" class="collapse" aria-labelledby="headingExpenses" data-parent="#detailsAccordion">
+                        <div class="card-body">
+                            @if (Model.Group.Expenses != null && Model.Group.Expenses.Any())
+                            {
+                                <ul class="list-group">
+                                    @foreach (var expense in Model.Group.Expenses)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span><strong>@expense.Title:</strong></span>
+                                            <span>@expense.Amount €</span>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p class="text-muted">Aucune dépense associée</p>
+                            }
+                        </div>
+                    </div>
+                </div> *@
+@*             </div>
+        </div>
+    </div>
+</div>
+ *@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
