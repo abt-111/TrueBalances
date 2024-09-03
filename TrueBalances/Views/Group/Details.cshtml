@@ -7,7 +7,7 @@
 
     @foreach (var expense in Model.Group.Expenses)
     {
-        if (expense.Category!=null && !categoriesChoosed.Contains(expense.Category.Name))
+        if (expense.Category != null && !categoriesChoosed.Contains(expense.Category.Name))
         {
             categoriesChoosed.Add(expense.Category.Name);
         }
@@ -19,9 +19,12 @@
         <!-- Titre du groupe avec une bannière -->
         <div class="col-md-12">
             <div class="card shadow-lg mb-4">
-                <div class="card-header text-white text-center" style="background-color: #3da35d;">
+                <div class="card-header text-white text-center d-flex justify-content-between align-items-center" style="background-color: #3da35d;">
                     <!-- Bleu foncé -->
                     <h2 class="card-title mb-0">@Model.Group.Name</h2>
+                    <a asp-action="Delete" asp-route-id="@Model.Group.Id" title="Supprimer" class="text-white">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -69,11 +72,16 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-12">
+            <a asp-controller="Group" asp-action="Index" class="btn btn-secondary" style="background-color: #6c757d; border-color: #6c757d;">Retour à l'accueil</a>
+        </div>
+    </div>
 </div>
 
 
-    <!-- Liste détaillée avec un affichage en accordéon -->
-   @*  <div class="row">
+<!-- Liste détaillée avec un affichage en accordéon -->
+@*  <div class="row">
         <div class="col-md-12">
             <div class="accordion" id="detailsAccordion">
                 <!-- Catégories -->
