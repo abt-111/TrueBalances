@@ -15,8 +15,15 @@
             <form asp-action="Create" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                <input type="hidden" asp-for="CustomUserId" />
                 <input type="hidden" asp-for="GroupId" />
+
+                <div class="form-group">
+                    <label asp-for="CustomUserId" class="control-label">Auteur</label>
+                    <select asp-for="CustomUserId" class="form-control" asp-items="ViewBag.Authors">
+                        <option value="">Sélectionnez un auteur</option>
+                    </select>
+                    <span asp-validation-for="CustomUserId" class="text-danger"></span>
+                </div>
 
                 <div class="form-group">
                     <label asp-for="Title" class="control-label">Titre</label>

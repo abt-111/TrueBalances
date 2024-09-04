@@ -105,6 +105,7 @@ namespace TrueBalances.Controllers
 
         public async Task<IActionResult> Create(int groupId)
         {
+            var users = await _userService.GetAllUsersAsync(groupId);
             var expense = new Expense
             {
                 Date = DateTime.Now,
@@ -113,7 +114,8 @@ namespace TrueBalances.Controllers
             };
 
             ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
-            ViewBag.Users = await _userService.GetAllUsersAsync(groupId);
+            ViewBag.Authors = new SelectList(users.Select(u => new { u.Id, FullName = $"{u.FirstName} {u.LastName}" }), "Id", "FullName");
+            ViewBag.Users = users;
 
             Console.WriteLine();
 
@@ -143,8 +145,10 @@ namespace TrueBalances.Controllers
             }
 
             // Recharger les catégories et les utilisateurs en cas d'échec de validation
+            var users = await _userService.GetAllUsersAsync(expense.GroupId);
             ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
-            ViewBag.Users = await _userService.GetAllUsersAsync(expense.GroupId);
+            ViewBag.Authors = new SelectList(users.Select(u => new { u.Id, FullName = $"{u.FirstName} {u.LastName}" }), "Id", "FullName");
+            ViewBag.Users = users;
             return View(expense);
         }
 
