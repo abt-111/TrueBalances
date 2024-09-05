@@ -1,4 +1,4 @@
-﻿using TrueBalances.Areas.Identity.Data;
+﻿using TrueBalances.Data;
 using TrueBalances.Models;
 
 namespace TrueBalances.Repositories.Interfaces

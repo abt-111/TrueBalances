@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using TrueBalances.Areas.Identity.Data;
-using TrueBalances.Areas.Identity.Data.Configurations;
+using TrueBalances.Data.Configurations;
 using TrueBalances.Models;
 
 namespace TrueBalances.Data;
 
-public class UserContext : IdentityDbContext<CustomUser>
+public class TrueBalancesDbContext : IdentityDbContext<CustomUser>
 {
-    public UserContext(DbContextOptions<UserContext> options) : base(options)
+    public TrueBalancesDbContext(DbContextOptions<TrueBalancesDbContext> options) : base(options)
     { }
 
     public DbSet<Category> Categories { get; set; }

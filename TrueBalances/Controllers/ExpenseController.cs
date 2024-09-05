@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
-using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
@@ -15,12 +14,12 @@ namespace TrueBalances.Controllers
     [Authorize]
     public class ExpenseController : Controller
     {
-        private readonly UserContext _context;
+        private readonly TrueBalancesDbContext _context;
         private readonly IGenericRepository<Category> _categoryRepository;
         private readonly IUserService _userService;
         private readonly UserManager<CustomUser> _userManager;
 
-        public ExpenseController(UserContext context, UserManager<CustomUser> userManager, IGenericRepository<Category> categoryRepository, IUserService userService)
+        public ExpenseController(TrueBalancesDbContext context, UserManager<CustomUser> userManager, IGenericRepository<Category> categoryRepository, IUserService userService)
         {
             _context = context;
             _categoryRepository = categoryRepository;

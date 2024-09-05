@@ -1,5 +1,4 @@
-﻿using TrueBalances.Areas.Identity.Data;
-using TrueBalances.Models;
+﻿using TrueBalances.Models;
 
 namespace TrueBalances.Tools
 {

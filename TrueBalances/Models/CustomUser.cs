@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using TrueBalances.Models;
 
-namespace TrueBalances.Areas.Identity.Data;
+namespace TrueBalances.Models;
 
 public class CustomUser : IdentityUser
 {

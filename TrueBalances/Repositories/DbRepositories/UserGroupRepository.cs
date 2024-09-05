@@ -7,9 +7,9 @@ namespace TrueBalances.Repositories.DbRepositories
 {
     public class UserGroupRepository : IUserGroupService
     {
-        private readonly UserContext _context;
+        private readonly TrueBalancesDbContext _context;
 
-        public UserGroupRepository(UserContext context)
+        public UserGroupRepository(TrueBalancesDbContext context)
         {
             _context = context;
         }

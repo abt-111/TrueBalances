@@ -1,6 +1,4 @@
-﻿using TrueBalances.Areas.Identity.Data;
-
-namespace TrueBalances.Models
+﻿namespace TrueBalances.Models
 {
     public class UserGroup
     {

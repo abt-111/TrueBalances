@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
-using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
@@ -14,12 +13,12 @@ namespace TrueBalances.Controllers
     {
         private readonly IGroupService _groupService;
         private readonly IUserService _userService;
-        private readonly UserContext _context;
+        private readonly TrueBalancesDbContext _context;
         private readonly UserManager<CustomUser> _userManager;
         private readonly IGenericRepository<Category> _categoryRepository;
         private readonly IUserGroupService _userGroupService;
 
-        public GroupController(UserContext context, IGroupService groupService, IUserService userService, UserManager<CustomUser> userManager, IGenericRepository<Category> categoryRepository, IUserGroupService userGroupService)
+        public GroupController(TrueBalancesDbContext context, IGroupService groupService, IUserService userService, UserManager<CustomUser> userManager, IGenericRepository<Category> categoryRepository, IUserGroupService userGroupService)
         {
             _groupService = groupService;
             _userService = userService;

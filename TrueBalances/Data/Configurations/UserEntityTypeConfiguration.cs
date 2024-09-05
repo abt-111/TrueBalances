@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using TrueBalances.Models;
 
-namespace TrueBalances.Areas.Identity.Data.Configurations
+namespace TrueBalances.Data.Configurations
 {
     public class UserEntityTypeConfiguration : IEntityTypeConfiguration<CustomUser>
     {

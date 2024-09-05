@@ -2,18 +2,19 @@ using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
-using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.DbRepositories;
 using TrueBalances.Repositories.Interfaces;
 using TrueBalances.Repositories.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
 var connectionString = builder.Configuration.GetConnectionString("DbContextConnection") ?? throw new InvalidOperationException("Connection string 'DbContextConnection' not found.");
 
-builder.Services.AddDbContext<TrueBalances.Data.UserContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DbContextConnection")));
+builder.Services.AddDbContext<TrueBalances.Data.TrueBalancesDbContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TrueBalances.Data.UserContext>();
+builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TrueBalances.Data.TrueBalancesDbContext>();
 
 builder.Services.AddScoped<IGenericRepository<Category>, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -26,7 +27,7 @@ builder.Services.AddScoped<IUserGroupService, UserGroupRepository>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-builder.Services.AddDbContext<TrueBalances.Data.UserContext>(options =>
+builder.Services.AddDbContext<TrueBalances.Data.TrueBalancesDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbContextConnection"));
 });

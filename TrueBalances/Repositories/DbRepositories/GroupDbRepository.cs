@@ -9,9 +9,9 @@ namespace TrueBalances.Repositories.DbRepositories
 {
     public class GroupDbRepository : IGenericRepository<Group>
     {
-        private readonly UserContext _context;
+        private readonly TrueBalancesDbContext _context;
 
-        public GroupDbRepository(UserContext context)
+        public GroupDbRepository(TrueBalancesDbContext context)
         {
             _context = context;
         }

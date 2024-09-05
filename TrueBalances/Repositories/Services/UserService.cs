@@ -1,7 +1,6 @@
 ﻿using TrueBalances.Data;
 using Microsoft.EntityFrameworkCore;
 using TrueBalances.Repositories.Interfaces;
-using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Models;
 using System.Linq;
 
@@ -9,9 +8,9 @@ namespace TrueBalances.Repositories.Services
 {
     public class UserService : IUserService
     {
-            private readonly UserContext _context;
+            private readonly TrueBalancesDbContext _context;
 
-            public UserService(UserContext context)
+            public UserService(TrueBalancesDbContext context)
             {
                 _context = context;
             }

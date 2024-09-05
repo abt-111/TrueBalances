@@ -7,9 +7,9 @@ namespace TrueBalances.Repositories.DbRepositories
 {
     public class CategoryRepository : IGenericRepository<Category>
     {
-        private readonly UserContext _context;
+        private readonly TrueBalancesDbContext _context;
 
-        public CategoryRepository(UserContext context)
+        public CategoryRepository(TrueBalancesDbContext context)
         {
             _context = context;
         }

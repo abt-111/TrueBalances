@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TrueBalances.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace TrueBalances.Areas.Identity.Data.Configurations
+namespace TrueBalances.Data.Configurations
 {
     public class ExpenseEntityTypeConfiguration : IEntityTypeConfiguration<Expense>
     {

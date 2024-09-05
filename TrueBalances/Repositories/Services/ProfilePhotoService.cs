@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
@@ -9,10 +8,10 @@ namespace TrueBalances.Repositories.Services
 {
     public class ProfilePhotoService : IProfilePhotoService
     {
-        private readonly UserContext _context;
+        private readonly TrueBalancesDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProfilePhotoService(UserContext context, IWebHostEnvironment webHostEnvironment)
+        public ProfilePhotoService(TrueBalancesDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
