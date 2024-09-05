@@ -87,7 +87,7 @@
                                 }
                                 else
                                 {
-                                    @if (currentUserId == item.CustomUserId)
+                                    @if (currentUserId == item.UserId)
                                     {
                                         @: :
                                         <a asp-action="Alert" asp-route-id="@item.Id" title="Cette dépense doit-être re-catégorisé">
@@ -98,11 +98,11 @@
                             </i>
                         </h5>
                         <p class="display-4 font-weight-bold">@item.Amount €</p>
-                        <p class="mb-0">@item.CustomUser.FirstName le @Html.DisplayFor(modelItem => item.Date)</p>
+                        <p class="mb-0">@item.User.FirstName le @Html.DisplayFor(modelItem => item.Date)</p>
                     </div>
                     <div class="card-footer text-center">
                         @* Affichage des boutons d'action *@
-                        @if (currentUserId == item.CustomUserId)
+                        @if (currentUserId == item.UserId)
                         {
                             <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Modifier" style="border-color: #FFFFFF; color: #FFFFFF;">
                                 <i class="fas fa-edit"></i>
@@ -111,7 +111,7 @@
                         <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Détails" style="border-color: #FFFFFF; color: #FFFFFF;">
                             <i class="fas fa-info-circle"></i>
                         </a>
-                        @if (currentUserId == item.CustomUserId)
+                        @if (currentUserId == item.UserId)
                         {
                             <a class="btn btn-sm btn-outline-primary" asp-action="Delete" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Supprimer" style="border-color: #FFFFFF; color: #FFFFFF;">
                                 <i class="fas fa-trash-alt"></i>

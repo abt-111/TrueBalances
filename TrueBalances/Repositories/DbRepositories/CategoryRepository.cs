@@ -60,7 +60,7 @@ namespace TrueBalances.Repositories.DbRepositories
         {
             return await _context.Categories
             .Include(c => c.Expenses.Where(e => e.GroupId == groupId))
-            .ThenInclude(e => e.CustomUser)
+            .ThenInclude(e => e.User)
             .FirstOrDefaultAsync(c => c.Id == id);
         }
     }

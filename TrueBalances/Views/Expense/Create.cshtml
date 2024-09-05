@@ -18,33 +18,33 @@
                 <input type="hidden" asp-for="GroupId" />
 
                 <div class="form-group">
-                    <label asp-for="CustomUserId" class="control-label">Auteur</label>
-                    <select asp-for="CustomUserId" class="form-control" asp-items="ViewBag.Authors">
+                    <label asp-for="UserId" class="control-label"></label>
+                    <select asp-for="UserId" class="form-control" asp-items="ViewBag.Authors">
                         <option value="">Sélectionnez un auteur</option>
                     </select>
-                    <span asp-validation-for="CustomUserId" class="text-danger"></span>
+                    <span asp-validation-for="UserId" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="Title" class="control-label">Titre</label>
+                    <label asp-for="Title" class="control-label"></label>
                     <input asp-for="Title" class="form-control" />
                     <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="Amount" class="control-label">Montant</label>
+                    <label asp-for="Amount" class="control-label"></label>
                     <input asp-for="Amount" class="form-control" type="number" value="" />
                     <span asp-validation-for="Amount" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="Date" class="control-label">Date</label>
+                    <label asp-for="Date" class="control-label"></label>
                     <input asp-for="Date" class="form-control" type="date" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
                     <span asp-validation-for="Date" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="CategoryId" class="control-label">Catégorie</label>
+                    <label asp-for="CategoryId" class="control-label"></label>
                     <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories">
                         <option value="">Sélectionnez une catégorie</option>
                     </select>

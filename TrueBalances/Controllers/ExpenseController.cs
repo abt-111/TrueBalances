@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
@@ -50,34 +49,6 @@ namespace TrueBalances.Controllers
             return View(expenses);
         }
 
-        public async Task<IActionResult> Solde(int groupId)
-        {
-            if (groupId <= 0)
-            {
-                return NotFound(); // Vérifie si l'ID du groupe est valide
-            }
-
-            // Récupérer les dépenses associées au groupe spécifié
-            var expenses = await _context.Expenses
-                .Where(e => e.GroupId == groupId) // Filtrer par ID du groupe
-                .Include(e => e.Category)
-                .Include(e => e.Participants)
-                .ToListAsync();
-
-            // Utiliser ViewBag pour récupérer l'ID de l'utilisateur courant dans la vue
-            ViewBag.CurrentUserId = _userManager.GetUserId(User);
-
-            // Utiliser ViewBag pour récupérer la liste des utilisateurs dans la vue
-            ViewBag.Users = await _userService.GetAllUsersAsync(groupId);
-
-            // Calculer les soldes
-            ViewBag.DebtsOfEverybody = DebtOperator.GetDebtsOfEverybody(expenses, ViewBag.Users);
-            // Passer l'ID du groupe à la vue
-            ViewBag.GroupId = groupId;
-
-            return View(expenses);
-        }
-
         public async Task<IActionResult> Details(int id)
         {
             if (id == 0)
@@ -108,7 +79,7 @@ namespace TrueBalances.Controllers
             var expense = new Expense
             {
                 Date = DateTime.Now,
-                CustomUserId = _userManager.GetUserId(User),
+                UserId = _userManager.GetUserId(User),
                 GroupId = groupId
             };
 
@@ -179,7 +150,7 @@ namespace TrueBalances.Controllers
 
             // Vérification si l'utilisateur connecté est bien le propriétaire de la dépense
             var user = await _userManager.GetUserAsync(User);
-            if (user == null || user.Id != expense.CustomUserId)
+            if (user == null || user.Id != expense.UserId)
             {
                 return View("404");
             }
@@ -260,6 +231,11 @@ namespace TrueBalances.Controllers
             return View(expense);
         }
 
+        private bool ExpenseExists(int id) // Vérifie si une dépense avec l'ID spécifié existe dans la base de données.// 
+        {
+            return _context.Expenses.Any(e => e.Id == id);
+        }
+
         public async Task<IActionResult> Delete(int id)
         {
             // Vérifier si l'id est valide
@@ -285,7 +261,7 @@ namespace TrueBalances.Controllers
 
             // Empêcher l'accès quand la dépense n'appartient pas à l'utilisateur
             var user = await _userManager.GetUserAsync(User);
-            if (user.Id != expense.CustomUserId)
+            if (user.Id != expense.UserId)
             {
                 return NotFound();
             }
@@ -310,7 +286,7 @@ namespace TrueBalances.Controllers
 
             // Empêcher l'accès quand la dépense n'appartient pas à l'utilisateur
             var user = await _userManager.GetUserAsync(User);
-            if (user.Id != expense.CustomUserId)
+            if (user.Id != expense.UserId)
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -325,9 +301,32 @@ namespace TrueBalances.Controllers
             return RedirectToAction("Index", new { groupId = expense.GroupId });
         }
 
-        private bool ExpenseExists(int id) // Vérifie si une dépense avec l'ID spécifié existe dans la base de données.// 
+        public async Task<IActionResult> Solde(int groupId)
         {
-            return _context.Expenses.Any(e => e.Id == id);
+            if (groupId <= 0)
+            {
+                return NotFound(); // Vérifie si l'ID du groupe est valide
+            }
+
+            // Récupérer les dépenses associées au groupe spécifié
+            var expenses = await _context.Expenses
+                .Where(e => e.GroupId == groupId) // Filtrer par ID du groupe
+                .Include(e => e.Category)
+                .Include(e => e.Participants)
+                .ToListAsync();
+
+            // Utiliser ViewBag pour récupérer l'ID de l'utilisateur courant dans la vue
+            ViewBag.CurrentUserId = _userManager.GetUserId(User);
+
+            // Utiliser ViewBag pour récupérer la liste des utilisateurs dans la vue
+            ViewBag.Users = await _userService.GetAllUsersAsync(groupId);
+
+            // Calculer les soldes
+            ViewBag.DebtsOfEverybody = DebtOperator.GetDebtsOfEverybody(expenses, ViewBag.Users);
+            // Passer l'ID du groupe à la vue
+            ViewBag.GroupId = groupId;
+
+            return View(expenses);
         }
 
         public async Task<IActionResult> Alert(int id)
@@ -350,7 +349,7 @@ namespace TrueBalances.Controllers
             // Empêcher l'accès quand la dépenses n'appartient pas à l'utilisateur
             var user = await _userManager.GetUserAsync(User);
 
-            if (user.Id != expense.CustomUserId)
+            if (user.Id != expense.UserId)
             {
                 return RedirectToAction("Index", new { groupId = expense.GroupId });
                 return RedirectToAction(nameof(Index));

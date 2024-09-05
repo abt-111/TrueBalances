@@ -9,7 +9,7 @@ namespace TrueBalances.Tools
         {
             return Math.Round(
                             expenses
-                            .Where(e => e.CustomUserId == creditor && e.Participants.Any(p => p.Id == debtor))
+                            .Where(e => e.UserId == creditor && e.Participants.Any(p => p.Id == debtor))
                             .Sum(e => e.Participants.Count != 0 ? e.Amount / e.Participants.Count : 0)
                         , 2);
         }
