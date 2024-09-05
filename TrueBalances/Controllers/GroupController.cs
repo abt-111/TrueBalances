@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text.RegularExpressions;
 using TrueBalances.Data;
 using TrueBalances.Models;
+using TrueBalances.Models.ViewModels;
 using TrueBalances.Repositories.Interfaces;
 
 namespace TrueBalances.Controllers

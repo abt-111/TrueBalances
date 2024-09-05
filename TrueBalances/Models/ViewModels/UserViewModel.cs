@@ -1,4 +1,4 @@
-﻿namespace TrueBalances.Models
+﻿namespace TrueBalances.Models.ViewModels
 {
     public class UserViewModel
     {

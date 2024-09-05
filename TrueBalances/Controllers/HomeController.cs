@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using TrueBalances.Models;
+using TrueBalances.Models.ViewModels;
 
 namespace TrueBalances.Controllers
 {

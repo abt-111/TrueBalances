@@ -1,4 +1,5 @@
 ﻿using TrueBalances.Models;
+using TrueBalances.Models.ViewModels;
 
 namespace TrueBalances.Tools
 {
