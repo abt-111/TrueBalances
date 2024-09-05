@@ -5,7 +5,7 @@ using TrueBalances.Repositories.Interfaces;
 
 namespace TrueBalances.Repositories.DbRepositories
 {
-    public class UserGroupRepository : IUserGroupService
+    public class UserGroupRepository : IUserGroupRepository
     {
         private readonly TrueBalancesDbContext _context;
 

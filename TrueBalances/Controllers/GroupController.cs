@@ -17,9 +17,9 @@ namespace TrueBalances.Controllers
         private readonly TrueBalancesDbContext _context;
         private readonly UserManager<CustomUser> _userManager;
         private readonly IGenericRepository<Category> _categoryRepository;
-        private readonly IUserGroupService _userGroupService;
+        private readonly IUserGroupRepository _userGroupService;
 
-        public GroupController(TrueBalancesDbContext context, IGroupService groupService, IUserService userService, UserManager<CustomUser> userManager, IGenericRepository<Category> categoryRepository, IUserGroupService userGroupService)
+        public GroupController(TrueBalancesDbContext context, IGroupService groupService, IUserService userService, UserManager<CustomUser> userManager, IGenericRepository<Category> categoryRepository, IUserGroupRepository userGroupService)
         {
             _groupService = groupService;
             _userService = userService;

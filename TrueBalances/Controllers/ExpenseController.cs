@@ -26,8 +26,6 @@ namespace TrueBalances.Controllers
             _userService = userService;
         }
 
-        // GET: ExpenseController
-        //Methode affichant les récapitulatifs
         public async Task<IActionResult> Index(int groupId)
         {
             var expenses = await _context.Expenses
