@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Models.ViewModels;
@@ -41,7 +43,7 @@ namespace TrueBalances.Controllers
 
             var debts = DebtOperator.GetSomeoneDebts(expenses, users, currentUserId);
 
-            ExpenseIndexViewModel viewModel = new ExpenseIndexViewModel()
+            ExpenseViewModel viewModel = new ExpenseViewModel()
             {
                 GroupId = groupId,
                 CurrentUserId = currentUserId,
@@ -71,59 +73,55 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
 
-            // Passer l'ID du groupe à la vue via ViewBag (optionnel, selon vos besoins)
-            ViewBag.GroupId = expense.Group?.Id;
-
             return View(expense);
         }
 
         public async Task<IActionResult> Create(int groupId)
         {
+            var categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
             var users = await _userService.GetAllUsersAsync(groupId);
-            var expense = new Expense
+            var authors = new SelectList(users.Select(u => new { u.Id, FullName = $"{u.FirstName} {u.LastName}" }), "Id", "FullName");
+
+            ExpenseViewModel viewModel = new ExpenseViewModel()
             {
-                Date = DateTime.Now,
-                UserId = _userManager.GetUserId(User),
-                GroupId = groupId
+                GroupId = groupId,
+                Categories = categories,
+                Users = users,
+                Authors = authors
             };
 
-            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
-            ViewBag.Authors = new SelectList(users.Select(u => new { u.Id, FullName = $"{u.FirstName} {u.LastName}" }), "Id", "FullName");
-            ViewBag.Users = users;
-
-            Console.WriteLine();
-
-            return View(expense);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Expense expense)
+        public async Task<IActionResult> Create(ExpenseViewModel viewModel)
         {
-            if (expense.SelectedUserIds == null || !expense.SelectedUserIds.Any())
+            if (viewModel.SelectedUserIds == null || !viewModel.SelectedUserIds.Any())
             {
                 ModelState.AddModelError(string.Empty, "Veuillez sélectionner au moins un participant.");
             }
 
             if (ModelState.IsValid)
             {
-                if (expense.SelectedUserIds != null && expense.SelectedUserIds.Count > 0)
+                if (viewModel.SelectedUserIds != null && viewModel.SelectedUserIds.Count > 0)
                 {
-                    expense.Participants = await _context.Users.Where(u => expense.SelectedUserIds.Contains(u.Id)).ToListAsync();
+                    viewModel.Expense.Participants = await _context.Users.Where(u => viewModel.SelectedUserIds.Contains(u.Id)).ToListAsync();
                 }
 
-                _context.Expenses.Add(expense);
+                _context.Expenses.Add(viewModel.Expense);
                 await _context.SaveChangesAsync();
 
                 // Rediriger vers la page de gestion des dépenses pour le groupe
-                return RedirectToAction("Index", new { groupId = expense.GroupId });
+                return RedirectToAction("Index", new { groupId = viewModel.Expense.GroupId });
             }
 
-            // Recharger les catégories et les utilisateurs en cas d'échec de validation
-            var users = await _userService.GetAllUsersAsync(expense.GroupId);
-            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
-            ViewBag.Authors = new SelectList(users.Select(u => new { u.Id, FullName = $"{u.FirstName} {u.LastName}" }), "Id", "FullName");
-            ViewBag.Users = users;
-            return View(expense);
+            // Recharger des données pour le formulaire en cas d'échec de validation
+            viewModel.GroupId = viewModel.Expense.GroupId;
+            viewModel.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
+            viewModel.Users = await _userService.GetAllUsersAsync(viewModel.GroupId);
+            viewModel.Authors = new SelectList(viewModel.Users.Select(u => new { u.Id, FullName = $"{u.FirstName} {u.LastName}" }), "Id", "FullName");
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Edit(int id, int groupId)
@@ -131,7 +129,7 @@ namespace TrueBalances.Controllers
             // Vérification des paramètres
             if (id == 0 || groupId == 0)
             {
-                return View("404");
+                return NotFound();
             }
 
             // Recherche de la dépense par son ID
@@ -143,20 +141,20 @@ namespace TrueBalances.Controllers
             // Vérification de l'existence de la dépense
             if (expense == null)
             {
-                return View("404");
+                return NotFound();
             }
 
             // Vérifie si la dépense appartient bien au groupe spécifié
             if (expense.GroupId != groupId)
             {
-                return View("404");
+                return NotFound();
             }
 
             // Vérification si l'utilisateur connecté est bien le propriétaire de la dépense
             var user = await _userManager.GetUserAsync(User);
             if (user == null || user.Id != expense.UserId)
             {
-                return View("404");
+                return NotFound();
             }
 
             // Préparation des données pour la vue
@@ -206,11 +204,11 @@ namespace TrueBalances.Controllers
                     // Mettre à jour la liste des participants
                     existingExpense.Participants.Clear();
 
-                    if (expense.SelectedUserIds != null && expense.SelectedUserIds.Count > 0)
-                    {
-                        expense.Participants = await _context.Users.Where(u => expense.SelectedUserIds.Contains(u.Id)).ToListAsync();
-                        existingExpense.Participants = expense.Participants;
-                    }
+                    //if (expense.SelectedUserIds != null && expense.SelectedUserIds.Count > 0)
+                    //{
+                    //    expense.Participants = await _context.Users.Where(u => expense.SelectedUserIds.Contains(u.Id)).ToListAsync();
+                    //    existingExpense.Participants = expense.Participants;
+                    //}
 
                     _context.Update(existingExpense);
                     await _context.SaveChangesAsync();
