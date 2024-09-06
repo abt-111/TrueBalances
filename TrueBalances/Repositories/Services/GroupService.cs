@@ -91,9 +91,9 @@ namespace TrueBalances.Repositories.Services
 
         }
 
-            ////Methode pour supprimer un user dans le Group
-            public async Task RemoveMemberAsync(int groupId, string userId)
-            {
+        ////Methode pour supprimer un user dans le Group
+        public async Task RemoveMemberAsync(int groupId, string userId)
+        {
             var group = await GetGroupAsync(groupId);
             if (group != null)
             {

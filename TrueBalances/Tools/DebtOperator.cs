@@ -34,23 +34,6 @@ namespace TrueBalances.Tools
             return debts;
         }
 
-        public static Dictionary<string, decimal> GetCredits(List<Expense> expenses, List<CustomUser> users, string UserId)
-        {
-            Dictionary<string, decimal> credits = new Dictionary<string, decimal>();
-
-            var others = users.FindAll(u => u.Id != UserId);
-
-            if (others != null && others.Count > 0)
-            {
-                foreach (var other in others)
-                {
-                    var credit = GetDebtValue(expenses, UserId, other.Id);
-                    credits.Add(other.Id, credit);
-                }
-            }
-            return credits;
-        }
-
         public static List<UserDebtViewModel> GetDebtsOfEverybody(List<Expense> expenses, List<CustomUser> users)
         {
             List<UserDebtViewModel> debtsOfEverybody = new List<UserDebtViewModel>();

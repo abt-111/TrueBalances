@@ -1,5 +1,4 @@
-@using TrueBalances.Data
-@model IEnumerable<TrueBalances.Models.Expense>
+@model TrueBalances.Models.ViewModels.ExpenseIndexViewModel
 
 @section SpecificStylesheet {
     <link rel="stylesheet" href="~/css/table.css" asp-append-version="true" />
@@ -7,10 +6,6 @@
 
 @{
     ViewData["Title"] = "Gestion des Dépenses";
-    var currentUserId = ViewBag.CurrentUserId;
-    var users = ViewBag.Users as List<CustomUser>;
-    var debts = ViewBag.Debts as Dictionary<string, decimal>;
-    var groupId = ViewBag.GroupId;
 }
 
 <div class="container">
@@ -21,7 +16,7 @@
             <!-- Ajouter un bouton pour créer une nouvelle dépense -->
         </div>
         <p>
-            <a asp-action="Create" asp-route-groupId="@groupId" class="btn btn-primary">Ajouter une dépense</a>
+            <a asp-action="Create" asp-route-groupId="@Model.GroupId" class="btn btn-primary">Ajouter une dépense</a>
         </p>
     </div>
 
@@ -34,12 +29,12 @@
                 <div class="card-body d-flex flex-column align-items-center">
                     <h5 class="card-title"><i class="bi bi-people-fill"></i> Dette ou crédit ?</h5>
                     <ul class="list-group list-group-flush">
-                        @if (debts.Any(d => d.Value != 0))
+                        @if (Model.Debts.Any(d => d.Value != 0))
                         {
-                            @foreach (var userId in debts.Keys)
+                            @foreach (var userId in Model.Debts.Keys)
                             {
-                                var user = users.Find(u => u.Id == userId);
-                                var debt = debts.GetValueOrDefault(userId);
+                                var user = Model.Users.Find(u => u.Id == userId);
+                                var debt = Model.Debts.GetValueOrDefault(userId);
 
                                 @if (debt < 0)
                                 {
@@ -64,12 +59,12 @@
                     </ul>
                 </div>
                 <div class="card-footer text-center">
-                    <a asp-action="Solde" asp-route-groupId="@groupId" class="btn btn-light text-dark">Tous les soldes</a>
+                    <a asp-action="Solde" asp-route-groupId="@Model.GroupId" class="btn btn-light text-dark">Tous les soldes</a>
                 </div>
             </div>
         </div>
 
-        @foreach (var item in Model)
+        @foreach (var item in Model.Expenses)
         {
             <div class="col-md-4">
                 <div class="card text-white mb-4 shadow" style="background-color: #137547;">
@@ -87,7 +82,7 @@
                                 }
                                 else
                                 {
-                                    @if (currentUserId == item.UserId)
+                                    @if (Model.CurrentUserId == item.UserId)
                                     {
                                         @: :
                                         <a asp-action="Alert" asp-route-id="@item.Id" title="Cette dépense doit-être re-catégorisé">
@@ -102,7 +97,7 @@
                     </div>
                     <div class="card-footer text-center">
                         @* Affichage des boutons d'action *@
-                        @if (currentUserId == item.UserId)
+                        @if (Model.CurrentUserId == item.UserId)
                         {
                             <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Modifier" style="border-color: #FFFFFF; color: #FFFFFF;">
                                 <i class="fas fa-edit"></i>
@@ -111,7 +106,7 @@
                         <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Détails" style="border-color: #FFFFFF; color: #FFFFFF;">
                             <i class="fas fa-info-circle"></i>
                         </a>
-                        @if (currentUserId == item.UserId)
+                        @if (Model.CurrentUserId == item.UserId)
                         {
                             <a class="btn btn-sm btn-outline-primary" asp-action="Delete" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Supprimer" style="border-color: #FFFFFF; color: #FFFFFF;">
                                 <i class="fas fa-trash-alt"></i>
@@ -124,8 +119,7 @@
     </div>
 
     <div>
-        <a asp-controller="Group" asp-action="Details" asp-route-id="@groupId" class="btn btn-secondary">Retour à l'accueil du groupe</a>
-        @* <a asp-controller="Home" asp-action="Index" style="color: #073b3a;">Retour à l'accueil</a> *@
+        <a asp-controller="Group" asp-action="Details" asp-route-id="@Model.GroupId" class="btn btn-secondary">Retour à l'accueil du groupe</a>
     </div>
 </div>
 

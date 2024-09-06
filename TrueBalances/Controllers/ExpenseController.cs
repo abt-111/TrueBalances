@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TrueBalances.Data;
 using TrueBalances.Models;
+using TrueBalances.Models.ViewModels;
 using TrueBalances.Repositories.Interfaces;
 using TrueBalances.Tools;
 
@@ -28,23 +29,28 @@ namespace TrueBalances.Controllers
 
         public async Task<IActionResult> Index(int groupId)
         {
+            var currentUserId = _userManager.GetUserId(User);
+
+            var users = await _userService.GetAllUsersAsync(groupId);
+
             var expenses = await _context.Expenses
                 .Where(e => e.GroupId == groupId)
                 .Include(e => e.Category)
                 .Include(e => e.Participants)
                 .ToListAsync();
 
-            // Utilisation du ViewBag pour récupérer l'id de l'utilisateur courant dans la vue
-            ViewBag.CurrentUserId = _userManager.GetUserId(User);
+            var debts = DebtOperator.GetSomeoneDebts(expenses, users, currentUserId);
 
-            // Utilisation du ViewBag pour récupérer la liste des utilisateurs dans la vue
-            ViewBag.Users = await _userService.GetAllUsersAsync(groupId);
+            ExpenseIndexViewModel viewModel = new ExpenseIndexViewModel()
+            {
+                GroupId = groupId,
+                CurrentUserId = currentUserId,
+                Users = users,
+                Expenses = expenses,
+                Debts = debts
+            };
 
-            ViewBag.Debts = DebtOperator.GetSomeoneDebts(expenses, ViewBag.Users, ViewBag.CurrentUserId);
-
-            ViewBag.GroupId = groupId;
-
-            return View(expenses);
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Details(int id)
