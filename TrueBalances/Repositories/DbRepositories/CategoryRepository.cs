@@ -5,7 +5,7 @@ using TrueBalances.Repositories.Interfaces;
 
 namespace TrueBalances.Repositories.DbRepositories
 {
-    public class CategoryRepository : IGenericRepository<Category>
+    public class CategoryRepository : ICategoryRepository
     {
         private readonly TrueBalancesDbContext _context;
 
@@ -13,7 +13,7 @@ namespace TrueBalances.Repositories.DbRepositories
         {
             _context = context;
         }
-        public async Task<Category?> GetByIdAsync(int id)
+        public async Task<Category> GetByIdAsync(int id)
         {
             return await _context.Categories.FindAsync(id);
         }
@@ -56,7 +56,7 @@ namespace TrueBalances.Repositories.DbRepositories
             return await _context.Categories.AnyAsync(e => e.Id == id);
         }
 
-        public async Task<Category?> GetCategoryWithExpensesByIdAsync(int id, int groupId)
+        public async Task<Category> GetCategoryWithExpensesByIdAsync(int id, int groupId)
         {
             return await _context.Categories
             .Include(c => c.Expenses.Where(e => e.GroupId == groupId))

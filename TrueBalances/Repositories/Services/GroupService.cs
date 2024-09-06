@@ -1,10 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
-using TrueBalances.Data;
-using TrueBalances.Models;
-using TrueBalances.Repositories.DbRepositories;
+﻿using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
-using TrueBalances.Repositories.Services;
 using Group = TrueBalances.Models.Group;
 
 
@@ -12,8 +7,8 @@ namespace TrueBalances.Repositories.Services
 {
     public class GroupService : IGroupService
     {
-        private readonly IGenericRepository<Group> _groupRepository;
-        public GroupService(IGenericRepository<Group> groupRepository)
+        private readonly IGroupRepository _groupRepository;
+        public GroupService(IGroupRepository groupRepository)
         {
             _groupRepository = groupRepository;
         }

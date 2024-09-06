@@ -8,9 +8,9 @@ namespace TrueBalances.Repositories.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly IGenericRepository<Category> _categoryrepository;
+        private readonly ICategoryRepository _categoryrepository;
 
-        public CategoryService(IGenericRepository<Category> categoryrepository)
+        public CategoryService(ICategoryRepository categoryrepository)
         {
             _categoryrepository = categoryrepository;
         }

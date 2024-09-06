@@ -16,9 +16,9 @@ builder.Services.AddDbContext<TrueBalances.Data.TrueBalancesDbContext>(options =
 
 builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TrueBalances.Data.TrueBalancesDbContext>();
 
-builder.Services.AddScoped<IGenericRepository<Category>, CategoryRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IGenericRepository<Group>, GroupDbRepository>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IProfilePhotoService, ProfilePhotoService>();
 builder.Services.AddScoped<IUserService, UserService>();

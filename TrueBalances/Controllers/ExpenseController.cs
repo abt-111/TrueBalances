@@ -14,11 +14,11 @@ namespace TrueBalances.Controllers
     public class ExpenseController : Controller
     {
         private readonly TrueBalancesDbContext _context;
-        private readonly IGenericRepository<Category> _categoryRepository;
-        private readonly IUserService _userService;
         private readonly UserManager<CustomUser> _userManager;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IUserService _userService;
 
-        public ExpenseController(TrueBalancesDbContext context, UserManager<CustomUser> userManager, IGenericRepository<Category> categoryRepository, IUserService userService)
+        public ExpenseController(TrueBalancesDbContext context, UserManager<CustomUser> userManager, ICategoryRepository categoryRepository, IUserService userService)
         {
             _context = context;
             _categoryRepository = categoryRepository;

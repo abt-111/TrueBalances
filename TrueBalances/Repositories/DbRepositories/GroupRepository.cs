@@ -7,11 +7,11 @@ using Group = TrueBalances.Models.Group;
 
 namespace TrueBalances.Repositories.DbRepositories
 {
-    public class GroupDbRepository : IGenericRepository<Group>
+    public class GroupRepository : IGroupRepository
     {
         private readonly TrueBalancesDbContext _context;
 
-        public GroupDbRepository(TrueBalancesDbContext context)
+        public GroupRepository(TrueBalancesDbContext context)
         {
             _context = context;
         }
@@ -26,7 +26,7 @@ namespace TrueBalances.Repositories.DbRepositories
         }
 
         // Méthode pour obtenir un groupe par son ID
-        public async Task<Group?> GetByIdAsync(int id)
+        public async Task<Group> GetByIdAsync(int id)
         {
             return await _context.Groups
                 .Include(g => g.Members)
@@ -55,11 +55,6 @@ namespace TrueBalances.Repositories.DbRepositories
                 return await _context.SaveChangesAsync();
             }
             return -1;
-        }
-
-        public Task<Category?> GetCategoryWithExpensesByIdAsync(int id, int groupId)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<Group> GetGroupByIdAsync(int groupId)
