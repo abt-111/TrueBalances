@@ -138,99 +138,89 @@ namespace TrueBalances.Controllers
                 .Include(e => e.Participants) // Inclure les participants
                 .FirstOrDefaultAsync(e => e.Id == id);
 
-            // Vérification de l'existence de la dépense
-            if (expense == null)
-            {
-                return NotFound();
-            }
-
-            // Vérifie si la dépense appartient bien au groupe spécifié
-            if (expense.GroupId != groupId)
+            // Vérification de l'existence de la dépense ou appartient bien au groupe spécifié
+            if (expense == null || expense.GroupId != groupId)
             {
                 return NotFound();
             }
 
             // Vérification si l'utilisateur connecté est bien le propriétaire de la dépense
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null || user.Id != expense.UserId)
+            var currentUserId = _userManager.GetUserId(User);
+
+            if (currentUserId == null || currentUserId != expense.UserId)
             {
                 return NotFound();
             }
 
             // Préparation des données pour la vue
-            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
-            ViewBag.Users = await _userService.GetAllUsersAsync(expense.GroupId);
+            var categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
+            var users = await _userService.GetAllUsersAsync(groupId);
+            var authors = new SelectList(users.Select(u => new { u.Id, FullName = $"{u.FirstName} {u.LastName}" }), "Id", "FullName");
 
-            // Passer le groupId à la vue, si nécessaire pour les formulaires ou autres
-            ViewBag.GroupId = groupId;
+            ExpenseViewModel viewModel = new ExpenseViewModel()
+            {
+                GroupId = groupId,
+                Expense = expense,
+                Categories = categories,
+                Users = users,
+                Authors = authors
+            };
 
-            // Affichage de la vue de modification de la dépense
-            return View(expense);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, Expense expense)
+        public async Task<IActionResult> Edit(ExpenseViewModel viewModel)
         {
-            if (id != expense.Id)
+            if (viewModel.SelectedUserIds == null || !viewModel.SelectedUserIds.Any())
             {
-                return NotFound();
+                ModelState.AddModelError(string.Empty, "Veuillez sélectionner au moins un participant.");
             }
 
             if (ModelState.IsValid)
             {
-                try
+                var existingExpense = await _context.Expenses
+                    .Include(e => e.Participants)
+                    .FirstOrDefaultAsync(e => e.Id == viewModel.Expense.Id);
+
+                if (existingExpense == null)
                 {
-                    var existingExpense = await _context.Expenses
-                        .Include(e => e.Participants)
-                        .FirstOrDefaultAsync(e => e.Id == id);
-
-                    if (existingExpense == null)
-                    {
-                        return NotFound();
-                    }
-
-                    // Vérifiez que la dépense appartient toujours au bon groupe
-                    if (existingExpense.GroupId != expense.GroupId)
-                    {
-                        return NotFound(); // Ou gérer l'erreur selon vos besoins
-                    }
-
-                    // Mettre à jour les propriétés de l'expense
-                    existingExpense.Title = expense.Title;
-                    existingExpense.Amount = expense.Amount;
-                    existingExpense.Date = expense.Date;
-                    existingExpense.CategoryId = expense.CategoryId;
-
-                    // Mettre à jour la liste des participants
-                    existingExpense.Participants.Clear();
-
-                    //if (expense.SelectedUserIds != null && expense.SelectedUserIds.Count > 0)
-                    //{
-                    //    expense.Participants = await _context.Users.Where(u => expense.SelectedUserIds.Contains(u.Id)).ToListAsync();
-                    //    existingExpense.Participants = expense.Participants;
-                    //}
-
-                    _context.Update(existingExpense);
-                    await _context.SaveChangesAsync();
-
-                    return RedirectToAction("Index", new { groupId = expense.GroupId });
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+
+                // Vérifiez que la dépense appartient toujours au bon groupe
+                if (existingExpense.GroupId != viewModel.Expense.GroupId)
                 {
-                    if (!ExpenseExists(expense.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound(); // Ou gérer l'erreur selon vos besoins
                 }
+
+                // Mettre à jour les propriétés de l'expense
+                existingExpense.Title = viewModel.Expense.Title;
+                existingExpense.Amount = viewModel.Expense.Amount;
+                existingExpense.Date = viewModel.Expense.Date;
+                existingExpense.CategoryId = viewModel.Expense.CategoryId;
+
+                // Mettre à jour la liste des participants
+                existingExpense.Participants.Clear();
+
+                if (viewModel.SelectedUserIds != null && viewModel.SelectedUserIds.Count > 0)
+                {
+                    viewModel.Expense.Participants = await _context.Users.Where(u => viewModel.SelectedUserIds.Contains(u.Id)).ToListAsync();
+                    existingExpense.Participants = viewModel.Expense.Participants;
+                }
+
+                _context.Update(existingExpense);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index", new { groupId = viewModel.Expense.GroupId });
             }
 
-            ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name", expense.CategoryId);
-            ViewBag.Users = await _userService.GetAllUsersAsync(expense.GroupId);
-            return View(expense);
+            viewModel.GroupId = viewModel.Expense.GroupId;
+            viewModel.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
+            viewModel.Users = await _userService.GetAllUsersAsync(viewModel.GroupId);
+            viewModel.Authors = new SelectList(viewModel.Users.Select(u => new { u.Id, FullName = $"{u.FirstName} {u.LastName}" }), "Id", "FullName");
+
+            return View(viewModel);
         }
 
         private bool ExpenseExists(int id) // Vérifie si une dépense avec l'ID spécifié existe dans la base de données.// 

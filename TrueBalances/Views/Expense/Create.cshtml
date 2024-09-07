@@ -1,6 +1,4 @@
 @model TrueBalances.Models.ViewModels.ExpenseViewModel
-@using TrueBalances.Data
-
 
 @{
     ViewData["Title"] = "Ajouter une dépense";
@@ -60,12 +58,11 @@
                             <label class="form-check-label">@user.FirstName @user.LastName</label>
                         </div>
                     }
-                    <!-- Affichage du message d'erreur pour les participants 
+                    <!-- Affichage du message d'erreur pour les participants -->
                     @if (ViewData.ModelState[""]?.Errors.Count > 0)
                     {
                         <span class="text-danger">@ViewData.ModelState[""].Errors[0].ErrorMessage</span>
                     }
-                    -->
                 </div>
 
                 <div class="form-group d-flex justify-content-between">
