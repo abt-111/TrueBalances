@@ -32,20 +32,20 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Date)
         </dd>
-       @*  <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Category.Name)
+        @*  <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Category.Name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Category.Name)
+        @Html.DisplayFor(model => model.Category.Name)
         </dd> *@
     </dl>
 
     <form asp-action="Delete" method="post">
         <!-- Les champs cachés nécessaires -->
         <input type="hidden" asp-for="Id" />
-        <input type="hidden" name="GroupId" value="@Model.GroupId" /> <!-- Assurez-vous que GroupId est passé pour redirection -->
+        <input type="hidden" asp-for="GroupId" />
 
         <button type="submit" class="btn btn-danger">Supprimer</button>
-        <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary mt-3">Retour à la gestion des dépenses</a>
+        <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary">Retour à la gestion des dépenses</a>
     </form>
 </div>

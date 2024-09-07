@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Models.ViewModels;
@@ -247,10 +245,6 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
 
-            var groupId = expense.GroupId; // Assurez-vous que GroupId est défini
-
-            ViewBag.GroupId = groupId;
-
             // Empêcher l'accès quand la dépense n'appartient pas à l'utilisateur
             var user = await _userManager.GetUserAsync(User);
             if (user.Id != expense.UserId)
@@ -277,10 +271,11 @@ namespace TrueBalances.Controllers
             }
 
             // Empêcher l'accès quand la dépense n'appartient pas à l'utilisateur
-            var user = await _userManager.GetUserAsync(User);
-            if (user.Id != expense.UserId)
+            var currentUserId = _userManager.GetUserId(User);
+
+            if (currentUserId != expense.UserId)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
 
             // Supprimer l'objet Expense de la base de données
@@ -328,10 +323,7 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
 
-            var expense = await _context.Expenses
-                .Include(e => e.Category)  // Inclure les catégories
-                .Include(e => e.Participants)  // Inclure les participants
-                .FirstOrDefaultAsync(e => e.Id == id);
+            var expense = await _context.Expenses.FirstOrDefaultAsync(e => e.Id == id);
 
             if (expense == null)
             {
@@ -344,7 +336,6 @@ namespace TrueBalances.Controllers
             if (user.Id != expense.UserId)
             {
                 return RedirectToAction("Index", new { groupId = expense.GroupId });
-                return RedirectToAction(nameof(Index));
             }
 
             expense.CategoryId = null;
@@ -352,7 +343,6 @@ namespace TrueBalances.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index", new { groupId = expense.GroupId });
-            return RedirectToAction(nameof(Index));
         }
     }
 }
