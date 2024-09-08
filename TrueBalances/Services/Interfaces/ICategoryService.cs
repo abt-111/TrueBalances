@@ -9,8 +9,6 @@ namespace TrueBalances.Services.Interfaces
         Task<int> AddCategoryAsync(Category category);
         Task<int> UpdateCategoryAsync(Category category);
         Task<int> DeleteCategoryAsync(int id);
-        Task<bool> CategoryExistsAsync(int id);
-
         Task<Category?> GetCategoryWithExpensesByIdAsync(int id, int groupId);
     }
 }

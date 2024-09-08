@@ -42,7 +42,7 @@ namespace TrueBalances.Controllers
                 return RedirectToAction("Index", new { groupId = groupId });
         }
 
-        //Edit(GET)
+        //Edit (GET)
         [HttpGet]
         public async Task<IActionResult> Edit(int? categorieId, int groupId)
         {
@@ -99,13 +99,6 @@ namespace TrueBalances.Controllers
             await _context.DeleteCategoryAsync(id);
             return RedirectToAction("Index", new { groupId = groupId });
         }
-
-        //Methode pour Vérifier si une catégorie existe
-        private async Task<bool> CategoryExists(int id)
-        {
-            return await _context.CategoryExistsAsync(id);
-        }
-
 
         //Détails 
         public async Task<IActionResult> Details(int id, int groupId)

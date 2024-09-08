@@ -43,12 +43,6 @@ namespace TrueBalances.Services
         {
             return await _categoryrepository.DeleteAsync(id);
         }
-
-        public async Task<bool> CategoryExistsAsync(int id)
-        {
-            var categoryRepository = _categoryrepository as ICategoryService;
-            return categoryRepository != null && await categoryRepository.CategoryExistsAsync(id);
-        }
     }
 
 }

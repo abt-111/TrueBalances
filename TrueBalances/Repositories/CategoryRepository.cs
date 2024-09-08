@@ -51,11 +51,6 @@ namespace TrueBalances.Repositories
             return -1;
         }
 
-        public async Task<bool> CategoryExistsAsync(int id)
-        {
-            return await _context.Categories.AnyAsync(e => e.Id == id);
-        }
-
         public async Task<Category> GetCategoryWithExpensesByIdAsync(int id, int groupId)
         {
             return await _context.Categories
