@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using TrueBalances.Data;
 using TrueBalances.Models;
-using TrueBalances.Repositories.DbRepositories;
+using TrueBalances.Repositories;
 using TrueBalances.Repositories.Interfaces;
-using TrueBalances.Repositories.Services;
+using TrueBalances.Services;
+using TrueBalances.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

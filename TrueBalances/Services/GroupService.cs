@@ -1,9 +1,10 @@
 ﻿using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
+using TrueBalances.Services.Interfaces;
 using Group = TrueBalances.Models.Group;
 
 
-namespace TrueBalances.Repositories.Services
+namespace TrueBalances.Services
 {
     public class GroupService : IGroupService
     {

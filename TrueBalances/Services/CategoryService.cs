@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TrueBalances.Data;
-using TrueBalances.Models;
-using TrueBalances.Repositories.DbRepositories;
+﻿using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
+using TrueBalances.Services.Interfaces;
 
-namespace TrueBalances.Repositories.Services
+namespace TrueBalances.Services
 {
     public class CategoryService : ICategoryService
     {
@@ -32,7 +30,7 @@ namespace TrueBalances.Repositories.Services
         }
         public async Task<int> AddCategoryAsync(Category category)
         {
-           
+
             return await _categoryrepository.AddAsync(category);
         }
 

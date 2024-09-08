@@ -5,7 +5,7 @@ using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
 using Group = TrueBalances.Models.Group;
 
-namespace TrueBalances.Repositories.DbRepositories
+namespace TrueBalances.Repositories
 {
     public class GroupRepository : IGroupRepository
     {

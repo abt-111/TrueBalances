@@ -1,6 +1,6 @@
 ﻿using TrueBalances.Models;
 
-namespace TrueBalances.Repositories.Interfaces
+namespace TrueBalances.Services.Interfaces
 {
     public interface IProfilePhotoService
     {

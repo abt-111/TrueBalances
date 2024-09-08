@@ -7,6 +7,7 @@ using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Models.ViewModels;
 using TrueBalances.Repositories.Interfaces;
+using TrueBalances.Services.Interfaces;
 
 namespace TrueBalances.Controllers
 {

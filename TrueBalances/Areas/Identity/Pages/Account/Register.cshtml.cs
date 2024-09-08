@@ -21,7 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TrueBalances.Data;
 using TrueBalances.Models;
-using TrueBalances.Repositories.Interfaces;
+using TrueBalances.Services.Interfaces;
 using TrueBalances.Tools;
 
 namespace TrueBalances.Areas.Identity.Pages.Account

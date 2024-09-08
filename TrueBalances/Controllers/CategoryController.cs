@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TrueBalances.Repositories;
 using TrueBalances.Models;
-using TrueBalances.Repositories.Interfaces;
-using TrueBalances.Data;
 using Microsoft.AspNetCore.Authorization;
-using TrueBalances.Repositories.Services;
+using TrueBalances.Services.Interfaces;
 
 
 namespace TrueBalances.Controllers
@@ -71,7 +67,6 @@ namespace TrueBalances.Controllers
         {
             if (id == category.Id) await _context.UpdateCategoryAsync(category);
             return RedirectToAction("Index", new { groupId = groupId });
-            return RedirectToAction(actionName: "Index", controllerName: "Category");
             
             //return View(category);
         }
@@ -101,16 +96,8 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
 
-            //Réinitialiser les identifiants de catégorie des dépenses associées
-            //var expenses = _context.Expenses.Where(e => e.CategoryId == id).ToList();
-            //foreach (var expense in expenses)
-            //{
-            //    expense.CategoryId = null;
-            //}
-
             await _context.DeleteCategoryAsync(id);
             return RedirectToAction("Index", new { groupId = groupId });
-            return RedirectToAction(actionName: "Index", controllerName: "Category");
         }
 
         //Methode pour Vérifier si une catégorie existe

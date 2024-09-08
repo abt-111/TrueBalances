@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 using TrueBalances.Data;
 using TrueBalances.Models;
-using TrueBalances.Repositories.Interfaces;
+using TrueBalances.Services.Interfaces;
 using TrueBalances.Tools;
 
 namespace TrueBalances.Areas.Identity.Pages.Account.Manage

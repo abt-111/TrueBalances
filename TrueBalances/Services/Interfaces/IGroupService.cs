@@ -1,14 +1,14 @@
 ﻿using TrueBalances.Models;
 
 
-namespace TrueBalances.Repositories.Interfaces
+namespace TrueBalances.Services.Interfaces
 {
     public interface IGroupService
     {
-        Task <IEnumerable<Group>> GetAllGroups();
+        Task<IEnumerable<Group>> GetAllGroups();
         Task<Group?> GetGroupAsync(int groupId);
-        Task CreateGroupAsync(Models.Group group, string userId);
-        Task UpdateGroupAsync(Models.Group group);
+        Task CreateGroupAsync(Group group, string userId);
+        Task UpdateGroupAsync(Group group);
         Task DeleteGroupAsync(int groupId);
         Task<List<string>> AddMembersAsync(int groupId, List<string> userIds);
         Task RemoveMemberAsync(int groupId, string userId);

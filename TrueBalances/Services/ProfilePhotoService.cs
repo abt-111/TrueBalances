@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using TrueBalances.Data;
 using TrueBalances.Models;
-using TrueBalances.Repositories.Interfaces;
+using TrueBalances.Services.Interfaces;
 
-namespace TrueBalances.Repositories.Services
+namespace TrueBalances.Services
 {
     public class ProfilePhotoService : IProfilePhotoService
     {

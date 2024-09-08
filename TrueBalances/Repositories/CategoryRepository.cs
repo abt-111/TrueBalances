@@ -3,7 +3,7 @@ using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
 
-namespace TrueBalances.Repositories.DbRepositories
+namespace TrueBalances.Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
