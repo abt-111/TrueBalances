@@ -59,5 +59,4 @@ namespace TrueBalances.Repositories
             .FirstOrDefaultAsync(c => c.Id == id);
         }
     }
-
 }

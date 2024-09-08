@@ -13,36 +13,35 @@ namespace TrueBalances.Services
             _categoryrepository = categoryrepository;
         }
 
-        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
-        {
-            return await _categoryrepository.GetAllAsync();
-        }
-
-
-        public async Task<Category?> GetCategoryByIdAsync(int id)
+        public async Task<Category> GetByIdAsync(int id)
         {
             return await _categoryrepository.GetByIdAsync(id);
         }
 
-        public async Task<Category?> GetCategoryWithExpensesByIdAsync(int id, int groupId)
+        public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            return await _categoryrepository.GetCategoryWithExpensesByIdAsync(id, groupId);
+            return await _categoryrepository.GetAllAsync();
         }
-        public async Task<int> AddCategoryAsync(Category category)
+
+        public async Task<int> AddAsync(Category category)
         {
 
             return await _categoryrepository.AddAsync(category);
         }
 
-        public async Task<int> UpdateCategoryAsync(Category category)
+        public async Task<int> UpdateAsync(Category category)
         {
             return await _categoryrepository.UpdateAsync(category);
         }
 
-        public async Task<int> DeleteCategoryAsync(int id)
+        public async Task<int> DeleteAsync(int id)
         {
             return await _categoryrepository.DeleteAsync(id);
         }
-    }
 
+        public async Task<Category> GetCategoryWithExpensesByIdAsync(int id, int groupId)
+        {
+            return await _categoryrepository.GetCategoryWithExpensesByIdAsync(id, groupId);
+        }
+    }
 }

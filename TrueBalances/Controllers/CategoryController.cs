@@ -21,7 +21,7 @@ namespace TrueBalances.Controllers
         public async Task<IActionResult> Index(int groupId)
         {
             ViewBag.GroupId = groupId;
-            return View(await _context.GetAllCategoriesAsync());
+            return View(await _context.GetAllAsync());
         }
 
         // Create (GET)
@@ -38,7 +38,7 @@ namespace TrueBalances.Controllers
         {
             if (!ModelState.IsValid) return View(category);
             
-                await _context.AddCategoryAsync(category);
+                await _context.AddAsync(category);
                 return RedirectToAction("Index", new { groupId = groupId });
         }
 
@@ -50,7 +50,7 @@ namespace TrueBalances.Controllers
             {
                 return View();
             }
-            var category = await _context.GetCategoryByIdAsync(categorieId.Value);
+            var category = await _context.GetByIdAsync(categorieId.Value);
             if (category is null)
             {
                 return RedirectToAction(actionName: "Index", controllerName: "Category");
@@ -65,7 +65,7 @@ namespace TrueBalances.Controllers
 
         public async Task<IActionResult> Edit(int id, Category category, int groupId)
         {
-            if (id == category.Id) await _context.UpdateCategoryAsync(category);
+            if (id == category.Id) await _context.UpdateAsync(category);
             return RedirectToAction("Index", new { groupId = groupId });
             
             //return View(category);
@@ -77,7 +77,7 @@ namespace TrueBalances.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id, int groupId)
         {
-            var category = await _context.GetCategoryByIdAsync(id);
+            var category = await _context.GetByIdAsync(id);
             if (category is null)
             {
                 return NotFound();
@@ -90,13 +90,13 @@ namespace TrueBalances.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id, int groupId)
         {
-            var category = await _context.GetCategoryByIdAsync(id);
+            var category = await _context.GetByIdAsync(id);
             if (category is null)
             {
                 return NotFound();
             }
 
-            await _context.DeleteCategoryAsync(id);
+            await _context.DeleteAsync(id);
             return RedirectToAction("Index", new { groupId = groupId });
         }
 
