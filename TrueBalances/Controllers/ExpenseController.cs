@@ -47,7 +47,7 @@ namespace TrueBalances.Controllers
                 CurrentUserId = currentUserId,
                 Users = users,
                 Expenses = expenses,
-                Debts = debts
+                DebtsOfCurrentUser = debts
             };
 
             return View(viewModel);
@@ -288,32 +288,26 @@ namespace TrueBalances.Controllers
             return RedirectToAction("Index", new { groupId = expense.GroupId });
         }
 
-        public async Task<IActionResult> Solde(int groupId)
+        public async Task<IActionResult> Balances(int groupId)
         {
             if (groupId <= 0)
             {
                 return NotFound(); // Vérifie si l'ID du groupe est valide
             }
 
-            // Récupérer les dépenses associées au groupe spécifié
-            var expenses = await _context.Expenses
-                .Where(e => e.GroupId == groupId) // Filtrer par ID du groupe
-                .Include(e => e.Category)
-                .Include(e => e.Participants)
-                .ToListAsync();
+            // Préparation des données pour la vue
+            var expenses = await _context.Expenses.Where(e => e.GroupId == groupId).Include(e => e.Participants).ToListAsync();
+            var users = await _userService.GetAllUsersAsync(groupId);
+            var debtsOfEverybody = DebtOperator.GetDebtsOfEverybody(expenses, users);
 
-            // Utiliser ViewBag pour récupérer l'ID de l'utilisateur courant dans la vue
-            ViewBag.CurrentUserId = _userManager.GetUserId(User);
+            ExpenseViewModel viewModel = new ExpenseViewModel()
+            {
+                GroupId = groupId,
+                Users = users,
+                DebtsOfEverybody = debtsOfEverybody
+            };
 
-            // Utiliser ViewBag pour récupérer la liste des utilisateurs dans la vue
-            ViewBag.Users = await _userService.GetAllUsersAsync(groupId);
-
-            // Calculer les soldes
-            ViewBag.DebtsOfEverybody = DebtOperator.GetDebtsOfEverybody(expenses, ViewBag.Users);
-            // Passer l'ID du groupe à la vue
-            ViewBag.GroupId = groupId;
-
-            return View(expenses);
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Alert(int id)

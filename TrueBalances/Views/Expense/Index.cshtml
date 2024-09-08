@@ -27,14 +27,17 @@
             <div class="card text-white mb-4 shadow" style="background-color: #e67e22;">
                 <!-- Orange -->
                 <div class="card-body d-flex flex-column align-items-center">
-                    <h5 class="card-title"><i class="bi bi-people-fill"></i> Dette ou crédit ?</h5>
+                    <h5 class="card-title">
+                        Dette et crédit 
+                        @(Model.DebtsOfCurrentUser.Any(d => d.Value < 0) && !Model.DebtsOfCurrentUser.Any(d => d.Value > 0) ? Html.Raw("<i class='fa-solid fa-carrot'></i>") : "")
+                    </h5>
                     <ul class="list-group list-group-flush">
-                        @if (Model.Debts.Any(d => d.Value != 0))
+                        @if (Model.DebtsOfCurrentUser.Any(d => d.Value != 0))
                         {
-                            @foreach (var userId in Model.Debts.Keys)
+                            @foreach (var userId in Model.DebtsOfCurrentUser.Keys)
                             {
                                 var user = Model.Users.Find(u => u.Id == userId);
-                                var debt = Model.Debts.GetValueOrDefault(userId);
+                                var debt = Model.DebtsOfCurrentUser.GetValueOrDefault(userId);
 
                                 @if (debt < 0)
                                 {
@@ -59,7 +62,7 @@
                     </ul>
                 </div>
                 <div class="card-footer text-center">
-                    <a asp-action="Solde" asp-route-groupId="@Model.GroupId" class="btn btn-light text-dark">Tous les soldes</a>
+                    <a asp-action="Balances" asp-route-groupId="@Model.GroupId" class="btn btn-light text-dark">Tous les soldes</a>
                 </div>
             </div>
         </div>

@@ -13,6 +13,7 @@ namespace TrueBalances.Models.ViewModels
         public List<CustomUser>? Users { get; set; }            // Index - Create - Edit
         public List<Expense>? Expenses { get; set; }            // Index
         public List<string> SelectedUserIds { get; set; }       // Create - Edit
-        public Dictionary<string, decimal>? Debts { get; set; } // Index
+        public Dictionary<string, decimal>? DebtsOfCurrentUser { get; set; } // Index
+        public List<UserDebtViewModel>? DebtsOfEverybody { get; set; } // Balances
     }
 }
