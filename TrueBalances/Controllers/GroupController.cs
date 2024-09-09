@@ -47,7 +47,7 @@ namespace TrueBalances.Controllers
             var availableUsers = await _userService.GetAllUsersAsync();
             var currentUserId = _userManager.GetUserId(User);
 
-            var viewModel = new GroupDetailsViewModel
+            var viewModel = new GroupViewModel
             {
                 //AvailableUsers = availableUsers.Select(u => new CustomUser { Id = u.Id, FirstName = u.FirstName, LastName = u.LastName }).ToList(),
                 AvailableUsers = availableUsers.Where(u => u.Id != currentUserId).ToList(),
@@ -59,7 +59,7 @@ namespace TrueBalances.Controllers
 
         // Create Group (POST)
         [HttpPost]
-        public async Task<IActionResult> Create(GroupDetailsViewModel viewModel)
+        public async Task<IActionResult> Create(GroupViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -105,7 +105,7 @@ namespace TrueBalances.Controllers
 
             var availableUsers = await _userService.GetAllUsersAsync();
 
-            var viewModel = new GroupDetailsViewModel
+            var viewModel = new GroupViewModel
             {
                 Group = group,
                 AvailableUsers = availableUsers
@@ -118,7 +118,7 @@ namespace TrueBalances.Controllers
 
         // Group Edit(Post)
         [HttpPost]
-        public async Task<IActionResult> Edit(GroupDetailsViewModel viewModel)
+        public async Task<IActionResult> Edit(GroupViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -195,7 +195,7 @@ namespace TrueBalances.Controllers
             //ViewBag.Categories = new SelectList(await _categoryService.GetAllCategoriesAsync(), "Id", "Name");
 
             // Initialiser le viewModel avec des vérifications pour éviter les nulls
-            var viewModel = new GroupDetailsViewModel
+            var viewModel = new GroupViewModel
             {
                 Group = group,
                 AvailableUsers = await _userService.GetAllUsersAsync(), // Si nécessaire pour d'autres fonctionnalités

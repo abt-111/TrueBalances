@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TrueBalances.Models.Category>
+﻿@model TrueBalances.Models.ViewModels.CategoryViewModel
 
 @section SpecificStylesheet {
     <link rel="stylesheet" href="~/css/category_index.css" asp-append-version="true" />
@@ -17,25 +17,25 @@
     </div>
     <div class="row mb-4">
         <div class="col-md-12 text-right">
-            <a class="btn btn-primary" asp-action="Create" asp-route-groupId="@ViewBag.GroupId"><i class="fas fa-plus"></i> Ajouter une catégorie</a>
+            <a class="btn btn-primary" asp-action="Create" asp-route-groupId="@Model.GroupId"><i class="fas fa-plus"></i> Ajouter une catégorie</a>
         </div>
     </div>
 
     <div class="row">
-        @foreach (var item in Model)
+        @foreach (var item in Model.Categories)
         {
             <div class="col-md-4">
                 <div class="card mb-4 shadow-sm" style="background-color: #f8f9fa; border-left: 5px solid #08a045;">
                     <div class="card-body">
                         <h5 class="card-title" style="color: #08a045;">@item.Name</h5>
                         <div class="d-flex justify-content-end">
-                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-categorieId="@item.Id" asp-route-groupId="@ViewBag.GroupId" title="Modifier" style="border-color: #08a045; color: #08a045;">
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-categorieId="@item.Id" asp-route-groupId="@Model.GroupId" title="Modifier" style="border-color: #08a045; color: #08a045;">
                                 <i class="fas fa-edit"></i> @* Modifier *@
                             </a>
-                            <a class="btn btn-sm btn-outline-info ml-2" asp-action="Details" asp-route-id="@item.Id" asp-route-groupId="@ViewBag.GroupId" title="Détails" style="border-color: #007bff; color: #007bff;">
+                            <a class="btn btn-sm btn-outline-info ml-2" asp-action="Details" asp-route-categorieId="@item.Id" asp-route-groupId="@Model.GroupId" title="Détails" style="border-color: #007bff; color: #007bff;">
                                 <i class="fas fa-info-circle"></i> @* Détails *@
                             </a>
-                            <a class="btn btn-sm btn-outline-danger ml-2" asp-action="Delete" asp-route-id="@item.Id" asp-route-groupId="@ViewBag.GroupId" title="Supprimer" style="border-color: #dc3545; color: #dc3545;">
+                            <a class="btn btn-sm btn-outline-danger ml-2" asp-action="Delete" asp-route-categorieId="@item.Id" asp-route-groupId="@Model.GroupId" title="Supprimer" style="border-color: #dc3545; color: #dc3545;">
                                 <i class="fas fa-trash-alt"></i> @* Supprimer *@
                             </a>
                         </div>
@@ -47,7 +47,7 @@
 
     <div class="row">
         <div class="col-12 text-center">
-            <a asp-controller="Group" asp-action="Details" asp-route-id="@ViewBag.GroupId" class="btn btn-secondary" style="background-color: #6c757d; border-color: #6c757d;">Retour à l'accueil du groupe</a>
+            <a asp-controller="Group" asp-action="Details" asp-route-id="@Model.GroupId" class="btn btn-secondary" style="background-color: #6c757d; border-color: #6c757d;">Retour à l'accueil du groupe</a>
         </div>
     </div>
 </div>

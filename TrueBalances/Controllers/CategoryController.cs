@@ -2,6 +2,7 @@
 using TrueBalances.Models;
 using Microsoft.AspNetCore.Authorization;
 using TrueBalances.Services.Interfaces;
+using TrueBalances.Models.ViewModels;
 
 
 namespace TrueBalances.Controllers
@@ -11,107 +12,146 @@ namespace TrueBalances.Controllers
     {
         private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService context)
-
+        public CategoryController(ICategoryService categoryService)
         {
-            _categoryService = context;
+            _categoryService = categoryService;
         }
 
         // Read
         public async Task<IActionResult> Index(int groupId)
         {
-            ViewBag.GroupId = groupId;
             var categories = await _categoryService.GetAllAsync();
-            return View(categories);
+
+            CategoryViewModel viewModel = new CategoryViewModel()
+            {
+                GroupId = groupId,
+                Categories = categories
+            };
+
+            return View(viewModel);
         }
 
         // Create (GET)
         [HttpGet]
         public IActionResult Create(int groupId)
         {
-            ViewBag.GroupId = groupId;
-            return View();
+            CategoryViewModel viewModel = new CategoryViewModel()
+            {
+                GroupId = groupId
+            };
+
+            return View(viewModel);
         }
 
         // Create (Post)
         [HttpPost]
-        public async Task<IActionResult> Create(Category category, int groupId)
+        public async Task<IActionResult> Create(CategoryViewModel viewModel)
         {
-            if (!ModelState.IsValid) return View(category);
-            
-                await _categoryService.AddAsync(category);
-                return RedirectToAction("Index", new { groupId = groupId });
+            if (!ModelState.IsValid) return View(viewModel);
+
+            await _categoryService.AddAsync(viewModel.Category);
+            return RedirectToAction("Index", new { groupId = viewModel.GroupId });
         }
 
         //Edit (GET)
         [HttpGet]
-        public async Task<IActionResult> Edit(int? categorieId, int groupId)
+        public async Task<IActionResult> Edit(int categorieId, int groupId)
         {
-            if (categorieId is null)
+            if (categorieId <= 0 || groupId <= 0)
             {
-                return View();
+                return NotFound();
             }
-            var category = await _categoryService.GetByIdAsync(categorieId.Value);
+
+            var category = await _categoryService.GetByIdAsync(categorieId);
+
             if (category is null)
             {
-                return RedirectToAction(actionName: "Index", controllerName: "Category");
+                return NotFound();
             }
-            ViewBag.GroupId = groupId;
-            return View(category);
+
+            CategoryViewModel viewModel = new CategoryViewModel()
+            {
+                GroupId = groupId,
+                Category = category
+            };
+
+            return View(viewModel);
         }
 
         // Edit (POST)
-
         [HttpPost]
-
-        public async Task<IActionResult> Edit(int id, Category category, int groupId)
+        public async Task<IActionResult> Edit(CategoryViewModel viewModel)
         {
-            if (id == category.Id) await _categoryService.UpdateAsync(category);
-            return RedirectToAction("Index", new { groupId = groupId });
-            
-            //return View(category);
+            if (!ModelState.IsValid) return View(viewModel);
+
+            await _categoryService.UpdateAsync(viewModel.Category);
+            return RedirectToAction("Index", new { groupId = viewModel.GroupId });
         }
 
 
 
         //Delete (GET)
         [HttpGet]
-        public async Task<IActionResult> Delete(int id, int groupId)
+        public async Task<IActionResult> Delete(int categorieId, int groupId)
         {
-            var category = await _categoryService.GetByIdAsync(id);
+            if (categorieId <= 0 || groupId <= 0)
+            {
+                return NotFound();
+            }
+
+            var category = await _categoryService.GetByIdAsync(categorieId);
+
             if (category is null)
             {
                 return NotFound();
             }
-            ViewBag.GroupId = groupId;
-            return View(category);
+
+            CategoryViewModel viewModel = new CategoryViewModel()
+            {
+                GroupId = groupId,
+                Category = category
+            };
+
+            return View(viewModel);
         }
 
         //Delete (POST)
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id, int groupId)
+        public async Task<IActionResult> DeleteConfirmed(CategoryViewModel viewModel)
         {
-            var category = await _categoryService.GetByIdAsync(id);
+            var category = await _categoryService.GetByIdAsync(viewModel.Category.Id);
+
             if (category is null)
             {
                 return NotFound();
             }
 
-            await _categoryService.DeleteAsync(id);
-            return RedirectToAction("Index", new { groupId = groupId });
+            await _categoryService.DeleteAsync(viewModel.Category.Id);
+            return RedirectToAction("Index", new { groupId = viewModel.GroupId });
         }
 
         //Détails 
-        public async Task<IActionResult> Details(int id, int groupId)
+        public async Task<IActionResult> Details(int categorieId, int groupId)
         {
-            var category = await _categoryService.GetCategoryWithExpensesByIdAsync(id, groupId);
-            if (category == null)
+            if (categorieId <= 0 || groupId <= 0)
             {
                 return NotFound();
             }
-            ViewBag.GroupId = groupId;
-            return View(category);
-        }
 
+            var category = await _categoryService.GetCategoryWithExpensesByIdAsync(categorieId, groupId);
+
+            if (category is null)
+            {
+                return NotFound();
+            }
+
+            CategoryViewModel viewModel = new CategoryViewModel()
+            {
+                GroupId = groupId,
+                Category = category
+            };
+
+            return View(viewModel);
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace TrueBalances.Models.ViewModels
 {
-    public class GroupDetailsViewModel
+    public class GroupViewModel
     {
         public Group Group { get; set; }
         public List<CustomUser>? AvailableUsers { get; set; }

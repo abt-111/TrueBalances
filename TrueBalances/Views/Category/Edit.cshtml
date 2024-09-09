@@ -1,4 +1,4 @@
-﻿@model TrueBalances.Models.Category
+﻿@model TrueBalances.Models.ViewModels.CategoryViewModel
 
 @section SpecificStylesheet {
     <link rel="stylesheet" href="~/css/container.css" asp-append-version="true" />
@@ -16,27 +16,24 @@
     <div class="row">
         <div class="col-md-4">
             <form asp-action="Edit">
-                <input type="hidden" asp-for="Id" />
-                <input type="hidden" name="groupId" value="@ViewBag.GroupId" />
+                <input type="hidden" asp-for="GroupId" />
+
+                <input type="hidden" asp-for="Category.Id" />
 
                 <div class="form-group">
-                    <label asp-for="Name" class="control-label">Nom</label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <label asp-for="Category.Name" class="control-label">Nom</label>
+                    <input asp-for="Category.Name" class="form-control" />
+                    <span asp-validation-for="Category.Name" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <input type="submit" value="Modifier" class="btn btn-primary" />
-                    <a asp-action="Index" asp-route-groupId="@ViewBag.GroupId" class="btn btn-secondary">Retour</a>
+                    <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary">Retour</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-@* <div>
-    <a asp-action="Index" class="action-link">Retour à la liste</a>
-</div> *@
 
 @section Scripts {
     @{

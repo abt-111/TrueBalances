@@ -1,4 +1,4 @@
-﻿@model TrueBalances.Models.Category
+﻿@model TrueBalances.Models.ViewModels.CategoryViewModel
 
 @section SpecificStylesheet {
     <link rel="stylesheet" href="~/css/category_details.css" asp-append-version="true" />
@@ -17,10 +17,10 @@
         <div class="col-md-8 offset-md-2">
             <dl class="row">
                 <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Name)
+                    @Html.DisplayNameFor(model => model.Category.Name)
                 </dt>
                 <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Name)
+                    @Html.DisplayFor(model => model.Category.Name)
                 </dd>
             </dl>
         </div>
@@ -31,7 +31,7 @@
         <div class="col-md-8 offset-md-2">
             <h4>Dépenses associées</h4>
             <hr />
-            @if (Model?.Expenses != null && Model.Expenses.Any())
+            @if (Model.Category.Expenses != null && Model.Category.Expenses.Any())
             {
                 <table class="table table-striped">
                     <thead>
@@ -43,7 +43,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var expense in Model.Expenses)
+                        @foreach (var expense in Model.Category.Expenses)
                         {
                             <tr>
                                 <td>@expense.Title</td>
@@ -64,9 +64,7 @@
 
     <div class="row mt-4">
         <div class="col-md-8 offset-md-2 text-right">
-            <a asp-action="Index" asp-route-groupId="@ViewBag.GroupId" class="btn btn-secondary">Retour</a>
-            @* <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Modifier</a> *@
-            @* <a asp-action="Index" class="btn btn-primary">Retour à la liste</a> *@
+            <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary">Retour</a>
         </div>
     </div>
 </div>
