@@ -40,7 +40,7 @@ namespace TrueBalances.Repositories
             var category = await _context.Categories.FindAsync(id);
             if (category != null)
             {
-                // Mettre toute les valeurs CategoryId des Expense concernée à 4, qui est HasCategoryDeleted
+                // Mettre toute les valeurs CategoryId des Expenses concernée à 4 (valeur pour "Catégorie supprimée")
                 var expensesToUpdate = _context.Expenses.Where(e => e.CategoryId == category.Id).ToList();
                 expensesToUpdate.ForEach(e => e.CategoryId = 4);
 

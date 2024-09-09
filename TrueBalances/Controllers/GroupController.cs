@@ -12,33 +12,40 @@ namespace TrueBalances.Controllers
 {
     public class GroupController : Controller
     {
-        private readonly IGroupService _groupService;
-        private readonly IUserService _userService;
         private readonly TrueBalancesDbContext _context;
+        private readonly IUserService _userService;
         private readonly UserManager<CustomUser> _userManager;
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IUserGroupRepository _userGroupService;
+        private readonly IGroupService _groupService;
+        private readonly IUserGroupRepository _userGroupRepository;
 
-        public GroupController(TrueBalancesDbContext context, IGroupService groupService, IUserService userService, UserManager<CustomUser> userManager, ICategoryRepository categoryRepository, IUserGroupRepository userGroupService)
+        public GroupController(TrueBalancesDbContext context, IUserService userService, UserManager<CustomUser> userManager, ICategoryRepository categoryRepository, IGroupService groupService, IUserGroupRepository userGroupService)
         {
-            _groupService = groupService;
-            _userService = userService;
             _context = context;
+            _userService = userService;
             _userManager = userManager;
             _categoryRepository = categoryRepository;
-            _userGroupService = userGroupService;
+            _groupService = groupService;
+            _userGroupRepository = userGroupService;
         }
         public async Task<IActionResult> Index()
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            if(currentUser != null)
+
+            if (currentUser == null)
             {
-                var groups = await _userGroupService.GetGroupsByUserIdAsync(currentUser.Id);
-                ViewBag.currentUser = currentUser;
-                return View(groups);
+                return View();
             }
 
-            return View();
+            var groups = await _userGroupRepository.GetGroupsByUserIdAsync(currentUser.Id);
+
+            GroupViewModel viewModel = new GroupViewModel()
+            {
+                CurrentUser = currentUser,
+                Groups = groups
+            };
+
+            return View(viewModel);
         }
 
         // Create Group (GET)
@@ -92,7 +99,7 @@ namespace TrueBalances.Controllers
             // Empêche l'accès au non-membre du groupe
             var currentUserId = _userManager.GetUserId(User);
 
-            if (!_userGroupService.UserIsInGroup(currentUserId, id))
+            if (!_userGroupRepository.UserIsInGroup(currentUserId, id))
             {
                 return NotFound();
             }
@@ -172,7 +179,7 @@ namespace TrueBalances.Controllers
             // Empêche l'accès au non-membre du groupe
             var currentUserId = _userManager.GetUserId(User);
 
-            if (!_userGroupService.UserIsInGroup(currentUserId, id))
+            if (!_userGroupRepository.UserIsInGroup(currentUserId, id))
             {
                 return NotFound();
             }
@@ -213,7 +220,7 @@ namespace TrueBalances.Controllers
             // Empêche l'accès au non-membre du groupe
             var currentUserId = _userManager.GetUserId(User);
 
-            if (!_userGroupService.UserIsInGroup(currentUserId, id))
+            if (!_userGroupRepository.UserIsInGroup(currentUserId, id))
             {
                 return NotFound();
             }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TrueBalances.Models.Group>
+﻿@model TrueBalances.Models.ViewModels.GroupViewModel
 
 @section SpecificStylesheet {
     <link rel="stylesheet" href="~/css/home_index.css" asp-append-version="true" />
@@ -6,8 +6,6 @@
 
 @{
     ViewData["Title"] = "Liste des groupes";
-    var groups = Model ?? new List<TrueBalances.Models.Group>();
-    var user = ViewBag.currentUser;
 }
 
 <div class="container mt-5">
@@ -16,7 +14,7 @@
         <h1 class="display-3 font-weight-bold">
             @if (User.Identity.IsAuthenticated)
             {
-                @:Bonjour, @user.FirstName @user.LastName !
+                @:Bonjour, @Model.CurrentUser.FirstName @Model.CurrentUser.LastName !
             }
             else
             {
@@ -32,7 +30,7 @@
     @if (User.Identity.IsAuthenticated)
     {
         <div class="row">
-            @foreach (var group in groups)
+            @foreach (var group in @Model.Groups)
             {
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="card border-light shadow-sm rounded">

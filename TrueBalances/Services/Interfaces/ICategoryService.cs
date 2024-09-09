@@ -6,8 +6,8 @@ namespace TrueBalances.Services.Interfaces
     {
         Task<Category> GetByIdAsync(int id);
         Task<IEnumerable<Category>> GetAllAsync();
-        Task<int> AddAsync(Category category);
-        Task<int> UpdateAsync(Category category);
+        Task<int> AddAsync(Category entity);
+        Task<int> UpdateAsync(Category entity);
         Task<int> DeleteAsync(int id);
         Task<Category> GetCategoryWithExpensesByIdAsync(int id, int groupId);
     }
