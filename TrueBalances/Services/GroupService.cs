@@ -1,7 +1,6 @@
 ﻿using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
 using TrueBalances.Services.Interfaces;
-using Group = TrueBalances.Models.Group;
 
 
 namespace TrueBalances.Services
@@ -29,13 +28,7 @@ namespace TrueBalances.Services
         //Methode pour creer un group
         public async Task CreateGroupAsync(Group group, string userId)
         {
-            //group.Members = new List<UserGroup>
-            //        {
-            //            new UserGroup { CustomUserId = userId}
-            //        };
-
             await _groupRepository.AddAsync(group);
-
         }
 
 
@@ -43,7 +36,6 @@ namespace TrueBalances.Services
         public async Task UpdateGroupAsync(Group group)
         {
             await _groupRepository.UpdateAsync(group);
-
         }
 
         ////Methode pour supprimer le group

@@ -25,18 +25,19 @@ namespace TrueBalances.Data.Configurations
                 .WithMany(u => u.ParticipatingExpenses)
                 .UsingEntity<Dictionary<string, object>>(
                     "ExpenseParticipant", // Nom explicite de la table
-                    j => j.HasOne<CustomUser>()
-                          .WithMany()
-                          .HasForeignKey("CustomUserId")
-                          .OnDelete(DeleteBehavior.Cascade), // Comportement de suppression en cascade
-                    j => j.HasOne<Expense>()
-                          .WithMany()
-                          .HasForeignKey("ExpenseId")
-                          .OnDelete(DeleteBehavior.Cascade),
+                    j => j.HasOne<CustomUser>().WithMany().HasForeignKey("CustomUserId").OnDelete(DeleteBehavior.Cascade), // Comportement de suppression en cascade
+                    j => j.HasOne<Expense>().WithMany().HasForeignKey("ExpenseId").OnDelete(DeleteBehavior.Cascade),
                     j =>
                     {
                         j.HasKey("ExpenseId", "CustomUserId"); // Clé primaire composite
                         j.ToTable("ExpenseParticipants"); // Nom de la table de jonction
+
+                        // Ajout des données Seed pour la table de jonction
+                        j.HasData(
+                            new { ExpenseId = 3, CustomUserId = "0cd29655-84dc-48d4-a01f-61c180104e10" },
+                            new { ExpenseId = 3, CustomUserId = "4593d2ab-7651-457a-ab7b-0de95e853529" },
+                            new { ExpenseId = 3, CustomUserId = "5ac5c00e-aea2-4f2c-b9dd-a536682add18" }
+                        );
                     }
                 );
 
