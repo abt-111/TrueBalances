@@ -2,16 +2,6 @@
 
 @{
     ViewData["Title"] = "Détails du groupe";
-    var groupId = Model.Group.Id;
-    List<string> categoriesChoosed = new List<string>();
-
-    @foreach (var expense in Model.Group.Expenses)
-    {
-        if (expense.Category != null && !categoriesChoosed.Contains(expense.Category.Name))
-        {
-            categoriesChoosed.Add(expense.Category.Name);
-        }
-    }
 }
 
 <div class="container mt-5">
@@ -35,7 +25,7 @@
                 <!-- Bleu clair -->
                 <div class="card-body d-flex flex-column align-items-center">
                     <h5 class="card-title"><i class="bi bi-folder-fill"></i> Catégories</h5>
-                    <p class="display-4 font-weight-bold">@categoriesChoosed.Count</p>
+                    <p class="display-4 font-weight-bold">@Model.CategoriesChoosed.Count</p>
                     <p class="mb-0">Catégorie(s) choisie(s)</p>
                 </div>
                 <div class="card-footer text-center">

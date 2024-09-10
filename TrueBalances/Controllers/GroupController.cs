@@ -14,15 +14,13 @@ namespace TrueBalances.Controllers
         private readonly TrueBalancesDbContext _context;
         private readonly IUserService _userService;
         private readonly UserManager<CustomUser> _userManager;
-        private readonly ICategoryRepository _categoryRepository;
         private readonly IGroupService _groupService;
 
-        public GroupController(TrueBalancesDbContext context, IUserService userService, UserManager<CustomUser> userManager, ICategoryRepository categoryRepository, IGroupService groupService)
+        public GroupController(TrueBalancesDbContext context, IUserService userService, UserManager<CustomUser> userManager, IGroupService groupService)
         {
             _context = context;
             _userService = userService;
             _userManager = userManager;
-            _categoryRepository = categoryRepository;
             _groupService = groupService;
         }
         public async Task<IActionResult> Index()
@@ -151,7 +149,7 @@ namespace TrueBalances.Controllers
         // Group Details
         public async Task<IActionResult> Details(int id)
         {
-            if (id == 0)
+            if (id <= 0)
             {
                 return NotFound();
             }
@@ -166,27 +164,27 @@ namespace TrueBalances.Controllers
 
             // Récupérer le groupe avec les participants, la catégorie et les dépenses associées
             var group = await _context.Groups
-                  .Include(g => g.Expenses)
-            .ThenInclude(e => e.Category)
+                .Include(g => g.Expenses)
+                .ThenInclude(e => e.Category)
                 .Include(g => g.Members)
-                .ThenInclude(m => m.CustomUser)  // Inclure les utilisateurs associés aux membres
-                //.Include(g => g.Category)  // Inclure la catégorie
-                .Include(g => g.Expenses)  // Inclure les dépenses associées
+                //.ThenInclude(m => m.CustomUser) // Inclure les utilisateurs associés aux membres
+                .Include(g => g.Expenses) // Inclure les dépenses associées
                 .FirstOrDefaultAsync(g => g.Id == id);
 
             if (group == null)
             {
                 return NotFound();
             }
-            // Charger les catégories disponibles dans ViewBag
-            //ViewBag.Categories = new SelectList(await _categoryService.GetAllCategoriesAsync(), "Id", "Name");
 
-            // Initialiser le viewModel avec des vérifications pour éviter les nulls
+            List<string> categoriesChoosed = new List<string>();
+            categoriesChoosed = group.Expenses.Select(e => e.Category.Name).Distinct().ToList();
+
             var viewModel = new GroupViewModel
             {
                 Group = group,
-                Users = await _userService.GetAllUsersAsync(), // Si nécessaire pour d'autres fonctionnalités
-                SelectedUserIds = group.Members?.Select(m => m.CustomUserId).ToList() ?? new List<string>()
+                //Users = await _userService.GetAllUsersAsync(), // Si nécessaire pour d'autres fonctionnalités
+                SelectedUserIds = group.Members.Select(m => m.CustomUserId).ToList(),
+                CategoriesChoosed = categoriesChoosed
             };
 
             return View(viewModel);
