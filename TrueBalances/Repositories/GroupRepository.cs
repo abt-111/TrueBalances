@@ -24,8 +24,16 @@ namespace TrueBalances.Repositories
                 .ToListAsync();
         }
 
-        // Méthode pour obtenir un groupe par son ID
+        // Méthode pour obtenir un groupe par son identifiant
         public async Task<Group> GetByIdAsync(int id)
+        {
+            return await _context.Groups
+                .Include(g => g.Members)
+                .FirstOrDefaultAsync(g => g.Id == id);
+        }
+
+        // Méthode pour obtenir un groupe par son identifiant en incluant les dépenses associées
+        public async Task<Group> GetByIdWithExpensesAsync(int id)
         {
             return await _context.Groups
                 .Include(g => g.Members)
@@ -54,13 +62,6 @@ namespace TrueBalances.Repositories
                 return await _context.SaveChangesAsync();
             }
             return -1;
-        }
-
-        public async Task<Group> GetGroupByIdAsync(int groupId)
-        {
-            return await _context.Groups
-                .Include(g => g.Members)
-                .FirstOrDefaultAsync(g => g.Id == groupId);
         }
 
         public async Task AddUserToGroupAsync(int groupId, string userId)

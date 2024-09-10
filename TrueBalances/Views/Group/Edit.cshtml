@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Modifier le groupe";
-    var availableUsers = Model.Users ?? new List<CustomUser>();
 }
 
 <h1 class="custom-header text-center">@ViewData["Title"]</h1>
@@ -25,9 +24,9 @@
 
                 <h3>Membres du groupe</h3>
                 <div class="form-group">
-                    @if (availableUsers.Any())
+                    @if (Model.Users.Any())
                     {
-                        @foreach (var user in availableUsers)
+                        @foreach (var user in Model.Users)
                         {
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="SelectedUserIds" value="@user.Id"

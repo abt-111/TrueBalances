@@ -32,13 +32,16 @@ namespace TrueBalances.Repositories
             {
                 _context.UserGroups.Add(new UserGroup { GroupId = groupId, CustomUserId = memberId });
             }
+
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateMembersInGroupAsync(int groupId, List<string> memberIds)
         {
             var existingMembers = _context.UserGroups.Where(ug => ug.GroupId == groupId);
+
             _context.UserGroups.RemoveRange(existingMembers);
+
             await AddMembersToGroupAsync(groupId, memberIds);
         }
 

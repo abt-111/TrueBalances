@@ -6,7 +6,7 @@ namespace TrueBalances.Services.Interfaces
     public interface IGroupService
     {
         Task<IEnumerable<Group>> GetAllAsync();
-        Task<Group?> GetByIdAsync(int groupId);
+        Task<Group?> GetByIdWithExpensesAsync(int groupId);
         Task AddAsync(Group group);
         Task UpdateAsync(Group group);
         Task DeleteAsync(int groupId);

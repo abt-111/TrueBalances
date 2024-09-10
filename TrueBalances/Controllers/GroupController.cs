@@ -104,21 +104,19 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
 
-            var group = await _groupService.GetByIdAsync(id);
+            var group = await _groupService.GetByIdWithExpensesAsync(id);
             if (group == null)
             {
                 return NotFound();
             }
 
-            var availableUsers = await _userService.GetAllUsersAsync();
+            var users = await _userService.GetAllUsersAsync();
 
             var viewModel = new GroupViewModel
             {
                 Group = group,
-                Users = availableUsers
+                Users = users
             };
-
-            ViewBag.AvailableUsers = availableUsers;
 
             return View(viewModel);
         }
@@ -127,45 +125,30 @@ namespace TrueBalances.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(GroupViewModel viewModel)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                viewModel.Users = await _userService.GetAllUsersAsync();
-                return View(viewModel);
-            }
+                // Récupérer le groupe à mettre à jour
+                var existingGroup = await _groupService.GetByIdWithExpensesAsync(viewModel.Group.Id);
 
-            // Récupérer le groupe à mettre à jour
-            var group = await _groupService.GetByIdAsync(viewModel.Group.Id);
-            if (group == null)
-            {
-                return NotFound();
-            }
-
-            // Mettre à jour le nom du groupe
-            group.Name = viewModel.Group.Name;
-            await _groupService.UpdateAsync(group);
-
-            // Ajouter les nouveaux membres
-            var selectedUserIds = viewModel.SelectedUserIds ?? new List<string>();
-            var currentMemberIds = group.Members.Select(m => m.CustomUserId).ToList();
-
-            // Membres à ajouter
-            var membersToAdd = selectedUserIds.Except(currentMemberIds).ToList();
-            if (membersToAdd.Any())
-            {
-                await _groupService.AddMembersAsync(group.Id, membersToAdd);
-            }
-
-            // Membres à supprimer
-            var membersToRemove = currentMemberIds.Except(selectedUserIds).ToList();
-            if (membersToRemove.Any())
-            {
-                foreach (var userId in membersToRemove)
+                if (existingGroup == null)
                 {
-                    await _groupService.RemoveMemberAsync(group.Id, userId);
+                    return NotFound();
                 }
+
+                // Mettre à jour le nom du groupe
+                existingGroup.Name = viewModel.Group.Name;
+
+                // Ajouter les nouveaux membres
+                existingGroup.Members.Clear();
+                existingGroup.Members = viewModel.SelectedUserIds.Select(id => new UserGroup { CustomUserId = id }).ToList();
+
+                await _groupService.UpdateAsync(existingGroup);
+
+                return RedirectToAction("Details", new { id = viewModel.Group.Id });
             }
 
-            return RedirectToAction("Details", new { id = viewModel.Group.Id });
+            viewModel.Users = await _userService.GetAllUsersAsync();
+            return View(viewModel);
         }
 
         // Group Details
@@ -225,7 +208,7 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
 
-            var group = await _groupService.GetByIdAsync(id);
+            var group = await _groupService.GetByIdWithExpensesAsync(id);
             if (group == null)
             {
                 return NotFound();
@@ -241,6 +224,7 @@ namespace TrueBalances.Controllers
             return RedirectToAction("Index");
         }
 
+        #region
         // Add Member (POST)
         [HttpPost]
         public async Task<IActionResult> AddMembers(int groupId, List<string> selectedUserIds)
@@ -264,14 +248,14 @@ namespace TrueBalances.Controllers
 
         private bool GroupExists(int id)
         {
-            var group = _groupService.GetByIdAsync(id).Result;
+            var group = _groupService.GetByIdWithExpensesAsync(id).Result;
             return group != null;
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdateCategory(int GroupId, int? CategoryId)
         {
-            var group = await _groupService.GetByIdAsync(GroupId);
+            var group = await _groupService.GetByIdWithExpensesAsync(GroupId);
             if (group == null)
             {
                 return NotFound();
@@ -282,5 +266,6 @@ namespace TrueBalances.Controllers
 
             return RedirectToAction("Details", new { id = GroupId });
         }
+        #endregion
     }
 }
