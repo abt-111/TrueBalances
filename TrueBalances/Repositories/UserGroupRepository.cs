@@ -26,7 +26,7 @@ namespace TrueBalances.Repositories
                 .Select(ug => ug.Group).Any(g => g.Id == groupId);
         }
 
-        public async Task AddMembersToGroupAsync(int groupId, List<string> memberIds)
+        public async Task AddAsync(int groupId, List<string> memberIds)
         {
             foreach (var memberId in memberIds)
             {
@@ -36,16 +36,16 @@ namespace TrueBalances.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateMembersInGroupAsync(int groupId, List<string> memberIds)
+        public async Task UpdateAsync(int groupId, List<string> memberIds)
         {
             var existingMembers = _context.UserGroups.Where(ug => ug.GroupId == groupId);
 
             _context.UserGroups.RemoveRange(existingMembers);
 
-            await AddMembersToGroupAsync(groupId, memberIds);
+            await AddAsync(groupId, memberIds);
         }
 
-        public async Task RemoveGroupAsync(int groupId)
+        public async Task RemoveAsync(int groupId)
         {
             var userGroups = _context.UserGroups.Where(ug => ug.GroupId == groupId);
             _context.UserGroups.RemoveRange(userGroups);

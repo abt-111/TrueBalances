@@ -9,8 +9,5 @@
         // Propriétés de navigation
         public CustomUser? CustomUser { get; set; }
         public Group? Group { get; set; }
-
-        // ? ? ?
-        //public ApplicationUser User { get; set; }
     }
 }

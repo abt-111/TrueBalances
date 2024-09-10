@@ -1,18 +1,16 @@
 ﻿using TrueBalances.Models;
 
-
 namespace TrueBalances.Services.Interfaces
 {
     public interface IGroupService
     {
         Task<IEnumerable<Group>> GetAllAsync();
-        Task<Group?> GetByIdWithExpensesAsync(int groupId);
-        Task AddAsync(Group group);
-        Task UpdateAsync(Group group);
-        Task DeleteAsync(int groupId);
-        Task<List<string>> AddMembersAsync(int groupId, List<string> userIds);
-        Task RemoveMemberAsync(int groupId, string userId);
-        Task<bool> IsMemberInGroupAsync(int groupId, string userId);
-        Task UpdateGroupMembersAsync(int id, List<string> selectedUserIds);
+        Task<Group> GetByIdAsync(int id);
+        Task<Group> GetByIdWithExpensesAsync(int id);
+        Task AddAsync(Group entity);
+        Task UpdateAsync(Group entity);
+        Task DeleteAsync(int id);
+        Task<IEnumerable<Group>> GetGroupsByUserIdAsync(string userId);
+        bool UserIsInGroup(string userId, int groupId);
     }
 }

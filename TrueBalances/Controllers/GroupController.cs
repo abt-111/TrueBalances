@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Models.ViewModels;
@@ -17,16 +16,14 @@ namespace TrueBalances.Controllers
         private readonly UserManager<CustomUser> _userManager;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IGroupService _groupService;
-        private readonly IUserGroupRepository _userGroupRepository;
 
-        public GroupController(TrueBalancesDbContext context, IUserService userService, UserManager<CustomUser> userManager, ICategoryRepository categoryRepository, IGroupService groupService, IUserGroupRepository userGroupService)
+        public GroupController(TrueBalancesDbContext context, IUserService userService, UserManager<CustomUser> userManager, ICategoryRepository categoryRepository, IGroupService groupService)
         {
             _context = context;
             _userService = userService;
             _userManager = userManager;
             _categoryRepository = categoryRepository;
             _groupService = groupService;
-            _userGroupRepository = userGroupService;
         }
         public async Task<IActionResult> Index()
         {
@@ -37,7 +34,7 @@ namespace TrueBalances.Controllers
                 return View();
             }
 
-            var groups = await _userGroupRepository.GetGroupsByUserIdAsync(currentUser.Id);
+            var groups = await _groupService.GetGroupsByUserIdAsync(currentUser.Id);
 
             GroupViewModel viewModel = new GroupViewModel()
             {
@@ -99,7 +96,7 @@ namespace TrueBalances.Controllers
             // Empêche l'accès au non-membre du groupe
             var currentUserId = _userManager.GetUserId(User);
 
-            if (!_userGroupRepository.UserIsInGroup(currentUserId, id))
+            if (!_groupService.UserIsInGroup(currentUserId, id))
             {
                 return NotFound();
             }
@@ -162,7 +159,7 @@ namespace TrueBalances.Controllers
             // Empêche l'accès au non-membre du groupe
             var currentUserId = _userManager.GetUserId(User);
 
-            if (!_userGroupRepository.UserIsInGroup(currentUserId, id))
+            if (!_groupService.UserIsInGroup(currentUserId, id))
             {
                 return NotFound();
             }
@@ -189,8 +186,7 @@ namespace TrueBalances.Controllers
             {
                 Group = group,
                 Users = await _userService.GetAllUsersAsync(), // Si nécessaire pour d'autres fonctionnalités
-                SelectedUserIds = group.Members?.Select(m => m.CustomUserId).ToList() ?? new List<string>(),
-                CategoryId = group.CategoryId
+                SelectedUserIds = group.Members?.Select(m => m.CustomUserId).ToList() ?? new List<string>()
             };
 
             return View(viewModel);
@@ -203,7 +199,7 @@ namespace TrueBalances.Controllers
             // Empêche l'accès au non-membre du groupe
             var currentUserId = _userManager.GetUserId(User);
 
-            if (!_userGroupRepository.UserIsInGroup(currentUserId, id))
+            if (!_groupService.UserIsInGroup(currentUserId, id))
             {
                 return NotFound();
             }
@@ -223,49 +219,5 @@ namespace TrueBalances.Controllers
             await _groupService.DeleteAsync(id);
             return RedirectToAction("Index");
         }
-
-        #region
-        // Add Member (POST)
-        [HttpPost]
-        public async Task<IActionResult> AddMembers(int groupId, List<string> selectedUserIds)
-        {
-            var errors = await _groupService.AddMembersAsync(groupId, selectedUserIds);
-            if (errors.Any())
-            {
-                TempData["Errors"] = errors;
-            }
-
-            return RedirectToAction(nameof(Details), new { id = groupId });
-        }
-
-        // Remove Member (POST)
-        [HttpPost]
-        public async Task<IActionResult> RemoveMember(int groupId, string userId)
-        {
-            await _groupService.RemoveMemberAsync(groupId, userId);
-            return RedirectToAction(nameof(Details), new { id = groupId });
-        }
-
-        private bool GroupExists(int id)
-        {
-            var group = _groupService.GetByIdWithExpensesAsync(id).Result;
-            return group != null;
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UpdateCategory(int GroupId, int? CategoryId)
-        {
-            var group = await _groupService.GetByIdWithExpensesAsync(GroupId);
-            if (group == null)
-            {
-                return NotFound();
-            }
-
-            group.CategoryId = CategoryId;
-            await _groupService.UpdateAsync(group);
-
-            return RedirectToAction("Details", new { id = GroupId });
-        }
-        #endregion
     }
 }

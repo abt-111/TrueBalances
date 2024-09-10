@@ -1,4 +1,5 @@
-﻿using TrueBalances.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using TrueBalances.Models;
 using TrueBalances.Repositories.Interfaces;
 using TrueBalances.Services.Interfaces;
 
@@ -22,10 +23,15 @@ namespace TrueBalances.Services
             return groups.ToList();
         }
 
-        //Methode pour Trouver un group via son Id
-        public async Task<Group?> GetByIdWithExpensesAsync(int groupId)
+        public async Task<Group?> GetByIdAsync(int id)
         {
-            return await _groupRepository.GetByIdWithExpensesAsync(groupId);
+            return await _groupRepository.GetByIdWithExpensesAsync(id);
+        }
+
+        //Methode pour Trouver un group via son Id
+        public async Task<Group?> GetByIdWithExpensesAsync(int id)
+        {
+            return await _groupRepository.GetByIdWithExpensesAsync(id);
         }
 
         //Methode pour creer un group
@@ -47,89 +53,14 @@ namespace TrueBalances.Services
             await _groupRepository.DeleteAsync(groupId);
         }
 
-        //Methode pour vérifier si l'utilisateur est ajouté dans le group
-        public async Task<bool> IsMemberInGroupAsync(int groupId, string userId)
+        public async Task<IEnumerable<Group>> GetGroupsByUserIdAsync(string userId)
         {
-            var group = await GetByIdWithExpensesAsync(groupId);
-            return group?.Members.Any(m => m.CustomUserId == userId) ?? false;
+            return await _userGroupRepository.GetGroupsByUserIdAsync(userId);
         }
 
-        //Methode pour ajouter un user dans le group
-        public async Task<List<string>> AddMembersAsync(int groupId, List<string> userIds)
+        public bool UserIsInGroup(string userId, int groupId)
         {
-            var errors = new List<string>();
-            var group = await GetByIdWithExpensesAsync(groupId);
-            if (group == null)
-            {
-                errors.Add($"Group with ID {groupId} not found.");
-                return errors;
-            }
-
-            var existingUserIds = group.Members.Select(m => m.CustomUserId).ToList();
-            foreach (var userId in userIds)
-            {
-                if (existingUserIds.Contains(userId))
-                {
-                    errors.Add($"User with ID {userId} is already a member of the group.");
-                }
-                else
-                {
-                    group.Members.Add(new UserGroup
-                    {
-                        GroupId = groupId,
-                        CustomUserId = userId
-                    });
-                }
-            }
-
-            await _groupRepository.UpdateAsync(group);
-            return errors;
+            return _userGroupRepository.UserIsInGroup(userId, groupId);
         }
-
-        ////Methode pour supprimer un user dans le Group
-        public async Task RemoveMemberAsync(int groupId, string userId)
-        {
-            var group = await GetByIdWithExpensesAsync(groupId);
-            if (group != null)
-            {
-                var member = group.Members.FirstOrDefault(m => m.CustomUserId == userId);
-                if (member != null)
-                {
-                    group.Members.Remove(member);
-                    await _groupRepository.UpdateAsync(group);
-                }
-            }
-        }
-
-        //méthode pour mettre à jour les membres du groupe selon la liste sélectionnée
-        public async Task UpdateGroupMembersAsync(int groupId, List<string> selectedUserIds)
-        {
-            var group = await GetByIdWithExpensesAsync(groupId);
-            if (group == null)
-            {
-                throw new Exception("Groupe introuvable.");
-            }
-
-            var currentMemberIds = group.Members.Select(m => m.CustomUserId).ToList();
-
-            // Supprimer les membres qui ne sont plus dans la liste sélectionnée
-            var membersToRemove = group.Members.Where(m => !selectedUserIds.Contains(m.CustomUserId)).ToList();
-            foreach (var member in membersToRemove)
-            {
-                group.Members.Remove(member);
-            }
-
-            // Ajouter les nouveaux membres sélectionnés
-            foreach (var userId in selectedUserIds)
-            {
-                if (!currentMemberIds.Contains(userId))
-                {
-                    group.Members.Add(new UserGroup { CustomUserId = userId, GroupId = groupId });
-                }
-            }
-
-            await _groupRepository.UpdateAsync(group);
-        }
-
     }
 }

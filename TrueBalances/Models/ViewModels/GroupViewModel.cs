@@ -8,9 +8,5 @@
         public Group Group { get; set; } // Create
         public List<string> SelectedUserIds { get; set; } // Create
         public List<Expense>? Expenses { get; set; }
-
-        // ? ? ?
-        public string? CategoryName { get; set; }
-        public int? CategoryId { get; set; }
     }
 }

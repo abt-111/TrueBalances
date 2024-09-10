@@ -9,9 +9,9 @@ namespace TrueBalances.Data.Configurations
         public void Configure(EntityTypeBuilder<Group> builder)
         {
             builder.HasData(
-                new Group { Id = 1, Name = "Collègues", CategoryId = null },
-                new Group { Id = 2, Name = "Amis", CategoryId = null },
-                new Group { Id = 3, Name = "Famille", CategoryId = null }
+                new Group { Id = 1, Name = "Collègues" },
+                new Group { Id = 2, Name = "Amis" },
+                new Group { Id = 3, Name = "Famille" }
             );
         }
     }
