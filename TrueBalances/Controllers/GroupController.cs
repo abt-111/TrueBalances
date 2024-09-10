@@ -83,6 +83,31 @@ namespace TrueBalances.Controllers
             return View(viewModel);
         }
 
+        // Action qui permet la recherche dynamyque des utilisateurs
+        [HttpGet]
+        public async Task<IActionResult> SearchUsers(string term)
+        {
+            if (string.IsNullOrWhiteSpace(term))
+            {
+                return Json(new List<object>());
+            }
+
+            var users = await _userService.GetAllUsersAsync();
+            var currentUserId = _userManager.GetUserId(User);
+
+            var filteredUsers = users
+                .Where(u => u.Id != currentUserId &&
+                            (u.FirstName.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                             u.LastName.Contains(term, StringComparison.OrdinalIgnoreCase)))
+                .Select(u => new
+                {
+                    id = u.Id,
+                    name = $"{u.FirstName} {u.LastName}"
+                }).ToList();
+
+            return Json(filteredUsers);
+        }
+
         // Group Edit(Get)
         public async Task<IActionResult> Edit(int id)
         {

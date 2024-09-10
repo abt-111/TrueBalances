@@ -12,29 +12,25 @@
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <form asp-action="Create" method="post">
-
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                <input type="hidden" asp-for="Users" />
 
                 <div class="form-group">
                     <label asp-for="Group.Name" class="control-label">Nom du groupe</label>
                     <input asp-for="Group.Name" class="form-control" />
                     <span asp-validation-for="Group.Name" class="text-danger"></span>
                 </div>
-                <div></div>
+
+                <!-- Champ de recherche pour les utilisateurs -->
                 <div class="form-group">
                     <label class="control-label">Ajouter les Membres</label>
-                    <div></div>
-                    @foreach (var user in Model.Users)
-                    {
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="SelectedUserIds" value="@user.Id" />
-                            <label class="form-check-label">@user.FirstName @user.LastName</label>
-                        </div>
-                    }
+                    <input id="userSearch" class="form-control" placeholder="Rechercher un utilisateur..." />
                 </div>
-                <div></div>
+
+                <!-- Liste des utilisateurs sélectionnés -->
+                <ul id="selectedUsers" class="list-group mt-2"></ul>
+
+                <!-- Conteneur pour les inputs cachés pour SelectedUserIds -->
+                <div id="selectedUserIdsContainer"></div>
 
                 <div class="form-group">
                     <input type="submit" value="Créer le groupe" class="btn btn-primary" />
@@ -50,8 +46,70 @@
     <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(function () {
+            var selectedUserIds = [];
+
+            // Lorsqu'un utilisateur est sélectionné via l'autocomplete
+            $("#userSearch").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("SearchUsers", "Group")',
+                        data: { term: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.name,
+                                    value: item.id
+                                };
+                            }));
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    // Vérifie si l'utilisateur est déjà sélectionné
+                    if (!selectedUserIds.includes(ui.item.value)) {
+                        selectedUserIds.push(ui.item.value);
+
+                        // Ajouter un élément dans la liste visible
+                        $("#selectedUsers").append(
+                            '<li class="list-group-item" data-id="' + ui.item.value + '">' +
+                            ui.item.label +
+                            ' <button type="button" class="btn btn-danger btn-sm float-end remove-user">Retirer</button>' +
+                            '</li>'
+                        );
+
+                        // Ajouter un champ input caché pour chaque utilisateur sélectionné
+                        $("#selectedUserIdsContainer").append(
+                            '<input type="hidden" name="SelectedUserIds" value="' + ui.item.value + '" />'
+                        );
+                    }
+
+                    // Réinitialiser le champ de recherche
+                    $("#userSearch").val('');
+                    return false;
+                }
+            });
+
+            // Fonction pour retirer un utilisateur sélectionné
+            $(document).on("click", ".remove-user", function () {
+                var userId = $(this).closest('li').data('id');
+
+                // Retirer l'utilisateur de la liste visible
+                $(this).closest('li').remove();
+
+                // Retirer l'utilisateur du tableau selectedUserIds
+                selectedUserIds = selectedUserIds.filter(function (id) {
+                    return id !== userId;
+                });
+
+                // Retirer l'input caché correspondant
+                $('input[name="SelectedUserIds"][value="' + userId + '"]').remove();
+            });
+        });
+    </script>
 }
