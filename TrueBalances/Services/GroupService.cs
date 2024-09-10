@@ -34,6 +34,11 @@ namespace TrueBalances.Services
             return await _groupRepository.GetByIdWithExpensesAsync(id);
         }
 
+        public async Task<Group> GetByIdWithExpensesCategoriesAsync(int id)
+        {
+            return await _groupRepository.GetByIdWithExpensesCategoriesAsync(id);
+        }
+
         //Methode pour creer un group
         public async Task AddAsync(Group group)
         {

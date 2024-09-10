@@ -7,6 +7,7 @@ namespace TrueBalances.Services.Interfaces
         Task<IEnumerable<Group>> GetAllAsync();
         Task<Group> GetByIdAsync(int id);
         Task<Group> GetByIdWithExpensesAsync(int id);
+        Task<Group> GetByIdWithExpensesCategoriesAsync(int id);
         Task AddAsync(Group entity);
         Task UpdateAsync(Group entity);
         Task DeleteAsync(int id);

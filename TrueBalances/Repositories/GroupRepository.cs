@@ -32,6 +32,11 @@ namespace TrueBalances.Repositories
             return await _context.Groups.Include(g => g.Members).Include(g => g.Expenses).FirstOrDefaultAsync(g => g.Id == id);
         }
 
+        public async Task<Group> GetByIdWithExpensesCategoriesAsync(int id)
+        {
+            return await _context.Groups.Include(g => g.Members).Include(g => g.Expenses).ThenInclude(e => e.Category).FirstOrDefaultAsync(g => g.Id == id);
+        }
+
         public async Task<int> AddAsync(Group entity)
         {
             _context.Groups.Add(entity);

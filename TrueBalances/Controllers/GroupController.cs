@@ -1,24 +1,19 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Models.ViewModels;
-using TrueBalances.Repositories.Interfaces;
 using TrueBalances.Services.Interfaces;
 
 namespace TrueBalances.Controllers
 {
     public class GroupController : Controller
     {
-        private readonly TrueBalancesDbContext _context;
         private readonly IUserService _userService;
         private readonly UserManager<CustomUser> _userManager;
         private readonly IGroupService _groupService;
 
-        public GroupController(TrueBalancesDbContext context, IUserService userService, UserManager<CustomUser> userManager, IGroupService groupService)
+        public GroupController(IUserService userService, UserManager<CustomUser> userManager, IGroupService groupService)
         {
-            _context = context;
             _userService = userService;
             _userManager = userManager;
             _groupService = groupService;
@@ -163,13 +158,7 @@ namespace TrueBalances.Controllers
             }
 
             // Récupérer le groupe avec les participants, la catégorie et les dépenses associées
-            var group = await _context.Groups
-                .Include(g => g.Expenses)
-                .ThenInclude(e => e.Category)
-                .Include(g => g.Members)
-                //.ThenInclude(m => m.CustomUser) // Inclure les utilisateurs associés aux membres
-                .Include(g => g.Expenses) // Inclure les dépenses associées
-                .FirstOrDefaultAsync(g => g.Id == id);
+            var group = await _groupService.GetByIdWithExpensesCategoriesAsync(id);
 
             if (group == null)
             {
