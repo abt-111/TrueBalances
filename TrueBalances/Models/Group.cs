@@ -12,10 +12,10 @@ namespace TrueBalances.Models
         public ICollection<UserGroup> Members { get; set; } = new List<UserGroup>();
         public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 
-        // Clés étrangères
+        // ? ? ?
         public int? CategoryId { get; set; }
 
-        // Propriétés de navigation
+        // ? ? ?
         [Display(Name = "Catégorie")]
         public Category? Category { get; set; }
     }

@@ -13,33 +13,33 @@ namespace TrueBalances.Services
             _groupRepository = groupRepository;
         }
 
-        public async Task<IEnumerable<Group>> GetAllGroups()
+        public async Task<IEnumerable<Group>> GetAllAsync()
         {
             var groups = await _groupRepository.GetAllAsync();
             return groups.ToList();
         }
 
         //Methode pour Trouver un group via son Id
-        public async Task<Group?> GetGroupAsync(int groupId)
+        public async Task<Group?> GetByIdAsync(int groupId)
         {
             return await _groupRepository.GetByIdAsync(groupId);
         }
 
         //Methode pour creer un group
-        public async Task CreateGroupAsync(Group group, string userId)
+        public async Task AddAsync(Group group)
         {
             await _groupRepository.AddAsync(group);
         }
 
 
         //Methode pour modifier le group
-        public async Task UpdateGroupAsync(Group group)
+        public async Task UpdateAsync(Group group)
         {
             await _groupRepository.UpdateAsync(group);
         }
 
         ////Methode pour supprimer le group
-        public async Task DeleteGroupAsync(int groupId)
+        public async Task DeleteAsync(int groupId)
         {
             await _groupRepository.DeleteAsync(groupId);
         }
@@ -47,7 +47,7 @@ namespace TrueBalances.Services
         //Methode pour vérifier si l'utilisateur est ajouté dans le group
         public async Task<bool> IsMemberInGroupAsync(int groupId, string userId)
         {
-            var group = await GetGroupAsync(groupId);
+            var group = await GetByIdAsync(groupId);
             return group?.Members.Any(m => m.CustomUserId == userId) ?? false;
         }
 
@@ -55,7 +55,7 @@ namespace TrueBalances.Services
         public async Task<List<string>> AddMembersAsync(int groupId, List<string> userIds)
         {
             var errors = new List<string>();
-            var group = await GetGroupAsync(groupId);
+            var group = await GetByIdAsync(groupId);
             if (group == null)
             {
                 errors.Add($"Group with ID {groupId} not found.");
@@ -87,7 +87,7 @@ namespace TrueBalances.Services
         ////Methode pour supprimer un user dans le Group
         public async Task RemoveMemberAsync(int groupId, string userId)
         {
-            var group = await GetGroupAsync(groupId);
+            var group = await GetByIdAsync(groupId);
             if (group != null)
             {
                 var member = group.Members.FirstOrDefault(m => m.CustomUserId == userId);
@@ -102,7 +102,7 @@ namespace TrueBalances.Services
         //méthode pour mettre à jour les membres du groupe selon la liste sélectionnée
         public async Task UpdateGroupMembersAsync(int groupId, List<string> selectedUserIds)
         {
-            var group = await GetGroupAsync(groupId);
+            var group = await GetByIdAsync(groupId);
             if (group == null)
             {
                 throw new Exception("Groupe introuvable.");

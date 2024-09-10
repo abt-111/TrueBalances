@@ -6,8 +6,8 @@ namespace TrueBalances.Repositories.Interfaces
     {
         Task<IEnumerable<Group>> GetGroupsByUserIdAsync(string userId);
         public bool UserIsInGroup(string userId, int groupId);
-        Task AddMembersToGroupAsync(int groupId, List<int> memberIds);
-        Task UpdateMembersInGroupAsync(int groupId, List<int> memberIds);
+        Task AddMembersToGroupAsync(int groupId, List<string> memberIds);
+        Task UpdateMembersInGroupAsync(int groupId, List<string> memberIds);
         Task RemoveGroupAsync(int groupId);
 
         //Task<List<CustomUser>> GetAllUsersAsync();
