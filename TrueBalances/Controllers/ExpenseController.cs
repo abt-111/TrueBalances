@@ -318,6 +318,14 @@ namespace TrueBalances.Controllers
                 return NotFound(); // Vérifie si l'ID du groupe est valide
             }
 
+            var currentUserId = _userManager.GetUserId(User);
+
+            // Vérifier si l'utilisateur connecté est bien membre du groupe
+            if (!_userGroupRepository.UserIsInGroup(currentUserId, groupId))
+            {
+                return NotFound();
+            }
+
             // Préparation des données pour la vue
             var expenses = await _context.Expenses.Where(e => e.GroupId == groupId).Include(e => e.Participants).ToListAsync();
             var users = await _userService.GetAllUsersAsync(groupId);
