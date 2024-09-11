@@ -18,7 +18,8 @@
                 <input type="hidden" asp-for="Expense.Id" />
 
                 <!-- Ajout d'un champ caché pour GroupId -->
-                <input type="hidden" name="Expense.GroupId" value="@Model.Expense.GroupId" />
+                <input type="hidden" asp-for="GroupId" />
+                <input type="hidden" asp-for="Expense.GroupId" value="@Model.Expense.GroupId" />
 
                 <div class="form-group">
                     <label asp-for="Expense.UserId" class="control-label"></label>

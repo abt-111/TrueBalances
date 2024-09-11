@@ -12,6 +12,7 @@
             <form asp-action="Create" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                <input type="hidden" asp-for="GroupId" />
                 <input type="hidden" asp-for="Expense.GroupId" value="@Model.GroupId" />
 
                 <div class="form-group">

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using TrueBalances.Data;
 using TrueBalances.Models;
 using TrueBalances.Models.ViewModels;
@@ -19,18 +20,26 @@ namespace TrueBalances.Controllers
         private readonly UserManager<CustomUser> _userManager;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IUserService _userService;
+        private readonly IUserGroupRepository _userGroupRepository;
 
-        public ExpenseController(TrueBalancesDbContext context, UserManager<CustomUser> userManager, ICategoryRepository categoryRepository, IUserService userService)
+        public ExpenseController(TrueBalancesDbContext context, UserManager<CustomUser> userManager, ICategoryRepository categoryRepository, IUserService userService, IUserGroupRepository userGroupRepository)
         {
             _context = context;
             _categoryRepository = categoryRepository;
             _userManager = userManager;
             _userService = userService;
+            _userGroupRepository = userGroupRepository;
         }
 
         public async Task<IActionResult> Index(int groupId)
         {
             var currentUserId = _userManager.GetUserId(User);
+
+            // Vérifier si l'utilisateur connecté est bien membre du groupe
+            if (!_userGroupRepository.UserIsInGroup(currentUserId, groupId))
+            {
+                return NotFound();
+            }
 
             var users = await _userService.GetAllUsersAsync(groupId);
 
@@ -72,11 +81,26 @@ namespace TrueBalances.Controllers
                 return NotFound();
             }
 
+            var currentUserId = _userManager.GetUserId(User);
+            // Vérifier si l'utilisateur connecté est bien membre du groupe
+            if (!_userGroupRepository.UserIsInGroup(currentUserId, expense.GroupId))
+            {
+                return NotFound();
+            }
+
             return View(expense);
         }
 
         public async Task<IActionResult> Create(int groupId)
         {
+            var currentUserId = _userManager.GetUserId(User);
+
+            // Vérifier si l'utilisateur connecté est bien membre du groupe
+            if (!_userGroupRepository.UserIsInGroup(currentUserId, groupId))
+            {
+                return NotFound();
+            }
+
             var categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
             var users = await _userService.GetAllUsersAsync(groupId);
             var authors = new SelectList(users.Select(u => new { u.Id, FullName = $"{u.FirstName} {u.LastName}" }), "Id", "FullName");
@@ -111,11 +135,10 @@ namespace TrueBalances.Controllers
                 await _context.SaveChangesAsync();
 
                 // Rediriger vers la page de gestion des dépenses pour le groupe
-                return RedirectToAction("Index", new { groupId = viewModel.Expense.GroupId });
+                return RedirectToAction("Index", new { groupId = viewModel.GroupId });
             }
 
             // Recharger des données pour le formulaire en cas d'échec de validation
-            viewModel.GroupId = viewModel.Expense.GroupId;
             viewModel.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
             viewModel.Users = await _userService.GetAllUsersAsync(viewModel.GroupId);
             viewModel.Authors = new SelectList(viewModel.Users.Select(u => new { u.Id, FullName = $"{u.FirstName} {u.LastName}" }), "Id", "FullName");
@@ -188,7 +211,7 @@ namespace TrueBalances.Controllers
                 }
 
                 // Vérifiez que la dépense appartient toujours au bon groupe
-                if (existingExpense.GroupId != viewModel.Expense.GroupId)
+                if (existingExpense.GroupId != viewModel.GroupId)
                 {
                     return NotFound(); // Ou gérer l'erreur selon vos besoins
                 }
@@ -211,10 +234,9 @@ namespace TrueBalances.Controllers
                 _context.Update(existingExpense);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("Index", new { groupId = viewModel.Expense.GroupId });
+                return RedirectToAction("Index", new { groupId = viewModel.GroupId });
             }
 
-            viewModel.GroupId = viewModel.Expense.GroupId;
             viewModel.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
             viewModel.Users = await _userService.GetAllUsersAsync(viewModel.GroupId);
             viewModel.Authors = new SelectList(viewModel.Users.Select(u => new { u.Id, FullName = $"{u.FirstName} {u.LastName}" }), "Id", "FullName");
