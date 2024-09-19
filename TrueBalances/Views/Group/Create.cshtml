@@ -4,46 +4,45 @@
     ViewData["Title"] = "Ajouter un groupe";
 }
 
-<h1 class="custom-header text-center">@ViewData["Title"]</h1>
 
-<hr />
-
-<div class="container">
+<div class="container mt-5">
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <form asp-action="Create" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                <div class="form-group">
-                    <label asp-for="Group.Name" class="control-label">Nom du groupe</label>
-                    <input asp-for="Group.Name" class="form-control" />
-                    <span asp-validation-for="Group.Name" class="text-danger"></span>
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white text-center" style="background-color: #4CAF50;">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
                 </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                <!-- Champ de recherche pour les utilisateurs -->
-                <div class="form-group">
-                    <label class="control-label">Ajouter les Membres</label>
-                    <input id="userSearch" class="form-control" placeholder="Rechercher un utilisateur..." />
+                        <div class="form-group mb-4">
+                            <label asp-for="Group.Name" class="control-label">Nom du groupe</label>
+                            <input asp-for="Group.Name" class="form-control" />
+                            <span asp-validation-for="Group.Name" class="text-danger"></span>
+                        </div>
+
+                        <!-- Champ de recherche pour les utilisateurs -->
+                        <div class="form-group mb-4">
+                            <label class="control-label">Ajouter les Membres</label>
+                            <input id="userSearch" class="form-control" placeholder="Rechercher un utilisateur..." />
+                        </div>
+
+                        <!-- Liste des utilisateurs sélectionnés -->
+                        <ul id="selectedUsers" class="list-group mt-2"></ul>
+
+                        <!-- Conteneur pour les inputs cachés pour SelectedUserIds -->
+                        <div id="selectedUserIdsContainer"></div>
+
+                        <div class="form-group text-center mt-4">
+                            <input type="submit" value="Créer le groupe" class="btn btn-primary" />
+                            <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+                        </div>
+                    </form>
                 </div>
-
-                <!-- Liste des utilisateurs sélectionnés -->
-                <ul id="selectedUsers" class="list-group mt-2"></ul>
-
-                <!-- Conteneur pour les inputs cachés pour SelectedUserIds -->
-                <div id="selectedUserIdsContainer"></div>
-
-                <div class="form-group">
-                    <input type="submit" value="Créer le groupe" class="btn btn-primary" />
-                </div>
-            </form>
+            </div>
         </div>
     </div>
-</div>
-
-<div></div>
-
-<div class="mt-3">
-    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
 </div>
 
 @section Scripts
