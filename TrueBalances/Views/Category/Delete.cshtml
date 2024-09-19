@@ -9,30 +9,36 @@
     ViewData["Title"] = "Supprimer une catégorie";
 }
 
-<h1 class="custom-header">@ViewData["Title"]</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white text-center" style="background-color: #4CAF50;">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
+                </div>
+                <div class="card-body p-4">
+                    <h4>Êtes-vous sûr de vouloir supprimer cette catégorie?</h4>
+                    <hr />
+                    <dl class="row">
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.Category.Name)
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(model => model.Category.Name)
+                        </dd>
+                    </dl>
+                    <form asp-action="Delete" method="post">
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <h4>Êtes-vous sûr de vouloir supprimer cette catégorie?</h4>
-            <hr />
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Category.Name)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Category.Name)
-                </dd>
-            </dl>
-            <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Category.Id" />
+                        <input type="hidden" asp-for="GroupId" />
 
-                <input type="hidden" asp-for="Category.Id" />
-
-                <input type="hidden" asp-for="GroupId" />
-
-                <input type="submit" value="Supprimer" class="btn btn-danger" /> |
-                <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary">Retour</a>
-            </form>
+                        <div class="form-group text-center mt-4">
+                            <input type="submit" value="Supprimer" class="btn btn-danger" /> |
+                            <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary">Retour</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
