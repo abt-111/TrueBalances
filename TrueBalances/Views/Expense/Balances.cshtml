@@ -35,7 +35,7 @@
                                         @if (debt.Value < 0)
                                         {
                                             @* <li class="list-group-item">
-                                                @other.FirstName lui doit @(-debt.Value) €
+                                            @other.FirstName lui doit @(-debt.Value) €
                                             </li> *@
                                         }
                                         else if (debt.Value != 0)
@@ -58,6 +58,18 @@
                                         N'a que de bons amis
                                     </li>
                                 }
+
+                                @foreach (var debt in userDebts.Debts)
+                                {
+                                    var other = Model.Users.Find(u => u.Id == @debt.Key);
+
+                                    @if (debt.Value < 0)
+                                    {
+                                        <li class="list-group-item">
+                                            @other.FirstName lui doit @(-debt.Value) €
+                                        </li>
+                                    }
+                                }
                             </ul>
                         </div>
                     </div>
@@ -71,3 +83,125 @@
 <div>
     <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary mt-3">Retour à la gestion des dépenses</a>
 </div>
+
+@{
+    ViewData["Title"] = "Soldes";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center mb-3">
+            <h1>Soldes des participants</h1>
+            <p class="lead">Visualisation détaillée des créances et dettes</p>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <canvas id="balanceHistogram"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary mt-3">Retour à la gestion des dépenses</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+@{
+    // Génération des labels utilisateurs (prénoms)
+    var userLabelsJson = System.Text.Json.JsonSerializer.Serialize(Model.Users.Select(u => u.FirstName));
+
+    // Génération des sommes des dettes pour chaque utilisateur
+    var debtDataJson = System.Text.Json.JsonSerializer.Serialize(
+        Model.DebtsOfEverybody.Select(d => d.Debts.Sum(x => x.Value))
+    );
+}
+
+<script>
+    var ctx = document.getElementById('balanceHistogram').getContext('2d');
+
+    // Récupération des données des utilisateurs et des dettes en JSON
+    var userLabels = @Html.Raw(userLabelsJson);
+    var debtData = @Html.Raw(debtDataJson);
+
+    // Configuration des couleurs pour les barres (positif : bleu, négatif : rouge)
+    var backgroundColors = debtData.map(value => value >= 0 ? 'rgba(54, 162, 235, 0.7)' : 'rgba(255, 99, 132, 0.7)');
+    var borderColors = debtData.map(value => value >= 0 ? 'rgba(54, 162, 235, 1)' : 'rgba(255, 99, 132, 1)');
+
+    // Création de l'histogramme avec Chart.js
+    var balanceHistogram = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: userLabels,  // Les prénoms des utilisateurs
+            datasets: [{
+                label: 'Solde (€)',
+                data: debtData,  // Les montants des dettes ou créances
+                backgroundColor: backgroundColors,  // Couleurs des barres
+                borderColor: borderColors,  // Couleurs des bordures
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Utilisateurs',
+                        font: {
+                            size: 16
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Montant en €',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    ticks: {
+                        callback: function (value) {
+                            return value + ' €';  // Ajout du symbole €
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 14
+                        },
+                        color: '#333'
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            var label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += context.parsed.y + ' €';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<!-- Le canvas où le graphique sera affiché -->
+<canvas id="balanceHistogram" width="400" height="200"></canvas>
