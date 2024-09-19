@@ -2,6 +2,64 @@
 
 @section SpecificStylesheet {
     <link rel="stylesheet" href="~/css/home_index.css" asp-append-version="true" />
+    <style>
+        .welcome-section {
+            /* background-color: #f7f9fc; */
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+            .welcome-section h1 {
+                font-size: 2.5rem;
+                color: #333;
+            }
+
+            .welcome-section p {
+                font-size: 1.1rem;
+                color: #777;
+            }
+
+        .card {
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .card:hover {
+                transform: scale(1.05);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            }
+
+        .card-body {
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-custom {
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn-custom:hover {
+                background-color: #45a049;
+            }
+
+        .btn-block {
+            border-radius: 50px;
+            font-size: 1rem;
+        }
+
+        .lead {
+            font-size: 1.25rem;
+        }
+    </style>
 }
 
 @{
@@ -10,20 +68,19 @@
 
 <div class="container mt-5">
     <!-- Section de bienvenue -->
-    <div class="text-center mb-5">
-        <h1 class="display-3 font-weight-bold">
+    <div class="welcome-section mb-5">
+        <h1>
             @if (User.Identity.IsAuthenticated)
             {
-                @:Bonjour, @Model.CurrentUser.FirstName @Model.CurrentUser.LastName !
+                <p>Bonjour, @Model.CurrentUser.FirstName @Model.CurrentUser.LastName!</p>
             }
             else
             {
-                @:Bonjour et bienvenue !
+                <p>Bonjour et bienvenue!</p>
             }
         </h1>
-        <p class="lead">Découvrez vos groupes, gérez vos dépenses et partagez des moments inoubliables avec TrueBalances.</p>
-        <img src="~/logoTrue.png" alt="Logo de l'application" style="width: 300px; height: 300px;">
-
+        <p class="lead">Gérez vos groupes et partagez des moments avec TrueBalances.</p>
+        <img src="~/logoTrue.png" alt="Logo de l'application" class="img-fluid" style="width: 250px; height: 250px; margin-top: 20px;">
     </div>
 
     <!-- Liste des groupes -->
@@ -33,15 +90,14 @@
             @foreach (var group in @Model.Groups)
             {
                 <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card border-light shadow-sm rounded">
+                    <div class="card text-center">
                         <div class="card-body">
-                            <h5 class="card-title text-primary">@group.Name</h5>
-                            <p class="card-text text-muted">
+                            <h5 class="card-title font-weight-bold text-primary">@group.Name</h5>
+                            <p class="card-text text-muted mb-4">
                                 <i class="fas fa-users"></i> @(group.Members.Count() > 1 ? $"{group.Members.Count()} membres" : $"{group.Members.Count()} membre")
                             </p>
-                            <a asp-action="Details" asp-route-id="@group.Id" class="btn btn-info btn-block">Voir les détails</a>
+                            <a asp-action="Details" asp-route-id="@group.Id" class="btn btn-custom btn-block">Voir les détails</a>
                         </div>
-                        
                     </div>
                 </div>
             }
@@ -49,14 +105,14 @@
 
         <!-- Bouton Ajouter un Groupe -->
         <div class="text-center mt-4">
-            <a asp-action="Create" class="btn btn-success btn-lg">Créer un nouveau groupe</a>
+            <a asp-action="Create" class="btn btn-custom btn-lg">Créer un nouveau groupe</a>
         </div>
     }
     else
     {
         <div class="text-center mt-4">
-            <a class="btn btn-primary btn-lg mr-2" asp-area="Identity" asp-page="/Account/Register">S'inscrire</a>
-            <a class="btn btn-secondary btn-lg" asp-area="Identity" asp-page="/Account/Login">Se connecter</a>
+            <a class="btn btn-primary btn-lg rounded-pill mr-2" asp-area="Identity" asp-page="/Account/Register">S'inscrire</a>
+            <a class="btn btn-secondary btn-lg rounded-pill" asp-area="Identity" asp-page="/Account/Login">Se connecter</a>
         </div>
     }
 </div>
