@@ -4,95 +4,102 @@
     ViewData["Title"] = "Ajouter une dépense";
 }
 
-<h1 class="text-center">@ViewData["Title"]</h1>
-
 <div class="container mt-5">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <form asp-action="Create" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                <input type="hidden" asp-for="GroupId" />
-                <input type="hidden" asp-for="Expense.GroupId" value="@Model.GroupId" />
-
-                <div class="form-group">
-                    <label asp-for="Expense.UserId" class="control-label"></label>
-                    <select asp-for="Expense.UserId" class="form-control" asp-items="Model.Authors">
-                        <option value="">Sélectionnez un auteur</option>
-                    </select>
-                    <span asp-validation-for="Expense.UserId" class="text-danger"></span>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white text-center" style="background-color: #4CAF50;">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
                 </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                <div class="form-group">
-                    <label asp-for="Expense.Title" class="control-label"></label>
-                    <input asp-for="Expense.Title" class="form-control" />
-                    <span asp-validation-for="Expense.Title" class="text-danger"></span>
-                </div>
+                        <input type="hidden" asp-for="GroupId" />
+                        <input type="hidden" asp-for="Expense.GroupId" value="@Model.GroupId" />
 
-                <div class="form-group">
-                    <label asp-for="Expense.Amount" class="control-label"></label>
-                    <input asp-for="Expense.Amount" class="form-control" type="number" />
-                    <span asp-validation-for="Expense.Amount" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="Expense.Date" class="control-label"></label>
-                    <input asp-for="Expense.Date" class="form-control" type="date" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                    <span asp-validation-for="Expense.Date" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="Expense.CategoryId" class="control-label"></label>
-                    <select asp-for="Expense.CategoryId" class="form-control" asp-items="Model.Categories">
-                        <option value="">Sélectionnez une catégorie</option>
-                    </select>
-                    <span asp-validation-for="Expense.CategoryId" class="text-danger"></span>
-                </div>
-
-                <!-- Section pour les participants -->
-                <div class="form-group">
-                    <label>Participants</label>
-                    @foreach (var user in Model.Users)
-                    {
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="SelectedUserIds" value="@user.Id" />
-                            <label class="form-check-label">@user.FirstName @user.LastName</label>
+                        <div class="form-group mb-4">
+                            <label asp-for="Expense.UserId" class="control-label"></label>
+                            <select asp-for="Expense.UserId" class="form-control" asp-items="Model.Authors">
+                                <option value="">Sélectionnez un auteur</option>
+                            </select>
+                            <span asp-validation-for="Expense.UserId" class="text-danger"></span>
                         </div>
-                    }
-                    <!-- Affichage du message d'erreur pour les participants -->
-                    @if (ViewData.ModelState[""]?.Errors.Count > 0)
-                    {
-                        <span class="text-danger">@ViewData.ModelState[""].Errors[0].ErrorMessage</span>
-                    }
-                </div>
 
-                <div class="form-group d-flex justify-content-between">
-                    <!-- Bouton pour sélectionner tous les membres -->
-                    <button type="button" id="selectAllBtn" class="btn btn-primary" onclick="toggleSelectAll()">Sélectionner tous les membres</button>
+                        <div class="form-group mb-4">
+                            <label asp-for="Expense.Title" class="control-label"></label>
+                            <input asp-for="Expense.Title" class="form-control" />
+                            <span asp-validation-for="Expense.Title" class="text-danger"></span>
+                        </div>
 
-                    <!-- Bouton de création -->
-                    <input type="submit" value="Créer" class="btn btn-primary" />
+                        <div class="form-group mb-4">
+                            <label asp-for="Expense.Amount" class="control-label"></label>
+                            <input asp-for="Expense.Amount" class="form-control" type="number" />
+                            <span asp-validation-for="Expense.Amount" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="Expense.Date" class="control-label"></label>
+                            <input asp-for="Expense.Date" class="form-control" type="date" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="Expense.Date" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="Expense.CategoryId" class="control-label"></label>
+                            <select asp-for="Expense.CategoryId" class="form-control" asp-items="Model.Categories">
+                                <option value="">Sélectionnez une catégorie</option>
+                            </select>
+                            <span asp-validation-for="Expense.CategoryId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Section pour les participants -->
+                        <div class="form-group mb-4">
+                            <label>Participants</label>
+                            @foreach (var user in Model.Users)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="SelectedUserIds" value="@user.Id" />
+                                    <label class="form-check-label">@user.FirstName @user.LastName</label>
+                                </div>
+                            }
+                            <!-- Affichage du message d'erreur pour les participants -->
+                            @if (ViewData.ModelState[""]?.Errors.Count > 0)
+                            {
+                                <span class="text-danger">@ViewData.ModelState[""].Errors[0].ErrorMessage</span>
+                            }
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <!-- Bouton pour sélectionner tous les membres -->
+                            <button type="button" id="selectAllBtn" class="btn btn-primary" onclick="toggleSelectAll()">Sélectionner tous les membres</button>
+                        </div>
+
+                        <div class="form-group text-center mt-4">
+                            <!-- Bouton de création -->
+                            <input type="submit" value="Créer" class="btn btn-primary" />
+
+                            <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary">Retour</a>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary mt-3">Retour à la gestion des dépenses</a>
-</div>
-
 @section Scripts {
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
         function toggleSelectAll() {
             var checkboxes = document.querySelectorAll('input[name="SelectedUserIds"]');
             var allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-            
+
             checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
-            
+
             // Changer le texte du bouton en fonction de l'état
             document.getElementById('selectAllBtn').innerText = allChecked ? 'Sélectionner tous les membres' : 'Désélectionner tous les membres';
-    }
+        }
     </script>
 }
