@@ -1,10 +1,5 @@
 ﻿@model TrueBalances.Models.ViewModels.CategoryViewModel
 
-@section SpecificStylesheet {
-    <link rel="stylesheet" href="~/css/category_delete.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/container.css" asp-append-version="true" />
-}
-
 @{
     ViewData["Title"] = "Supprimer une catégorie";
 }
@@ -17,7 +12,7 @@
                     <h2 class="mb-0">@ViewData["Title"]</h2>
                 </div>
                 <div class="card-body p-4">
-                    <h4>Êtes-vous sûr de vouloir supprimer cette catégorie?</h4>
+                    <h4>Êtes-vous sûr de vouloir supprimer cette catégorie ?</h4>
                     <hr />
                     <dl class="row">
                         <dt class="col-sm-2">
@@ -33,7 +28,7 @@
                         <input type="hidden" asp-for="GroupId" />
 
                         <div class="form-group text-center mt-4">
-                            <input type="submit" value="Supprimer" class="btn btn-danger" /> |
+                            <input type="submit" value="Supprimer" class="btn btn-danger" />
                             <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary">Retour</a>
                         </div>
                     </form>
