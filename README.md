@@ -1,23 +1,27 @@
 # TrueBalances
 
+![HomePage](MarkDownImages/homePage.png)\
+*Exemple d'une vue de la page d'acceuil*
+
 ## Sommaire
 
 - [À propos](#a-propos)
-  - [Exemple d'une vue de la page d'accueil](#exemple-dune-vue-de-la-page-daccueil)
 - [Technologies et environement utilisées](#technologies-et-environement-utilisees)
 - [Contributeurs](#contributeurs)
 
 ## À propos
 
-Truebalance est une application web conçue pour simplifier la gestion des dépenses partagées entre amis, colocataires ou collègues. 
+Truebalances est une application web conçue pour simplifier la gestion des dépenses partagées entre amis, colocataires ou collègues, lors des voyages, repas ou autres projets de groupe.
 
-Elle permet de suivre facilement qui doit combien à qui, en calculant automatiquement les dettes de chacun, ce qui permet d'éviter les malentendus financiers en gardant tout organisé et transparent.
+![ExpenseForm](MarkDownImages/expenseForm.png)\
+*Exemple d'une vue montrant la saisie d'une dépense*
 
-Elle est particulièrement utile pour les voyages, les repas ou les projets en groupe.
+L'application permet, une fois que l'on s'est enregistré et authentifié, de saisir des dépenses. La liste de ces dépenses, ainsi que les listes des participants associées à chacune d'entre elles, permet de calculer les dettes que les utilisateurs ont les uns envers les autres.
 
-### Exemple d'une vue de la page d'accueil
+![Banlances](MarkDownImages/balances.png)\
+*Exemple d'une vue récapitulant les dettes de chacun*
 
-![HomePage](MarkDownImages/homePage.png)
+Ces calculs sont faits automatiquement, ce qui permet de gagner du temps et d'éviter les malentendus, le tout en gardant l'ensemble des informations organisées et transparentes.
 
 ## Technologies et environement utilisées
 

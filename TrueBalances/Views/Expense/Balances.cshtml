@@ -1,26 +1,99 @@
 ﻿@model TrueBalances.Models.ViewModels.ExpenseViewModel
 
 @{
-    ViewData["Title"] = "Soldes des participants";
+    ViewData["Title"] = "Soldes";
 }
 
-<div class="container mt-5">
+<div class="container">
     <div class="row">
-        <div class="col-12 text-center mb-5">
-            <h1 class="mb-4" style="color: #34495e;">Solde des Participants</h1>
-            <p class="lead" style="color: #7f8c8d;">Visualisation élégante des créances et dettes entre les utilisateurs</p>
+        <div class="col-12 text-center mb-3">
+            <h1>@ViewData["Title"]</h1>
         </div>
     </div>
 
-    <!-- Graphique Histogramme -->
-    <div class="row mb-5">
-        <div class="col-md-12 d-flex justify-content-center">
-            <div class="chart-container" style="position: relative; height:80vh; width:80vw;">
-                <canvas id="balanceHistogram"></canvas>
-            </div>
+    <div class="row">
+        <!-- Colonne pour l'histogramme -->
+        <div class="col-12 text-center">
+            <p class="lead" style="color: #7f8c8d;">Visualisation du total des dettes et crédits</p>
+
+            <!-- Graphique Histogramme -->
+            <canvas id="balanceHistogram" style="box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);"></canvas>
+        </div>
+
+        <div class="col-12 text-center">
+            <br />
+        </div>
+
+        <!-- Colonne pour le tableau -->
+        <div class="col-12 text-center">
+            <p class="lead" style="color: #7f8c8d;">Détails des dettes et crédits</p>
+
+            <!-- Tableau des soldes -->
+            <table class="table table-bordered table-hover" style="box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);">
+                @* <thead style="background-color: #4CAF50; color: white;">
+                <tr>
+                <th scope="col">Membre</th>
+                <th scope="col">Dettes</th>
+                <th scope="col">Crédits</th>
+                </tr>
+                </thead> *@
+                <tbody>
+                    @foreach (var userDebts in Model.DebtsOfEverybody)
+                    {
+                        var user = Model.Users.Find(u => u.Id == @userDebts.Id);
+
+                        <tr>
+                            <td style="font-weight: bold; color: #2c3e50;">@user.FirstName</td>
+                            <td>
+                                @if (userDebts.Debts.Any(d => d.Value > 0))
+                                {
+                                    <ul>
+                                        @foreach (var debt in userDebts.Debts.Where(d => d.Value > 0))
+                                        {
+                                            var other = Model.Users.Find(u => u.Id == @debt.Key);
+                                            <li style="color: #e74c3c;">Doit @debt.Value € à @other.FirstName</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span>Aucune dette</span>
+                                }
+                            </td>
+                            <td>
+                                @if (userDebts.Debts.Any(d => d.Value < 0))
+                                {
+                                    <ul>
+                                        @foreach (var debt in userDebts.Debts.Where(d => d.Value < 0))
+                                        {
+                                            var other = Model.Users.Find(u => u.Id == @debt.Key);
+                                            <li style="color: #27ae60;">@other.FirstName lui doit @(-debt.Value) €</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span>Aucun crédit</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 
+    <!-- Bouton retour -->
+    <div class="row">
+        <div class="col-12 text-center">
+            <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary mt-5" style="padding: 10px 20px; font-size: 18px; background-color: #08a045; color: white; border: none;">
+                Retour à la gestion des dépenses
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     @{
@@ -35,8 +108,8 @@
         var userLabels = @Html.Raw(userLabelsJson);
         var debtData = @Html.Raw(debtDataJson);
 
-        var backgroundColors = debtData.map(value => value >= 0 ? 'rgba(52, 152, 219, 0.7)' : 'rgba(231, 76, 60, 0.7)');
-        var borderColors = debtData.map(value => value >= 0 ? 'rgba(52, 152, 219, 1)' : 'rgba(231, 76, 60, 1)');
+        var backgroundColors = debtData.map(value => value >= 0 ? 'rgba(39, 174, 96, 0.7)' : 'rgba(231, 76, 60, 0.7)');
+        var borderColors = debtData.map(value => value >= 0 ? 'rgba(39, 174, 96, 1)' : 'rgba(231, 76, 60, 1)');
 
         var balanceHistogram = new Chart(ctx, {
             type: 'bar',
@@ -100,87 +173,4 @@
             }
         });
     </script>
-
-    <!-- Tableau des soldes -->
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-4">
-                <h2 class="mb-4" style="color: #34495e;">Tableau des Soldes</h2>
-            </div>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover" style="box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);">
-                <thead style="background-color: #4CAF50; color: white;">
-                    <tr>
-                        <th scope="col">Auteur</th>
-                        <th scope="col">Dettes</th>
-                        <th scope="col">Crédits</th>
-                        <th scope="col">Statut</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var userDebts in Model.DebtsOfEverybody)
-                    {
-                        var user = Model.Users.Find(u => u.Id == @userDebts.Id);
-
-                        <tr>
-                            <td style="font-weight: bold; color: #2c3e50;">@user.FirstName</td>
-                            <td>
-                                @if (userDebts.Debts.Any(d => d.Value > 0))
-                                {
-                                    <ul>
-                                        @foreach (var debt in userDebts.Debts.Where(d => d.Value > 0))
-                                        {
-                                            var other = Model.Users.Find(u => u.Id == @debt.Key);
-                                            <li style="color: #e74c3c;">Doit @debt.Value € à @other.FirstName</li>
-                                        }
-                                    </ul>
-                                }
-                                else
-                                {
-                                    <span>Aucune dette</span>
-                                }
-                            </td>
-                            <td>
-                                @if (userDebts.Debts.Any(d => d.Value < 0))
-                                {
-                                    <ul>
-                                        @foreach (var debt in userDebts.Debts.Where(d => d.Value < 0))
-                                        {
-                                            var other = Model.Users.Find(u => u.Id == @debt.Key);
-                                            <li style="color: #27ae60;">@other.FirstName lui doit @(-debt.Value) €</li>
-                                        }
-                                    </ul>
-                                }
-                                else
-                                {
-                                    <span>Aucun crédit</span>
-                                }
-                            </td>
-                            <td>
-                                @if (userDebts.Debts.All(d => d.Value == 0))
-                                {
-                                    <p>Que de bons amis</p>
-                                }
-                                else if (userDebts.Debts.Any(d => d.Value < 0))
-                                {
-                                    <p style="color: #e74c3c;">S'est fait carotte</p>
-                                }
-                                else
-                                {
-                                    <p style="color: #27ae60;">Solvable</p>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        <div>
-            <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary mt-5" style="padding: 10px 20px; font-size: 18px; background-color: #08a045; color: white; border: none;">
-                Retour à la gestion des dépenses
-            </a>
-        </div>
-    </div>
+}
