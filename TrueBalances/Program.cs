@@ -2,30 +2,33 @@ using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
-using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Data;
 using TrueBalances.Models;
-using TrueBalances.Repositories.DbRepositories;
+using TrueBalances.Repositories;
 using TrueBalances.Repositories.Interfaces;
-using TrueBalances.Repositories.Services;
+using TrueBalances.Services;
+using TrueBalances.Services.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
+
 var connectionString = builder.Configuration.GetConnectionString("DbContextConnection") ?? throw new InvalidOperationException("Connection string 'DbContextConnection' not found.");
 
-builder.Services.AddDbContext<TrueBalances.Data.UserContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DbContextConnection")));
+builder.Services.AddDbContext<TrueBalances.Data.TrueBalancesDbContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TrueBalances.Data.UserContext>();
+builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TrueBalances.Data.TrueBalancesDbContext>();
 
-builder.Services.AddScoped<IGenericRepository<Category>, CategoryRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IGenericRepository<Group>, GroupDbRepository>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IProfilePhotoService, ProfilePhotoService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserGroupRepository, UserGroupRepository>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-builder.Services.AddDbContext<TrueBalances.Data.UserContext>(options =>
+builder.Services.AddDbContext<TrueBalances.Data.TrueBalancesDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbContextConnection"));
 });
@@ -40,6 +43,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+// Ajouter cette ligne pour gérer les pages 404 et autres codes d'erreur.
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

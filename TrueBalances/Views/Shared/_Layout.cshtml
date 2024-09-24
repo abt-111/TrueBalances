@@ -56,7 +56,14 @@
             &copy; 2024 - TrueBalances - <a asp-area="" asp-controller="Home" asp-action="Privacy">Conditions d'utilisation</a> <a asp-area="" asp-controller="Home" asp-action="Apropos">À Propos de Nous</a>
         </div>
     </footer>
+
+    @* jQuery *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    @* jQuery UI *@
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)

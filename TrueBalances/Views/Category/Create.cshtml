@@ -1,4 +1,4 @@
-﻿@model TrueBalances.Models.Category
+﻿@model TrueBalances.Models.ViewModels.CategoryViewModel
 
 @{
     ViewData["Title"] = "Ajouter une catégorie";
@@ -6,21 +6,24 @@
 
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white text-center">
-                    <h2>Ajouter une catégorie</h2>
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white text-center" style="background-color: #4CAF50;">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form asp-action="Create">
-                        <div class="form-group">
-                            <label asp-for="Name" class="control-label font-weight-bold">Nom de la catégorie</label>
-                            <input asp-for="Name" class="form-control" placeholder="Entrez le nom de la catégorie" />
-                            <span asp-validation-for="Name" class="text-danger"></span>
+                        <input type="hidden" asp-for="GroupId" />
+
+                        <div class="form-group mb-4">
+                            <label asp-for="Category.Name" class="control-label"></label>
+                            <input asp-for="Category.Name" class="form-control" />
+                            <span asp-validation-for="Category.Name" class="text-danger"></span>
                         </div>
-                        <div class="form-group text-center">
-                            <input type="submit" value="Ajouter" class="btn btn-success" />
-                            <a asp-action="Index" class="btn btn-secondary ml-2">Retour à la liste</a>
+
+                        <div class="form-group text-center mt-4">
+                            <input type="submit" value="Créer" class="btn btn-primary" />
+                            <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary">Retour</a>
                         </div>
                     </form>
                 </div>
@@ -34,4 +37,3 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-

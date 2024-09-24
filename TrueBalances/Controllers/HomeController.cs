@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using TrueBalances.Areas.Identity.Data;
 using TrueBalances.Models;
+using TrueBalances.Models.ViewModels;
 
 namespace TrueBalances.Controllers
 {
@@ -19,6 +19,7 @@ namespace TrueBalances.Controllers
 
         public async Task<IActionResult> Index()
         {
+            return RedirectToAction(actionName: "Index", controllerName: "Group");
             UserViewModel model = new UserViewModel();
 
             if (User.Identity.IsAuthenticated)

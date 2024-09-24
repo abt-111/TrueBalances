@@ -1,5 +1,5 @@
-﻿using TrueBalances.Areas.Identity.Data;
-using TrueBalances.Models;
+﻿using TrueBalances.Models;
+using TrueBalances.Models.ViewModels;
 
 namespace TrueBalances.Tools
 {
@@ -9,7 +9,7 @@ namespace TrueBalances.Tools
         {
             return Math.Round(
                             expenses
-                            .Where(e => e.CustomUserId == creditor && e.Participants.Any(p => p.Id == debtor))
+                            .Where(e => e.UserId == creditor && e.Participants.Any(p => p.Id == debtor))
                             .Sum(e => e.Participants.Count != 0 ? e.Amount / e.Participants.Count : 0)
                         , 2);
         }
@@ -32,23 +32,6 @@ namespace TrueBalances.Tools
                 }
             }
             return debts;
-        }
-
-        public static Dictionary<string, decimal> GetCredits(List<Expense> expenses, List<CustomUser> users, string UserId)
-        {
-            Dictionary<string, decimal> credits = new Dictionary<string, decimal>();
-
-            var others = users.FindAll(u => u.Id != UserId);
-
-            if (others != null && others.Count > 0)
-            {
-                foreach (var other in others)
-                {
-                    var credit = GetDebtValue(expenses, UserId, other.Id);
-                    credits.Add(other.Id, credit);
-                }
-            }
-            return credits;
         }
 
         public static List<UserDebtViewModel> GetDebtsOfEverybody(List<Expense> expenses, List<CustomUser> users)

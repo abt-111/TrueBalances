@@ -19,6 +19,7 @@
     <input type="hidden" asp-for="Id" />
     <div class="form-group text-center">
         <button type="submit" class="btn btn-danger">Supprimer</button>
-        <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Annuler</a>
+        @* <a asp-action="Index" class="btn btn-secondary">Annuler</a> *@
     </div>
 </form>

@@ -1,105 +1,53 @@
-@using TrueBalances.Areas.Identity.Data
-
-@model IEnumerable<TrueBalances.Models.Expense>
+@model TrueBalances.Models.ViewModels.ExpenseViewModel
 
 @section SpecificStylesheet {
     <link rel="stylesheet" href="~/css/table.css" asp-append-version="true" />
 }
 
 @{
-    ViewData["Title"] = "Index";
-
-    var currentUserId = ViewBag.CurrentUserId;
-    var users = ViewBag.Users as List<CustomUser>;
-    var debts = ViewBag.Debts as Dictionary<string, decimal>;
+    ViewData["Title"] = "Gestion des Dépenses";
 }
 
 <div class="container">
 
     <div class="row">
         <div class="col-12 text-center mb-3">
-            <h1>Gestion des Dépenses</h1>
+            <h1>@ViewData["Title"]</h1>
+            <!-- Ajouter un bouton pour créer une nouvelle dépense -->
         </div>
         <p>
-            <a asp-action="Create" class="btn btn-primary">Ajouter une dépense</a>
+            <a asp-action="Create" asp-route-groupId="@Model.GroupId" class="btn btn-primary">Ajouter une dépense</a>
         </p>
     </div>
 
     <div class="row">
-        <!-- Colonne pour les dépenses plus large -->
-        <div class="col-md-8">
-            <table class="table table-striped table-bordered">
-                <thead class="custom-table-header">
-                    <tr>
-                        <th>@Html.DisplayNameFor(model => model.Title)</th>
-                        <th>@Html.DisplayNameFor(model => model.Amount)</th>
-                        <th>@Html.DisplayNameFor(model => model.Date)</th>
-                        <th>@Html.DisplayNameFor(model => model.Category)</th>
-                        <th>@Html.DisplayNameFor(model => model.CustomUser)</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@Html.DisplayFor(modelItem => item.Title)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Amount) €</td>
-                            <td>@Html.DisplayFor(modelItem => item.Date)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Category!.Name)</td>
-                            <td>@Html.DisplayFor(modelItem => item.CustomUser.FirstName)</td>
-
-                            <td class="action-links text-center">
-                                @* Affichage du bouton modifier si la dépense à été crée par l'utilisateur courant *@
-                                @if (currentUserId == item.CustomUserId)
-                                {
-                                    <a asp-action="Edit" asp-route-id="@item.Id" title="Modifier">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                }
-
-                                <a asp-action="Details" asp-route-id="@item.Id" title="Détails">
-                                    <i class="fas fa-info-circle"></i>
-                                </a>
-
-                                @* Affichage du bouton supprimer si la dépense à été crée par l'utilisateur courant *@
-                                @if (currentUserId == item.CustomUserId)
-                                {
-                                    <a asp-action="Delete" asp-route-id="@item.Id" title="Supprimer">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
 
         <!-- Colonne pour le récapitulatif plus étroite -->
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Dette ou crédit ?</h5>
-                </div>
-                <div class="card-body">
+            <div class="card text-white mb-4 shadow" style="background-color: #e67e22;">
+                <!-- Orange -->
+                <div class="card-body d-flex flex-column align-items-center">
+                    <h5 class="card-title">
+                        Dette et crédit 
+                        @(Model.DebtsOfCurrentUser.Any(d => d.Value < 0) && !Model.DebtsOfCurrentUser.Any(d => d.Value > 0) ? Html.Raw("<i class='fa-solid fa-carrot'></i>") : "")
+                    </h5>
                     <ul class="list-group list-group-flush">
-                        @if (debts.Any(d => d.Value != 0))
+                        @if (Model.DebtsOfCurrentUser.Any(d => d.Value != 0))
                         {
-                            @foreach (var userId in debts.Keys)
+                            @foreach (var userId in Model.DebtsOfCurrentUser.Keys)
                             {
-                                var user = users.Find(u => u.Id == userId);
-                                var debt = debts.GetValueOrDefault(userId);
+                                var user = Model.Users.Find(u => u.Id == userId);
+                                var debt = Model.DebtsOfCurrentUser.GetValueOrDefault(userId);
 
                                 @if (debt < 0)
                                 {
-                                    <li class="list-group-item">
+                                    <li class="list-group-item" style="background-color: #e67e22; color: #FFFFFF;">
                                         @user.FirstName me doit @(-debt) €
                                     </li>
                                 }
                                 else if (debt != 0)
                                 {
-                                    <li class="list-group-item">
+                                    <li class="list-group-item" style="background-color: #e67e22; color: #FFFFFF;">
                                         Je dois @debt € à @user.FirstName
                                     </li>
                                 }
@@ -107,21 +55,74 @@
                         }
                         else
                         {
-                            <li class="list-group-item">
+                            <li class="list-group-item" style="background-color: #e67e22; color: #FFFFFF;">
                                 Je n'ai que de bons amis
                             </li>
                         }
-                        <li class="list-group-item">
-                            <a asp-action="Solde" style="color: #073b3a;">Tous les soldes</a>
-                        </li>
                     </ul>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-action="Balances" asp-route-groupId="@Model.GroupId" class="btn btn-light text-dark">Tous les soldes</a>
                 </div>
             </div>
         </div>
 
+        @foreach (var item in Model.Expenses)
+        {
+            <div class="col-md-4">
+                <div class="card text-white mb-4 shadow" style="background-color: #137547;">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <h5 class="card-title">
+                            <i class="bi bi-currency-dollar">
+                                @item.Title
+                                @if (item.CategoryId != 4)
+                                {
+                                    @if (item.CategoryId != null)
+                                    {
+                                        @: : @Html.DisplayFor(modelItem => item.Category!.Name)
+                                    }
+
+                                }
+                                else
+                                {
+                                    @if (Model.CurrentUserId == item.UserId)
+                                    {
+                                        @: :
+                                        <a asp-action="Alert" asp-route-id="@item.Id" title="Cette dépense doit-être re-catégorisé">
+                                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                                        </a>
+                                    }
+                                }
+                            </i>
+                        </h5>
+                        <p class="display-4 font-weight-bold">@item.Amount €</p>
+                        <p class="mb-0">@item.User.FirstName le @Html.DisplayFor(modelItem => item.Date)</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        @* Affichage des boutons d'action *@
+                        @if (Model.CurrentUserId == item.UserId)
+                        {
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Modifier" style="border-color: #FFFFFF; color: #FFFFFF;">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        }
+                        <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Détails" style="border-color: #FFFFFF; color: #FFFFFF;">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        @if (Model.CurrentUserId == item.UserId)
+                        {
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Delete" asp-route-id="@item.Id" asp-route-groupId="@item.GroupId" title="Supprimer" style="border-color: #FFFFFF; color: #FFFFFF;">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 
     <div>
-        <a asp-controller="Home" asp-action="Index" style="color: #073b3a;">Retour à l'accueil</a>
+        <a asp-controller="Group" asp-action="Details" asp-route-id="@Model.GroupId" class="btn btn-secondary">Retour à l'accueil du groupe</a>
     </div>
 </div>
+

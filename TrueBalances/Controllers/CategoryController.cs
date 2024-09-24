@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TrueBalances.Repositories;
 using TrueBalances.Models;
-using TrueBalances.Repositories.Interfaces;
-using TrueBalances.Data;
 using Microsoft.AspNetCore.Authorization;
-using TrueBalances.Repositories.Services;
+using TrueBalances.Services.Interfaces;
+using TrueBalances.Models.ViewModels;
 
 
 namespace TrueBalances.Controllers
@@ -13,121 +10,148 @@ namespace TrueBalances.Controllers
     [Authorize]
     public class CategoryController : Controller
     {
-        private readonly ICategoryService _context;
+        private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService context)
-
+        public CategoryController(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         // Read
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int groupId)
         {
-            return View(await _context.GetAllCategoriesAsync());
+            var categories = await _categoryService.GetAllAsync();
+
+            CategoryViewModel viewModel = new CategoryViewModel()
+            {
+                GroupId = groupId,
+                Categories = categories
+            };
+
+            return View(viewModel);
         }
 
         // Create (GET)
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(int groupId)
         {
-            return View();
+            CategoryViewModel viewModel = new CategoryViewModel()
+            {
+                GroupId = groupId
+            };
+
+            return View(viewModel);
         }
 
         // Create (Post)
         [HttpPost]
-        public async Task<IActionResult> Create(Category category)
+        public async Task<IActionResult> Create(CategoryViewModel viewModel)
         {
-            if (!ModelState.IsValid) return View(category);
-            
-                await _context.AddCategoryAsync(category);
-                return RedirectToAction(actionName: "Index", controllerName: "Category");
-            
-            
+            if (!ModelState.IsValid) return View(viewModel);
 
+            await _categoryService.AddAsync(viewModel.Category);
+            return RedirectToAction("Index", new { groupId = viewModel.GroupId });
         }
 
-        //Edit(GET)
+        //Edit (GET)
         [HttpGet]
-        public async Task<IActionResult> Edit(int? categorieId)
+        public async Task<IActionResult> Edit(int categorieId, int groupId)
         {
-            if (categorieId is null)
+            if (categorieId <= 0 || groupId <= 0)
             {
-                return View();
+                return NotFound();
             }
-            var category = await _context.GetCategoryByIdAsync(categorieId.Value);
+
+            var category = await _categoryService.GetByIdAsync(categorieId);
+
             if (category is null)
             {
-                return RedirectToAction(actionName: "Index", controllerName: "Category");
+                return NotFound();
             }
-            return View(category);
+
+            CategoryViewModel viewModel = new CategoryViewModel()
+            {
+                GroupId = groupId,
+                Category = category
+            };
+
+            return View(viewModel);
         }
 
         // Edit (POST)
-
         [HttpPost]
-
-        public async Task<IActionResult> Edit(int id, Category category)
+        public async Task<IActionResult> Edit(CategoryViewModel viewModel)
         {
-            if (id == category.Id) await _context.UpdateCategoryAsync(category);
-            return RedirectToAction(actionName: "Index", controllerName: "Category");
-            
-            //return View(category);
+            if (!ModelState.IsValid) return View(viewModel);
+
+            await _categoryService.UpdateAsync(viewModel.Category);
+            return RedirectToAction("Index", new { groupId = viewModel.GroupId });
         }
 
 
 
         //Delete (GET)
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int categorieId, int groupId)
         {
-            var category = await _context.GetCategoryByIdAsync(id);
+            if (categorieId <= 0 || groupId <= 0)
+            {
+                return NotFound();
+            }
+
+            var category = await _categoryService.GetByIdAsync(categorieId);
+
             if (category is null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            CategoryViewModel viewModel = new CategoryViewModel()
+            {
+                GroupId = groupId,
+                Category = category
+            };
+
+            return View(viewModel);
         }
 
         //Delete (POST)
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(CategoryViewModel viewModel)
         {
-            var category = await _context.GetCategoryByIdAsync(id);
+            var category = await _categoryService.GetByIdAsync(viewModel.Category.Id);
+
             if (category is null)
             {
                 return NotFound();
             }
 
-            //Réinitialiser les identifiants de catégorie des dépenses associées
-            //var expenses = _context.Expenses.Where(e => e.CategoryId == id).ToList();
-            //foreach (var expense in expenses)
-            //{
-            //    expense.CategoryId = null;
-            //}
-
-            await _context.DeleteCategoryAsync(id);
-            return RedirectToAction(actionName: "Index", controllerName: "Category");
+            await _categoryService.DeleteAsync(viewModel.Category.Id);
+            return RedirectToAction("Index", new { groupId = viewModel.GroupId });
         }
-
-        //Methode pour Vérifier si une catégorie existe
-        private async Task<bool> CategoryExists(int id)
-        {
-            return await _context.CategoryExistsAsync(id);
-        }
-
 
         //Détails 
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int categorieId, int groupId)
         {
-            var category = await _context.GetCategoryWithExpensesByIdAsync(id);
-            if (category == null)
+            if (categorieId <= 0 || groupId <= 0)
             {
                 return NotFound();
             }
-            return View(category);
-        }
 
+            var category = await _categoryService.GetCategoryWithExpensesByIdAsync(categorieId, groupId);
+
+            if (category is null)
+            {
+                return NotFound();
+            }
+
+            CategoryViewModel viewModel = new CategoryViewModel()
+            {
+                GroupId = groupId,
+                Category = category
+            };
+
+            return View(viewModel);
+        }
     }
 }

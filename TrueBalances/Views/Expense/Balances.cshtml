@@ -1,0 +1,200 @@
+﻿@model TrueBalances.Models.ViewModels.ExpenseViewModel
+
+@{
+    ViewData["Title"] = "Soldes";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center mb-3">
+            <h1>@ViewData["Title"]</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Colonne pour l'histogramme -->
+        <div class="col-12 text-center">
+            <p class="lead">Total des dettes et crédits</p>
+
+            <!-- Graphique Histogramme -->
+            <canvas id="balanceHistogram" style="box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);"></canvas>
+        </div>
+
+        <div class="col-12 text-center">
+            <br />
+        </div>
+
+        <!-- Colonne pour le tableau -->
+        <div class="col-12 text-center">
+            <p class="lead">Détails des dettes et crédits</p>
+
+            <!-- Tableau des soldes -->
+            <table class="table table-bordered table-hover" style="box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);">
+                @* <thead style="background-color: #4CAF50; color: white;">
+                <tr>
+                <th scope="col">Membre</th>
+                <th scope="col">Dettes</th>
+                <th scope="col">Crédits</th>
+                </tr>
+                </thead> *@
+                <tbody>
+                    @foreach (var userDebts in Model.DebtsOfEverybody)
+                    {
+                        var user = Model.Users.Find(u => u.Id == @userDebts.Id);
+
+                        <tr>
+                            <td style="font-weight: bold; color: #2c3e50;">@user.FirstName</td>
+                            <td>
+                                @if (userDebts.Debts.Any(d => d.Value > 0))
+                                {
+                                    <ul>
+                                        @foreach (var debt in userDebts.Debts.Where(d => d.Value > 0))
+                                        {
+                                            var other = Model.Users.Find(u => u.Id == @debt.Key);
+                                            <li style="color: #e74c3c;">Doit @debt.Value € à @other.FirstName</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span>Aucune dette</span>
+                                }
+                            </td>
+                            <td>
+                                @if (userDebts.Debts.Any(d => d.Value < 0))
+                                {
+                                    <ul>
+                                        @foreach (var debt in userDebts.Debts.Where(d => d.Value < 0))
+                                        {
+                                            var other = Model.Users.Find(u => u.Id == @debt.Key);
+                                            <li style="color: #27ae60;">@other.FirstName lui doit @(-debt.Value) €</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span>Aucun crédit</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bouton retour -->
+    <div class="row">
+        <div class="col-12 text-center">
+            <a asp-action="Index" asp-route-groupId="@Model.GroupId" class="btn btn-secondary mt-5" style="padding: 10px 20px; font-size: 18px; background-color: #08a045; color: white; border: none;">
+                Retour à la gestion des dépenses
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    @{
+        var userLabelsJson = System.Text.Json.JsonSerializer.Serialize(Model.Users.Select(u => u.FirstName));
+        var debtDataJson = System.Text.Json.JsonSerializer.Serialize(
+        Model.DebtsOfEverybody.Select(d => d.Debts.Sum(x => x.Value))
+        );
+        var debtDataJsonForDisplay = System.Text.Json.JsonSerializer.Serialize(
+        Model.DebtsOfEverybody.Select(d => Math.Abs(d.Debts.Sum(x => x.Value)))
+        );
+    }
+
+    <script>
+        var ctx = document.getElementById('balanceHistogram').getContext('2d');
+        var userLabels = @Html.Raw(userLabelsJson);
+        var debtData = @Html.Raw(debtDataJson);
+        var debtDataForDisplay = @Html.Raw(debtDataJsonForDisplay);
+
+        var backgroundColors = debtData.map(value => value >= 0 ? 'rgba(231, 76, 60, 0.7)' : 'rgba(39, 174, 96, 0.7)');
+        var borderColors = debtData.map(value => value >= 0 ? 'rgba(231, 76, 60, 1)' : 'rgba(39, 174, 96, 1)');
+
+        var balanceHistogram = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: userLabels,
+                datasets: [{
+                    label: 'Solde (€)',
+                    data: debtDataForDisplay,
+                    backgroundColor: backgroundColors,
+                    borderColor: borderColors,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Utilisateurs',
+                            font: {
+                                size: 16,
+                                family: 'Arial',
+                                style: 'bold',
+                                color: '#34495e' // Couleur du texte
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Montant en €',
+                            font: {
+                                size: 16,
+                                family: 'Arial',
+                                style: 'bold',
+                                color: '#34495e' // Couleur du texte
+                            }
+                        },
+                        ticks: {
+                            callback: function (value) {
+                                return value + ' €';
+                            },
+                            color: '#2c3e50' // Couleur des valeurs Y
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true, // Affiche la légende
+                        labels: {
+                            generateLabels: function (chart) {
+                                return [
+                                    {
+                                        text: 'Dettes',
+                                        fillStyle: 'rgba(231, 76, 60, 0.7)',
+                                        strokeStyle: 'rgba(231, 76, 60, 1)',
+                                        lineWidth: 2,
+                                        hidden: false
+                                    },
+                                    {
+                                        text: 'Crédits',
+                                        fillStyle: 'rgba(39, 174, 96, 0.7)',
+                                        strokeStyle: 'rgba(39, 174, 96, 1)',
+                                        lineWidth: 2,
+                                        hidden: false
+                                    }
+                                ];
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return context.parsed.y + ' €';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}
