@@ -1,6 +1,6 @@
 # TrueBalances
 
-![HomePage](MarkDownImages/homePage.png)\
+![HomeView](MarkDownImages/homeView.png)\
 *Exemple d'une vue de la page d'acceuil*
 
 ## Sommaire
