@@ -5,25 +5,25 @@
 
 ## Sommaire
 
-- [À propos](#a-propos)
-- [Technologies et environement utilisées](#technologies-et-environement-utilisees)
+- [Ã€ propos](#a-propos)
+- [Technologies et environement utilisÃ©es](#technologies-et-environement-utilisees)
 - [Contributeurs](#contributeurs)
 
-## À propos
+## Ã€ propos
 
-Truebalances est une application web conçue pour simplifier la gestion des dépenses partagées entre amis, colocataires ou collègues, lors des voyages, repas ou autres projets de groupe.
+Truebalances est une application web conÃ§ue pour simplifier la gestion des dÃ©penses partagÃ©es entre amis, colocataires ou collÃ¨gues, lors des voyages, repas ou autres projets de groupe.
 
 ![ExpenseForm](MarkDownImages/expenseForm.png)\
-*Exemple d'une vue montrant la saisie d'une dépense*
+*Exemple d'une vue montrant la saisie d'une dÃ©pense*
 
-L'application permet, une fois que l'on s'est enregistré et authentifié, de saisir des dépenses. La liste de ces dépenses, ainsi que les listes des participants associées à chacune d'entre elles, permet de calculer les dettes que les utilisateurs ont les uns envers les autres.
+L'application permet, une fois que l'on s'est enregistrÃ© et authentifiÃ©, de saisir des dÃ©penses. La liste de ces dÃ©penses, ainsi que les listes des participants associÃ©es Ã  chacune d'entre elles, permet de calculer les dettes que les utilisateurs ont les uns envers les autres.
 
 ![Banlances](MarkDownImages/balances.png)\
-*Exemple d'une vue récapitulant les dettes de chacun*
+*Exemple d'une vue rÃ©capitulant les dettes de chacun*
 
-Ces calculs sont faits automatiquement, ce qui permet de gagner du temps et d'éviter les malentendus, le tout en gardant l'ensemble des informations organisées et transparentes.
+Ces calculs sont faits automatiquement, ce qui permet de gagner du temps et d'Ã©viter les malentendus, le tout en gardant l'ensemble des informations organisÃ©es et transparentes.
 
-## Technologies et environement utilisées
+## Technologies et environement utilisÃ©es
 
 - C# .NET Core 8
 - ASP.NET MVC
@@ -35,4 +35,4 @@ Ces calculs sont faits automatiquement, ce qui permet de gagner du temps et d'év
 
 - [Edouard](https://github.com/Djibrildaniels)
 - [Khaoula](https://github.com/khoulaagzenay)
-- [Anthony](https://github.com/abt-111)
+- [abt-111](https://github.com/abt-111)
